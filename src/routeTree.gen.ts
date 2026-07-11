@@ -9,38 +9,245 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppTeamRouteImport } from './routes/_app.team'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppPermissionsRouteImport } from './routes/_app.permissions'
+import { Route as AppOrdersRouteImport } from './routes/_app.orders'
+import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
+import { Route as AppKnowledgeRouteImport } from './routes/_app.knowledge'
+import { Route as AppJobsRouteImport } from './routes/_app.jobs'
+import { Route as AppInventoryRouteImport } from './routes/_app.inventory'
+import { Route as AppFinancialsRouteImport } from './routes/_app.financials'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppClientsRouteImport } from './routes/_app.clients'
+import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
+import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
+import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTeamRoute = AppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPermissionsRoute = AppPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrdersRoute = AppOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJobsRoute = AppJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFinancialsRoute = AppFinancialsRouteImport.update({
+  id: '/financials',
+  path: '/financials',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientsRoute = AppClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AppKnowledgeRoute,
+} as any)
+const AppJobsIdRoute = AppJobsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppJobsRoute,
+} as any)
+const AppClientsIdRoute = AppClientsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppClientsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/clients': typeof AppClientsRouteWithChildren
+  '/dashboard': typeof AppDashboardRoute
+  '/financials': typeof AppFinancialsRoute
+  '/inventory': typeof AppInventoryRoute
+  '/jobs': typeof AppJobsRouteWithChildren
+  '/knowledge': typeof AppKnowledgeRouteWithChildren
+  '/notifications': typeof AppNotificationsRoute
+  '/orders': typeof AppOrdersRoute
+  '/permissions': typeof AppPermissionsRoute
+  '/settings': typeof AppSettingsRoute
+  '/team': typeof AppTeamRoute
+  '/clients/$id': typeof AppClientsIdRoute
+  '/jobs/$id': typeof AppJobsIdRoute
+  '/knowledge/$slug': typeof AppKnowledgeSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/clients': typeof AppClientsRouteWithChildren
+  '/dashboard': typeof AppDashboardRoute
+  '/financials': typeof AppFinancialsRoute
+  '/inventory': typeof AppInventoryRoute
+  '/jobs': typeof AppJobsRouteWithChildren
+  '/knowledge': typeof AppKnowledgeRouteWithChildren
+  '/notifications': typeof AppNotificationsRoute
+  '/orders': typeof AppOrdersRoute
+  '/permissions': typeof AppPermissionsRoute
+  '/settings': typeof AppSettingsRoute
+  '/team': typeof AppTeamRoute
+  '/clients/$id': typeof AppClientsIdRoute
+  '/jobs/$id': typeof AppJobsIdRoute
+  '/knowledge/$slug': typeof AppKnowledgeSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_app/clients': typeof AppClientsRouteWithChildren
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/financials': typeof AppFinancialsRoute
+  '/_app/inventory': typeof AppInventoryRoute
+  '/_app/jobs': typeof AppJobsRouteWithChildren
+  '/_app/knowledge': typeof AppKnowledgeRouteWithChildren
+  '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/orders': typeof AppOrdersRoute
+  '/_app/permissions': typeof AppPermissionsRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/team': typeof AppTeamRoute
+  '/_app/clients/$id': typeof AppClientsIdRoute
+  '/_app/jobs/$id': typeof AppJobsIdRoute
+  '/_app/knowledge/$slug': typeof AppKnowledgeSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/clients'
+    | '/dashboard'
+    | '/financials'
+    | '/inventory'
+    | '/jobs'
+    | '/knowledge'
+    | '/notifications'
+    | '/orders'
+    | '/permissions'
+    | '/settings'
+    | '/team'
+    | '/clients/$id'
+    | '/jobs/$id'
+    | '/knowledge/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/clients'
+    | '/dashboard'
+    | '/financials'
+    | '/inventory'
+    | '/jobs'
+    | '/knowledge'
+    | '/notifications'
+    | '/orders'
+    | '/permissions'
+    | '/settings'
+    | '/team'
+    | '/clients/$id'
+    | '/jobs/$id'
+    | '/knowledge/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/login'
+    | '/_app/clients'
+    | '/_app/dashboard'
+    | '/_app/financials'
+    | '/_app/inventory'
+    | '/_app/jobs'
+    | '/_app/knowledge'
+    | '/_app/notifications'
+    | '/_app/orders'
+    | '/_app/permissions'
+    | '/_app/settings'
+    | '/_app/team'
+    | '/_app/clients/$id'
+    | '/_app/jobs/$id'
+    | '/_app/knowledge/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +255,176 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/team': {
+      id: '/_app/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AppTeamRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/permissions': {
+      id: '/_app/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof AppPermissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/orders': {
+      id: '/_app/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AppOrdersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/knowledge': {
+      id: '/_app/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof AppKnowledgeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/jobs': {
+      id: '/_app/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AppJobsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/inventory': {
+      id: '/_app/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/financials': {
+      id: '/_app/financials'
+      path: '/financials'
+      fullPath: '/financials'
+      preLoaderRoute: typeof AppFinancialsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/clients': {
+      id: '/_app/clients'
+      path: '/clients'
+      fullPath: '/clients'
+      preLoaderRoute: typeof AppClientsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/knowledge/$slug': {
+      id: '/_app/knowledge/$slug'
+      path: '/$slug'
+      fullPath: '/knowledge/$slug'
+      preLoaderRoute: typeof AppKnowledgeSlugRouteImport
+      parentRoute: typeof AppKnowledgeRoute
+    }
+    '/_app/jobs/$id': {
+      id: '/_app/jobs/$id'
+      path: '/$id'
+      fullPath: '/jobs/$id'
+      preLoaderRoute: typeof AppJobsIdRouteImport
+      parentRoute: typeof AppJobsRoute
+    }
+    '/_app/clients/$id': {
+      id: '/_app/clients/$id'
+      path: '/$id'
+      fullPath: '/clients/$id'
+      preLoaderRoute: typeof AppClientsIdRouteImport
+      parentRoute: typeof AppClientsRoute
+    }
   }
 }
 
+interface AppClientsRouteChildren {
+  AppClientsIdRoute: typeof AppClientsIdRoute
+}
+
+const AppClientsRouteChildren: AppClientsRouteChildren = {
+  AppClientsIdRoute: AppClientsIdRoute,
+}
+
+const AppClientsRouteWithChildren = AppClientsRoute._addFileChildren(
+  AppClientsRouteChildren,
+)
+
+interface AppJobsRouteChildren {
+  AppJobsIdRoute: typeof AppJobsIdRoute
+}
+
+const AppJobsRouteChildren: AppJobsRouteChildren = {
+  AppJobsIdRoute: AppJobsIdRoute,
+}
+
+const AppJobsRouteWithChildren =
+  AppJobsRoute._addFileChildren(AppJobsRouteChildren)
+
+interface AppKnowledgeRouteChildren {
+  AppKnowledgeSlugRoute: typeof AppKnowledgeSlugRoute
+}
+
+const AppKnowledgeRouteChildren: AppKnowledgeRouteChildren = {
+  AppKnowledgeSlugRoute: AppKnowledgeSlugRoute,
+}
+
+const AppKnowledgeRouteWithChildren = AppKnowledgeRoute._addFileChildren(
+  AppKnowledgeRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppClientsRoute: typeof AppClientsRouteWithChildren
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppFinancialsRoute: typeof AppFinancialsRoute
+  AppInventoryRoute: typeof AppInventoryRoute
+  AppJobsRoute: typeof AppJobsRouteWithChildren
+  AppKnowledgeRoute: typeof AppKnowledgeRouteWithChildren
+  AppNotificationsRoute: typeof AppNotificationsRoute
+  AppOrdersRoute: typeof AppOrdersRoute
+  AppPermissionsRoute: typeof AppPermissionsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppTeamRoute: typeof AppTeamRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppClientsRoute: AppClientsRouteWithChildren,
+  AppDashboardRoute: AppDashboardRoute,
+  AppFinancialsRoute: AppFinancialsRoute,
+  AppInventoryRoute: AppInventoryRoute,
+  AppJobsRoute: AppJobsRouteWithChildren,
+  AppKnowledgeRoute: AppKnowledgeRouteWithChildren,
+  AppNotificationsRoute: AppNotificationsRoute,
+  AppOrdersRoute: AppOrdersRoute,
+  AppPermissionsRoute: AppPermissionsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppTeamRoute: AppTeamRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

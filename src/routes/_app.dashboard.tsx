@@ -133,7 +133,7 @@ function Dashboard() {
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="month" stroke="var(--muted-foreground)" fontSize={12} />
                   <YAxis stroke="var(--muted-foreground)" fontSize={12} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
-                  <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => formatZMW(v)} />
+                  <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: any) => formatZMW(Number(v))} />
                   <Legend />
                   <Bar dataKey="lusaka" name="Lusaka" fill="var(--chart-1)" radius={[4,4,0,0]} />
                   <Bar dataKey="ndola" name="Ndola" fill="var(--chart-2)" radius={[4,4,0,0]} />
@@ -153,7 +153,7 @@ function Dashboard() {
                   <Pie data={REVENUE_BY_CLIENT} dataKey="revenueZMW" nameKey="client" innerRadius={55} outerRadius={95} paddingAngle={2}>
                     {REVENUE_BY_CLIENT.map((_, i) => (<Cell key={i} fill={`var(--chart-${(i % 5) + 1})`} />))}
                   </Pie>
-                  <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => formatZMW(v)} />
+                  <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: any) => formatZMW(Number(v))} />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
@@ -224,7 +224,7 @@ function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis dataKey="month" stroke="var(--muted-foreground)" fontSize={12} />
                 <YAxis stroke="var(--muted-foreground)" fontSize={12} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
-                <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => formatZMW(v)} />
+                <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: any) => formatZMW(Number(v))} />
                 <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={3} dot={{ r: 4 }} />
               </LineChart>
             </ResponsiveContainer>

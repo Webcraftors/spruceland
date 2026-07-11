@@ -33,7 +33,7 @@ function ClientsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 tv:grid-cols-4 gap-4">
         {list.map(c => {
           const daysToService = differenceInDays(parseISO(c.nextServiceDue), new Date());
-          const totalScales = c.scales.reduce((a, s) => a + s.count, 0);
+          const totalScales = c.scales.reduce((a: number, s: any) => a + s.count, 0);
           return (
             <Link key={c.id} to="/clients/$id" params={{ id: c.id }}>
               <Card className="bg-card border-border h-full hover:border-primary/60 transition-colors">

@@ -20,9 +20,9 @@ export const Route = createFileRoute("/_app/jobs/$id")({
 });
 
 function JobDetail() {
-  const { job } = Route.useLoaderData();
+  const { job } = Route.useLoaderData() as { job: (typeof JOBS)[number] };
   const client = clientById(job.clientId);
-  const techs = job.technicianIds.map(id => techById(id)).filter(Boolean);
+  const techs = job.technicianIds.map((id: string) => techById(id)).filter((t): t is NonNullable<typeof t> => Boolean(t));
 
   return (
     <div className="space-y-6 max-w-5xl">

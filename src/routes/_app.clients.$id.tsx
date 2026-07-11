@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_app/clients/$id")({
 });
 
 function ClientDetail() {
-  const { client } = Route.useLoaderData();
+  const { client } = Route.useLoaderData() as { client: (typeof CLIENTS)[number] };
   const jobs = JOBS.filter(j => j.clientId === client.id);
 
   return (

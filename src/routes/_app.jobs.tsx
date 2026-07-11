@@ -77,7 +77,7 @@ function JobsPage() {
         </div>
       </header>
 
-      <Tabs value={view} onValueChange={(v) => navigate({ search: { view: v as any } })}>
+      <Tabs value={view} onValueChange={(v) => navigate({ to: "/jobs", search: { view: v as any } })}>
         <TabsList>
           <TabsTrigger value="kanban">Kanban</TabsTrigger>
           <TabsTrigger value="calendar">Calendar</TabsTrigger>

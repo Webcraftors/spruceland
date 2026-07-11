@@ -67,7 +67,7 @@ function ClientDetail() {
         <Metric label="Monthly revenue" value={formatZMW(client.monthlyRevenueZMW)} />
         <Metric label="Outstanding" value={formatZMW(client.outstandingZMW)} tone={client.outstandingZMW > 0 ? "danger" : undefined} />
         <Metric label="Branches" value={client.branches.length.toString()} />
-        <Metric label="Total scales" value={client.scales.reduce((a, s) => a + s.count, 0).toString()} />
+        <Metric label="Total scales" value={client.scales.reduce((a: number, s: any) => a + s.count, 0).toString()} />
       </div>
 
       <Tabs defaultValue="equipment">

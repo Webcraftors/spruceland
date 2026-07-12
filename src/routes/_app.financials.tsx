@@ -98,12 +98,31 @@ function FinancialsPage() {
         </DropdownMenu>
       </header>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        <Kpi label="Quarter revenue" value={formatZMW(totalQuarter)} tone="primary" />
-        <Kpi label="Lusaka" value={formatZMW(OFFICE_QUARTER.Lusaka)} />
-        <Kpi label="Ndola" value={formatZMW(OFFICE_QUARTER.Ndola)} />
-        <Kpi label="Margin" value={`${PROFIT_MARGIN_PCT}%`} tone="success" />
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-2">
+        <Kpi label="ARR" value={formatZMW(ARR)} tone="primary" />
+        <Kpi label="MRR" value={formatZMW(MRR)} tone="primary" />
+        <Kpi label="Yearly revenue" value={formatZMW(yearlyRevenue)} />
+        <Kpi label="Yearly profit" value={formatZMW(yearlyProfit)} tone="success" />
+        <Kpi label="Quarter revenue" value={formatZMW(totalQuarter)} />
+        <Kpi label={`Margin`} value={`${PROFIT_MARGIN_PCT}%`} tone="success" />
       </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <Kpi label="Lusaka (Q)" value={formatZMW(OFFICE_QUARTER.Lusaka)} />
+        <Kpi label="Ndola (Q)" value={formatZMW(OFFICE_QUARTER.Ndola)} />
+        <Kpi label="Quarter profit" value={formatZMW(quarterProfit)} tone="success" />
+        <Kpi label={`Target progress`} value={`${yearlyPctOfTarget}%`} />
+      </div>
+
+      <Card className="bg-card border-border">
+        <CardHeader className="p-3"><CardTitle className="text-sm">Recurring revenue</CardTitle></CardHeader>
+        <CardContent className="p-3 pt-0 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+          <div><div className="text-[10px] uppercase text-muted-foreground">Contracted clients</div><div className="text-base font-bold mt-0.5">{RECURRING.contractedClients}</div></div>
+          <div><div className="text-[10px] uppercase text-muted-foreground">Avg contract / mo</div><div className="text-base font-bold mt-0.5">{formatZMW(RECURRING.averageMonthlyContractZMW)}</div></div>
+          <div><div className="text-[10px] uppercase text-muted-foreground">MRR</div><div className="text-base font-bold mt-0.5 text-primary">{formatZMW(MRR)}</div></div>
+          <div><div className="text-[10px] uppercase text-muted-foreground">ARR</div><div className="text-base font-bold mt-0.5 text-primary">{formatZMW(ARR)}</div></div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
         <Card className="xl:col-span-2 bg-card border-border">

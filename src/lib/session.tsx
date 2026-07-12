@@ -20,14 +20,14 @@ export interface Session {
 
 export type Module =
   | "dashboard" | "jobs" | "clients" | "inventory" | "orders"
-  | "financials" | "team" | "knowledge" | "notifications" | "settings" | "permissions";
+  | "financials" | "team" | "knowledge" | "notifications" | "settings" | "permissions" | "activity";
 
 export const PERMISSIONS: Record<Role, Module[]> = {
-  owner:         ["dashboard","jobs","clients","inventory","orders","financials","team","knowledge","notifications","settings","permissions"],
-  administrator: ["dashboard","jobs","clients","inventory","orders","financials","team","knowledge","notifications","settings","permissions"],
-  head_tech:     ["dashboard","jobs","clients","inventory","orders","team","knowledge","notifications","settings"],
+  owner:         ["dashboard","jobs","clients","inventory","orders","financials","team","knowledge","notifications","settings","permissions","activity"],
+  administrator: ["dashboard","jobs","clients","inventory","orders","financials","team","knowledge","notifications","settings","permissions","activity"],
+  head_tech:     ["dashboard","jobs","clients","inventory","orders","team","knowledge","notifications","settings","activity"],
   technician:    ["dashboard","jobs","clients","inventory","knowledge","notifications","settings"],
-  crm:           ["dashboard","clients","jobs","financials","notifications","settings"],
+  crm:           ["dashboard","clients","jobs","financials","notifications","settings","activity"],
 };
 
 export function can(role: Role, m: Module) { return PERMISSIONS[role].includes(m); }

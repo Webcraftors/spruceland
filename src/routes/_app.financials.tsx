@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { formatZMW } from "@/lib/session";
 import { useStore } from "@/lib/store";
-import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT, REVENUE_BY_CLIENT, EXPENSE_CATEGORIES } from "@/data/financials";
+import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT, REVENUE_BY_CLIENT, EXPENSE_CATEGORIES, MRR, ARR, YEARLY_TARGET_ZMW, MILEAGE_BY_BRANCH, MILEAGE_COST_MONTHLY_ZMW, RECURRING } from "@/data/financials";
 import { downloadCSV, printPDF } from "@/lib/export";
 import { toast } from "sonner";
 import { Download, FileText, Table } from "lucide-react";
@@ -22,6 +22,10 @@ function FinancialsPage() {
   const { clients } = useStore();
   const totalQuarter = OFFICE_QUARTER.Lusaka + OFFICE_QUARTER.Ndola;
   const totalExpenses = EXPENSE_CATEGORIES.reduce((a, e) => a + e.zmw, 0);
+  const yearlyRevenue = MONTHLY_REVENUE.reduce((s, m) => s + m.lusaka + m.ndola, 0);
+  const yearlyProfit = Math.round(yearlyRevenue * (PROFIT_MARGIN_PCT / 100));
+  const quarterProfit = Math.round(totalQuarter * (PROFIT_MARGIN_PCT / 100));
+  const yearlyPctOfTarget = Math.min(100, Math.round((yearlyRevenue / YEARLY_TARGET_ZMW) * 100));
   const receivables = clients.reduce((a, c) => a + c.outstandingZMW, 0);
   const overdue = clients.filter(c => c.paymentStatus === "Overdue");
   const paid = clients.filter(c => c.paymentStatus === "Paid");
@@ -94,12 +98,31 @@ function FinancialsPage() {
         </DropdownMenu>
       </header>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        <Kpi label="Quarter revenue" value={formatZMW(totalQuarter)} tone="primary" />
-        <Kpi label="Lusaka" value={formatZMW(OFFICE_QUARTER.Lusaka)} />
-        <Kpi label="Ndola" value={formatZMW(OFFICE_QUARTER.Ndola)} />
-        <Kpi label="Margin" value={`${PROFIT_MARGIN_PCT}%`} tone="success" />
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-2">
+        <Kpi label="ARR" value={formatZMW(ARR)} tone="primary" />
+        <Kpi label="MRR" value={formatZMW(MRR)} tone="primary" />
+        <Kpi label="Yearly revenue" value={formatZMW(yearlyRevenue)} />
+        <Kpi label="Yearly profit" value={formatZMW(yearlyProfit)} tone="success" />
+        <Kpi label="Quarter revenue" value={formatZMW(totalQuarter)} />
+        <Kpi label={`Margin`} value={`${PROFIT_MARGIN_PCT}%`} tone="success" />
       </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <Kpi label="Lusaka (Q)" value={formatZMW(OFFICE_QUARTER.Lusaka)} />
+        <Kpi label="Ndola (Q)" value={formatZMW(OFFICE_QUARTER.Ndola)} />
+        <Kpi label="Quarter profit" value={formatZMW(quarterProfit)} tone="success" />
+        <Kpi label={`Target progress`} value={`${yearlyPctOfTarget}%`} />
+      </div>
+
+      <Card className="bg-card border-border">
+        <CardHeader className="p-3"><CardTitle className="text-sm">Recurring revenue</CardTitle></CardHeader>
+        <CardContent className="p-3 pt-0 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+          <div><div className="text-[10px] uppercase text-muted-foreground">Contracted clients</div><div className="text-base font-bold mt-0.5">{RECURRING.contractedClients}</div></div>
+          <div><div className="text-[10px] uppercase text-muted-foreground">Avg contract / mo</div><div className="text-base font-bold mt-0.5">{formatZMW(RECURRING.averageMonthlyContractZMW)}</div></div>
+          <div><div className="text-[10px] uppercase text-muted-foreground">MRR</div><div className="text-base font-bold mt-0.5 text-primary">{formatZMW(MRR)}</div></div>
+          <div><div className="text-[10px] uppercase text-muted-foreground">ARR</div><div className="text-base font-bold mt-0.5 text-primary">{formatZMW(ARR)}</div></div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
         <Card className="xl:col-span-2 bg-card border-border">
@@ -196,6 +219,53 @@ function FinancialsPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="bg-card border-border">
+        <CardHeader className="p-3"><CardTitle className="text-sm">Mileage &amp; fleet cost by branch</CardTitle></CardHeader>
+        <CardContent className="p-3 pt-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="text-[10px] uppercase text-muted-foreground">
+                <tr className="border-b border-border">
+                  <th className="text-left py-1.5">Branch</th>
+                  <th className="text-right">Vehicles</th>
+                  <th className="text-right">Km / month</th>
+                  <th className="text-right">Rate /km</th>
+                  <th className="text-right">Monthly cost</th>
+                  <th className="text-right">Quarter</th>
+                  <th className="text-right">Annual</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MILEAGE_BY_BRANCH.map(b => {
+                  const monthly = b.kmPerMonth * b.ratePerKmZMW;
+                  return (
+                    <tr key={b.branch} className="border-b border-border/60">
+                      <td className="py-2 font-medium">{b.branch}</td>
+                      <td className="text-right">{b.vehicles}</td>
+                      <td className="text-right">{b.kmPerMonth.toLocaleString()}</td>
+                      <td className="text-right">ZMW {b.ratePerKmZMW}</td>
+                      <td className="text-right font-semibold">{formatZMW(monthly)}</td>
+                      <td className="text-right">{formatZMW(monthly * 3)}</td>
+                      <td className="text-right">{formatZMW(monthly * 12)}</td>
+                    </tr>
+                  );
+                })}
+                <tr className="font-bold">
+                  <td className="py-2">Total</td>
+                  <td className="text-right">{MILEAGE_BY_BRANCH.reduce((s,b)=>s+b.vehicles,0)}</td>
+                  <td className="text-right">{MILEAGE_BY_BRANCH.reduce((s,b)=>s+b.kmPerMonth,0).toLocaleString()}</td>
+                  <td></td>
+                  <td className="text-right text-primary">{formatZMW(MILEAGE_COST_MONTHLY_ZMW)}</td>
+                  <td className="text-right">{formatZMW(MILEAGE_COST_MONTHLY_ZMW * 3)}</td>
+                  <td className="text-right">{formatZMW(MILEAGE_COST_MONTHLY_ZMW * 12)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-2">Fuel + maintenance modelled per km. Update rates in <code>src/data/financials.ts</code>.</p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -36,22 +36,33 @@ function LoginPage() {
   const showSub = role === "technician" || role === "head_tech";
 
   return (
-    <div className="min-h-screen w-full grid lg:grid-cols-2 bg-background">
-      <div className="hidden lg:flex flex-col justify-between p-12 bg-sidebar text-sidebar-foreground relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(circle at 20% 30%, var(--primary) 0, transparent 50%), radial-gradient(circle at 80% 70%, var(--info) 0, transparent 45%)" }} />
-        <div className="relative">
-          <img src={logoAsset.url} alt="Spruceland Technologies" className="h-14 w-auto" />
+    <div className="min-h-screen w-full grid lg:grid-cols-[1.05fr_1fr] bg-background">
+      <div className="hidden lg:flex flex-col justify-between p-12 xl:p-16 bg-sidebar text-sidebar-foreground relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.09]" style={{ backgroundImage: "radial-gradient(circle at 15% 20%, var(--primary) 0, transparent 45%), radial-gradient(circle at 85% 80%, var(--info) 0, transparent 40%)" }} />
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(var(--sidebar-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--sidebar-foreground) 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
+        <div className="relative flex items-center gap-3">
+          <div className="rounded-lg bg-sidebar-accent/60 backdrop-blur px-3 py-2">
+            <img src={logoAsset.url} alt="Spruceland Technologies" className="h-10 w-auto" />
+          </div>
+          <div className="text-[11px] uppercase tracking-[0.18em] text-sidebar-foreground/60">Operations Console</div>
         </div>
         <div className="relative">
-          <h1 className="text-4xl font-extrabold leading-tight">Field service, weighing & installations — one command centre.</h1>
-          <p className="mt-4 text-sidebar-foreground/70 max-w-lg">Jobs, clients, technicians, inventory and financials across Lusaka and Ndola. Built for site teams, TV walls and the front office.</p>
-          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-sidebar-border bg-sidebar-accent/40 px-3 py-1 text-[11px] text-sidebar-foreground/80">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> Live across Lusaka &amp; Ndola
+          </div>
+          <h1 className="mt-5 text-4xl xl:text-5xl font-extrabold leading-[1.05] tracking-tight">
+            Field service, weighing &amp; installations — <span className="text-primary">one command centre.</span>
+          </h1>
+          <p className="mt-4 text-sidebar-foreground/70 max-w-lg text-[15px] leading-relaxed">
+            Jobs, clients, technicians, inventory and knowledge — coordinated across your branches. Built for site teams, TV walls and the front office.
+          </p>
+          <div className="mt-8 grid grid-cols-3 gap-3 max-w-lg">
             <Stat kpi="18" label="Active clients" />
-            <Stat kpi="ZMW 3.5M" label="Quarterly revenue" />
-            <Stat kpi="7" label="Technicians on the road" />
+            <Stat kpi="2" label="Regional offices" />
+            <Stat kpi="7" label="Techs on the road" />
           </div>
         </div>
-        <div className="relative text-xs text-sidebar-foreground/60">A Client Driven Partner · Spruceland Technologies Group Ltd</div>
+        <div className="relative text-[11px] text-sidebar-foreground/50">A Client Driven Partner · Spruceland Technologies Group Ltd</div>
       </div>
 
       <div className="flex items-center justify-center p-6 lg:p-12">
@@ -115,9 +126,9 @@ function LoginPage() {
 
 function Stat({ kpi, label }: { kpi: string; label: string }) {
   return (
-    <div className="rounded-lg border border-sidebar-border bg-sidebar-accent/40 py-4">
-      <div className="text-xl font-bold text-primary">{kpi}</div>
-      <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60 mt-1">{label}</div>
+    <div className="rounded-xl border border-sidebar-border bg-sidebar-accent/40 backdrop-blur px-3 py-4 text-center">
+      <div className="text-2xl font-extrabold text-primary tracking-tight">{kpi}</div>
+      <div className="text-[10px] uppercase tracking-wider text-sidebar-foreground/60 mt-1">{label}</div>
     </div>
   );
 }

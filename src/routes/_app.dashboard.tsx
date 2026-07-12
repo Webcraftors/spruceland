@@ -9,7 +9,7 @@ import { useSession, formatZMW, can } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import { statusColorClasses, priorityColorClasses, typeColorClasses } from "@/data/jobs";
 import { TECHNICIANS } from "@/data/technicians";
-import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT } from "@/data/financials";
+import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT, ARR, MRR } from "@/data/financials";
 import { scopedJobs, scopedClients, scopedInventory } from "@/lib/scope";
 import { differenceInDays, format, parseISO } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
@@ -55,12 +55,15 @@ function Dashboard() {
         </div>
       </header>
 
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+      <section className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-2.5">
         <Kpi icon={Wrench} label="Active jobs" value={activeJobs.length.toString()} tone="info" />
         <Kpi icon={AlertTriangle} label="Escalations" value={(escalated.length + breakdowns.length).toString()} tone="danger" />
         <Kpi icon={Clock} label="Due ≤30d" value={dueSoon.length.toString()} tone="warning" />
         {showFinance ? (
-          <Kpi icon={CircleDollarSign} label="Q revenue" value={formatZMW(OFFICE_QUARTER.Lusaka + OFFICE_QUARTER.Ndola)} tone="primary" />
+          <>
+            <Kpi icon={CircleDollarSign} label="ARR" value={formatZMW(ARR)} tone="primary" />
+            <Kpi icon={CircleDollarSign} label="MRR" value={formatZMW(MRR)} tone="primary" />
+          </>
         ) : (
           <Kpi icon={Package} label="Low stock" value={lowStock.length.toString()} tone="warning" />
         )}

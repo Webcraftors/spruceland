@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "a095eb46-546c-4e17-b714-d122f2333c80",
-  "project_id": "8b34a20f-a072-40ea-92cd-aa999deb92a1",
-  "url": "/__l5e/assets-v1/a095eb46-546c-4e17-b714-d122f2333c80/spruceland-logo.png",
-  "r2_key": "a/v1/8b34a20f-a072-40ea-92cd-aa999deb92a1/a095eb46-546c-4e17-b714-d122f2333c80/spruceland-logo.png",
-  "original_filename": "spruceland-logo.png",
-  "size": 36811,
   "content_type": "image/png",
-  "created_at": "2026-07-11T20:59:33Z"
+  "created_at": "2026-07-11T20:59:33Z",
+  "original_filename": "spruceland-logo.png",
+  "project_id": "a94f5bfd-ca58-435b-bea8-bfb57f813c9b",
+  "r2_key": "a/v1/a94f5bfd-ca58-435b-bea8-bfb57f813c9b/a095eb46-546c-4e17-b714-d122f2333c80/spruceland-logo.png",
+  "size": 36811,
+  "url": "/__l5e/assets-v1/a095eb46-546c-4e17-b714-d122f2333c80/spruceland-logo.png",
+  "version": 1
 }

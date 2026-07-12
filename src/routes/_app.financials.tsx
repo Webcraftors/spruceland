@@ -219,6 +219,53 @@ function FinancialsPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="bg-card border-border">
+        <CardHeader className="p-3"><CardTitle className="text-sm">Mileage &amp; fleet cost by branch</CardTitle></CardHeader>
+        <CardContent className="p-3 pt-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="text-[10px] uppercase text-muted-foreground">
+                <tr className="border-b border-border">
+                  <th className="text-left py-1.5">Branch</th>
+                  <th className="text-right">Vehicles</th>
+                  <th className="text-right">Km / month</th>
+                  <th className="text-right">Rate /km</th>
+                  <th className="text-right">Monthly cost</th>
+                  <th className="text-right">Quarter</th>
+                  <th className="text-right">Annual</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MILEAGE_BY_BRANCH.map(b => {
+                  const monthly = b.kmPerMonth * b.ratePerKmZMW;
+                  return (
+                    <tr key={b.branch} className="border-b border-border/60">
+                      <td className="py-2 font-medium">{b.branch}</td>
+                      <td className="text-right">{b.vehicles}</td>
+                      <td className="text-right">{b.kmPerMonth.toLocaleString()}</td>
+                      <td className="text-right">ZMW {b.ratePerKmZMW}</td>
+                      <td className="text-right font-semibold">{formatZMW(monthly)}</td>
+                      <td className="text-right">{formatZMW(monthly * 3)}</td>
+                      <td className="text-right">{formatZMW(monthly * 12)}</td>
+                    </tr>
+                  );
+                })}
+                <tr className="font-bold">
+                  <td className="py-2">Total</td>
+                  <td className="text-right">{MILEAGE_BY_BRANCH.reduce((s,b)=>s+b.vehicles,0)}</td>
+                  <td className="text-right">{MILEAGE_BY_BRANCH.reduce((s,b)=>s+b.kmPerMonth,0).toLocaleString()}</td>
+                  <td></td>
+                  <td className="text-right text-primary">{formatZMW(MILEAGE_COST_MONTHLY_ZMW)}</td>
+                  <td className="text-right">{formatZMW(MILEAGE_COST_MONTHLY_ZMW * 3)}</td>
+                  <td className="text-right">{formatZMW(MILEAGE_COST_MONTHLY_ZMW * 12)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-2">Fuel + maintenance modelled per km. Update rates in <code>src/data/financials.ts</code>.</p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

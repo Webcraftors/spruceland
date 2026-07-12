@@ -9,7 +9,7 @@ import { useSession, formatZMW, can } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import { statusColorClasses, priorityColorClasses, typeColorClasses } from "@/data/jobs";
 import { TECHNICIANS } from "@/data/technicians";
-import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT } from "@/data/financials";
+import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT, ARR, MRR } from "@/data/financials";
 import { scopedJobs, scopedClients, scopedInventory } from "@/lib/scope";
 import { differenceInDays, format, parseISO } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";

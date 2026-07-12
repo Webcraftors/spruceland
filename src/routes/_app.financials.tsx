@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { formatZMW } from "@/lib/session";
 import { useStore } from "@/lib/store";
-import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT, REVENUE_BY_CLIENT, EXPENSE_CATEGORIES } from "@/data/financials";
+import { MONTHLY_REVENUE, OFFICE_QUARTER, PROFIT_MARGIN_PCT, REVENUE_BY_CLIENT, EXPENSE_CATEGORIES, MRR, ARR, YEARLY_TARGET_ZMW, MILEAGE_BY_BRANCH, MILEAGE_COST_MONTHLY_ZMW, RECURRING } from "@/data/financials";
 import { downloadCSV, printPDF } from "@/lib/export";
 import { toast } from "sonner";
 import { Download, FileText, Table } from "lucide-react";

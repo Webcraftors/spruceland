@@ -126,9 +126,9 @@ function LoginPage() {
 
 function Stat({ kpi, label }: { kpi: string; label: string }) {
   return (
-    <div className="rounded-lg border border-sidebar-border bg-sidebar-accent/40 py-4">
-      <div className="text-xl font-bold text-primary">{kpi}</div>
-      <div className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60 mt-1">{label}</div>
+    <div className="rounded-xl border border-sidebar-border bg-sidebar-accent/40 backdrop-blur px-3 py-4 text-center">
+      <div className="text-2xl font-extrabold text-primary tracking-tight">{kpi}</div>
+      <div className="text-[10px] uppercase tracking-wider text-sidebar-foreground/60 mt-1">{label}</div>
     </div>
   );
 }

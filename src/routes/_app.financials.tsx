@@ -22,6 +22,10 @@ function FinancialsPage() {
   const { clients } = useStore();
   const totalQuarter = OFFICE_QUARTER.Lusaka + OFFICE_QUARTER.Ndola;
   const totalExpenses = EXPENSE_CATEGORIES.reduce((a, e) => a + e.zmw, 0);
+  const yearlyRevenue = MONTHLY_REVENUE.reduce((s, m) => s + m.lusaka + m.ndola, 0);
+  const yearlyProfit = Math.round(yearlyRevenue * (PROFIT_MARGIN_PCT / 100));
+  const quarterProfit = Math.round(totalQuarter * (PROFIT_MARGIN_PCT / 100));
+  const yearlyPctOfTarget = Math.min(100, Math.round((yearlyRevenue / YEARLY_TARGET_ZMW) * 100));
   const receivables = clients.reduce((a, c) => a + c.outstandingZMW, 0);
   const overdue = clients.filter(c => c.paymentStatus === "Overdue");
   const paid = clients.filter(c => c.paymentStatus === "Paid");

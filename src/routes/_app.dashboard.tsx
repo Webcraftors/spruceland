@@ -55,12 +55,15 @@ function Dashboard() {
         </div>
       </header>
 
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+      <section className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-2.5">
         <Kpi icon={Wrench} label="Active jobs" value={activeJobs.length.toString()} tone="info" />
         <Kpi icon={AlertTriangle} label="Escalations" value={(escalated.length + breakdowns.length).toString()} tone="danger" />
         <Kpi icon={Clock} label="Due ≤30d" value={dueSoon.length.toString()} tone="warning" />
         {showFinance ? (
-          <Kpi icon={CircleDollarSign} label="Q revenue" value={formatZMW(OFFICE_QUARTER.Lusaka + OFFICE_QUARTER.Ndola)} tone="primary" />
+          <>
+            <Kpi icon={CircleDollarSign} label="ARR" value={formatZMW(ARR)} tone="primary" />
+            <Kpi icon={CircleDollarSign} label="MRR" value={formatZMW(MRR)} tone="primary" />
+          </>
         ) : (
           <Kpi icon={Package} label="Low stock" value={lowStock.length.toString()} tone="warning" />
         )}

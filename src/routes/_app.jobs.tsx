@@ -7,25 +7,30 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import {
   DndContext, DragEndEvent, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors,
 } from "@dnd-kit/core";
 import {
-  JOBS as SEED_JOBS, JOB_STATUSES, statusColorClasses, priorityColorClasses, typeColorClasses,
-  type Job, type JobStatus, type JobPriority,
+  JOB_STATUSES, statusColorClasses, priorityColorClasses, typeColorClasses,
+  type Job, type JobStatus,
 } from "@/data/jobs";
-import { CLIENTS } from "@/data/clients";
 import { TECHNICIANS } from "@/data/technicians";
-import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
-import { ArrowUp, ArrowDown, Pause, CheckCircle2, MapPin, User2 } from "lucide-react";
+import { useStore } from "@/lib/store";
+import { useSession } from "@/lib/session";
+import { scopedJobs } from "@/lib/scope";
+import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths } from "date-fns";
+import { ArrowUp, ArrowDown, Pause, CheckCircle2, MapPin, User2, Plus, MoreVertical, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { JobFormDialog } from "@/components/JobFormDialog";
 
 const searchSchema = z.object({
   view: z.enum(["kanban","calendar","grid","tv"]).catch("kanban").optional(),
 });
 
 export const Route = createFileRoute("/_app/jobs")({
-  head: () => ({ meta: [{ title: "Jobs board — Spruceland Ops" }, { name: "description", content: "Kanban, calendar, grid and TV views of all field jobs." }] }),
+  head: () => ({ meta: [{ title: "Jobs board — Spruceland Ops" }] }),
   validateSearch: searchSchema,
   component: JobsPage,
 });
@@ -34,33 +39,41 @@ function JobsPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const view = search.view ?? "kanban";
-  const [jobs, setJobs] = useState<Job[]>(SEED_JOBS);
+  const { session } = useSession();
+  const store = useStore();
   const [locFilter, setLocFilter] = useState<"All"|"Lusaka"|"Ndola">("All");
   const [clientFilter, setClientFilter] = useState<string>("All");
+  const [dlgOpen, setDlgOpen] = useState(false);
+  const [editing, setEditing] = useState<Job | null>(null);
+  const [confirmDel, setConfirmDel] = useState<string | null>(null);
 
-  const filtered = useMemo(() => jobs.filter(j =>
+  if (!session) return null;
+
+  const scoped = scopedJobs(store.jobs, session.role, session.location);
+  const filtered = useMemo(() => scoped.filter(j =>
     (locFilter === "All" || j.location === locFilter) &&
     (clientFilter === "All" || j.clientId === clientFilter)
-  ), [jobs, locFilter, clientFilter]);
+  ), [scoped, locFilter, clientFilter]);
 
-  const setStatus = (id: string, status: JobStatus) => setJobs(js => js.map(j => j.id === id ? { ...j, status } : j));
-  const setPriority = (id: string, priority: JobPriority) => setJobs(js => js.map(j => j.id === id ? { ...j, priority } : j));
-
-  const escalate = (id: string) => { setPriority(id, "Escalated"); toast.success("Job escalated"); };
-  const deescalate = (id: string) => { setPriority(id, "Normal"); toast.success("Job de-escalated"); };
-  const hold = (id: string) => { setStatus(id, "On Hold"); toast("Job put on hold"); };
-  const close = (id: string) => { setStatus(id, "Closed"); toast.success("Job closed"); };
+  const setStatus = (id: string, status: JobStatus) => { store.updateJob(id, { status }); toast.success(`Moved to ${status}`); };
+  const escalate = (id: string) => { store.updateJob(id, { priority: "Escalated" }); toast.success("Job escalated"); };
+  const deescalate = (id: string) => { store.updateJob(id, { priority: "Normal" }); };
+  const hold = (id: string) => { store.updateJob(id, { status: "On Hold" }); };
+  const close = (id: string) => { store.updateJob(id, { status: "Closed", progress: 100 }); toast.success("Job closed"); };
+  const openEdit = (j: Job) => { setEditing(j); setDlgOpen(true); };
+  const openNew = () => { setEditing(null); setDlgOpen(true); };
+  const doDelete = () => { if (confirmDel) { store.deleteJob(confirmDel); toast.success("Job deleted"); setConfirmDel(null); } };
 
   return (
-    <div className="space-y-5">
-      <header className="flex flex-wrap items-end justify-between gap-3">
+    <div className="space-y-3">
+      <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h1 className="text-3xl tv:text-4xl font-extrabold tracking-tight">Jobs board</h1>
-          <p className="text-sm text-muted-foreground">Drag cards between columns. Escalate, hold or close from any card.</p>
+          <h1 className="text-xl md:text-2xl font-extrabold tracking-tight">Jobs board</h1>
+          <p className="text-[11px] text-muted-foreground">Drag between columns · escalate, hold, close, edit.</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <Select value={locFilter} onValueChange={(v: any) => setLocFilter(v)}>
-            <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-28 h-8 text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All locations</SelectItem>
               <SelectItem value="Lusaka">Lusaka</SelectItem>
@@ -68,86 +81,86 @@ function JobsPage() {
             </SelectContent>
           </Select>
           <Select value={clientFilter} onValueChange={setClientFilter}>
-            <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-36 h-8 text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All clients</SelectItem>
-              {CLIENTS.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+              {store.clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
             </SelectContent>
           </Select>
+          <Button size="sm" className="h-8" onClick={openNew}><Plus className="h-3.5 w-3.5 mr-1" />New job</Button>
         </div>
       </header>
 
       <Tabs value={view} onValueChange={(v) => navigate({ to: "/jobs", search: { view: v as any } })}>
-        <TabsList>
-          <TabsTrigger value="kanban">Kanban</TabsTrigger>
-          <TabsTrigger value="calendar">Calendar</TabsTrigger>
-          <TabsTrigger value="grid">Grid</TabsTrigger>
-          <TabsTrigger value="tv">TV wall</TabsTrigger>
+        <TabsList className="h-8">
+          <TabsTrigger value="kanban" className="text-xs">Kanban</TabsTrigger>
+          <TabsTrigger value="calendar" className="text-xs">Calendar</TabsTrigger>
+          <TabsTrigger value="grid" className="text-xs">Grid</TabsTrigger>
+          <TabsTrigger value="tv" className="text-xs">TV wall</TabsTrigger>
         </TabsList>
       </Tabs>
 
-      {view === "kanban" && <Kanban jobs={filtered} onMove={setStatus} onEscalate={escalate} onDeescalate={deescalate} onHold={hold} onClose={close} />}
+      {view === "kanban" && <Kanban jobs={filtered} onMove={setStatus} onEscalate={escalate} onDeescalate={deescalate} onHold={hold} onClose={close} onEdit={openEdit} onDelete={setConfirmDel} />}
       {view === "calendar" && <CalendarView jobs={filtered} />}
-      {view === "grid" && <GridView jobs={filtered} onEscalate={escalate} onDeescalate={deescalate} onHold={hold} onClose={close} />}
+      {view === "grid" && <GridView jobs={filtered} onEscalate={escalate} onDeescalate={deescalate} onHold={hold} onClose={close} onEdit={openEdit} onDelete={setConfirmDel} />}
       {view === "tv" && <TVView jobs={filtered} />}
+
+      <JobFormDialog open={dlgOpen} onOpenChange={setDlgOpen} editing={editing} />
+
+      <AlertDialog open={!!confirmDel} onOpenChange={(o) => !o && setConfirmDel(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this job?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone in the demo build.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={doDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
 
 // ---------- Kanban ----------
-function Kanban({ jobs, onMove, onEscalate, onDeescalate, onHold, onClose }: {
-  jobs: Job[]; onMove: (id: string, s: JobStatus) => void;
-  onEscalate: (id: string) => void; onDeescalate: (id: string) => void; onHold: (id: string) => void; onClose: (id: string) => void;
-}) {
+function Kanban(props: any) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const [dragged, setDragged] = useState<Job | null>(null);
-
   const onEnd = (e: DragEndEvent) => {
     setDragged(null);
     if (!e.over) return;
-    const jobId = String(e.active.id);
-    const newStatus = String(e.over.id) as JobStatus;
-    onMove(jobId, newStatus);
-    toast.success(`Moved to ${newStatus}`);
+    props.onMove(String(e.active.id), String(e.over.id) as JobStatus);
   };
-
   return (
-    <DndContext sensors={sensors} onDragStart={(e) => setDragged(jobs.find(j => j.id === e.active.id) ?? null)} onDragEnd={onEnd} onDragCancel={() => setDragged(null)}>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 tv:grid-cols-7 gap-4">
+    <DndContext sensors={sensors} onDragStart={(e) => setDragged(props.jobs.find((j: Job) => j.id === e.active.id) ?? null)} onDragEnd={onEnd} onDragCancel={() => setDragged(null)}>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 tv:grid-cols-7 gap-3 overflow-x-auto">
         {JOB_STATUSES.map(status => (
-          <Column key={status} status={status} jobs={jobs.filter(j => j.status === status)} onEscalate={onEscalate} onDeescalate={onDeescalate} onHold={onHold} onClose={onClose} />
+          <Column key={status} status={status} jobs={props.jobs.filter((j: Job) => j.status === status)} {...props} />
         ))}
       </div>
-      <DragOverlay>
-        {dragged && <JobCard job={dragged} dragging />}
-      </DragOverlay>
+      <DragOverlay>{dragged && <JobCard job={dragged} dragging />}</DragOverlay>
     </DndContext>
   );
 }
 
-function Column({ status, jobs, onEscalate, onDeescalate, onHold, onClose }: {
-  status: JobStatus; jobs: Job[];
-  onEscalate: (id: string) => void; onDeescalate: (id: string) => void; onHold: (id: string) => void; onClose: (id: string) => void;
-}) {
+function Column({ status, jobs, onEscalate, onDeescalate, onHold, onClose, onEdit, onDelete }: any) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
-    <div ref={setNodeRef} className={`rounded-xl border border-border bg-card/60 p-3 min-h-[200px] transition-colors ${isOver ? "border-primary bg-primary/5" : ""}`}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className={`h-2 w-2 rounded-full ${statusColorClasses(status).split(" ")[0]}`} />
-          <h3 className="text-sm font-semibold">{status}</h3>
-        </div>
-        <Badge variant="outline">{jobs.length}</Badge>
+    <div ref={setNodeRef} className={`rounded-lg border border-border bg-card/60 p-2 min-h-[160px] transition-colors ${isOver ? "border-primary bg-primary/5" : ""}`}>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider">{status}</h3>
+        <Badge variant="outline" className="text-[10px]">{jobs.length}</Badge>
       </div>
-      <div className="space-y-2">
-        {jobs.map(j => <DraggableCard key={j.id} job={j} onEscalate={onEscalate} onDeescalate={onDeescalate} onHold={onHold} onClose={onClose} />)}
-        {jobs.length === 0 && <p className="text-xs text-muted-foreground px-1 py-4 text-center">Drop jobs here</p>}
+      <div className="space-y-1.5">
+        {jobs.map((j: Job) => <DraggableCard key={j.id} job={j} onEscalate={onEscalate} onDeescalate={onDeescalate} onHold={onHold} onClose={onClose} onEdit={onEdit} onDelete={onDelete} />)}
+        {jobs.length === 0 && <p className="text-[10px] text-muted-foreground px-1 py-3 text-center">Drop jobs here</p>}
       </div>
     </div>
   );
 }
 
-function DraggableCard(props: { job: Job; onEscalate: (id: string) => void; onDeescalate: (id: string) => void; onHold: (id: string) => void; onClose: (id: string) => void; }) {
+function DraggableCard(props: any) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: props.job.id });
   return (
     <div ref={setNodeRef} {...attributes} {...listeners} className={isDragging ? "opacity-40" : ""}>
@@ -156,113 +169,161 @@ function DraggableCard(props: { job: Job; onEscalate: (id: string) => void; onDe
   );
 }
 
-function JobCard({ job, dragging, onEscalate, onDeescalate, onHold, onClose }: {
-  job: Job; dragging?: boolean;
-  onEscalate?: (id: string) => void; onDeescalate?: (id: string) => void; onHold?: (id: string) => void; onClose?: (id: string) => void;
+function JobCard({ job, dragging, onEscalate, onDeescalate, onHold, onClose, onEdit, onDelete }: {
+  job: Job; dragging?: boolean; onEscalate?: any; onDeescalate?: any; onHold?: any; onClose?: any; onEdit?: any; onDelete?: any;
 }) {
-  const client = CLIENTS.find(c => c.id === job.clientId);
+  const { clients } = useStore();
+  const client = clients.find(c => c.id === job.clientId);
   const techs = job.technicianIds.map(id => TECHNICIANS.find(t => t.id === id)).filter(Boolean);
   return (
-    <div className={`rounded-lg border border-border bg-background p-3 shadow-sm ${dragging ? "shadow-2xl rotate-1" : ""}`}>
-      <div className="flex items-center justify-between gap-2">
-        <Badge variant="outline" className={priorityColorClasses(job.priority)}>{job.priority}</Badge>
-        <Badge variant="outline" className={typeColorClasses(job.type)}>{job.type}</Badge>
+    <div className={`rounded-md border border-border bg-background p-2 shadow-sm ${dragging ? "shadow-xl rotate-1" : ""}`}>
+      <div className="flex items-center justify-between gap-1">
+        <Badge variant="outline" className={`${priorityColorClasses(job.priority)} text-[9px] px-1 py-0`}>{job.priority}</Badge>
+        <div className="flex items-center gap-0.5">
+          <Badge variant="outline" className={`${typeColorClasses(job.type)} text-[9px] px-1 py-0`}>{job.type}</Badge>
+          {onEdit && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild><button className="p-0.5 hover:bg-accent rounded" onPointerDown={(e) => e.stopPropagation()}><MoreVertical className="h-3 w-3" /></button></DropdownMenuTrigger>
+              <DropdownMenuContent align="end" onPointerDown={(e) => e.stopPropagation()}>
+                <DropdownMenuItem onClick={() => onEdit(job)}><Pencil className="h-3 w-3 mr-2" />Edit</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-destructive" onClick={() => onDelete(job.id)}><Trash2 className="h-3 w-3 mr-2" />Delete</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
-      <Link to="/jobs/$id" params={{ id: job.id }} className="block mt-2 font-semibold text-sm leading-tight hover:text-primary">{job.title}</Link>
-      <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1"><MapPin className="h-3 w-3" />{client?.name} · {job.branch}</div>
-      <Progress value={job.progress} className="mt-2 h-1.5" />
-      <div className="mt-2 flex items-center justify-between">
-        <div className="flex -space-x-1.5">
-          {techs.length === 0 && <span className="text-[11px] text-muted-foreground">Unassigned</span>}
+      <Link to="/jobs/$id" params={{ id: job.id }} className="block mt-1 font-semibold text-[12px] leading-tight hover:text-primary line-clamp-2">{job.title}</Link>
+      <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate"><MapPin className="h-2.5 w-2.5 shrink-0" /><span className="truncate">{client?.name} · {job.branch}</span></div>
+      <Progress value={job.progress} className="mt-1.5 h-1" />
+      <div className="mt-1.5 flex items-center justify-between">
+        <div className="flex -space-x-1">
+          {techs.length === 0 && <span className="text-[10px] text-muted-foreground">Unassigned</span>}
           {techs.map(t => (
-            <div key={t!.id} title={t!.name} className="h-6 w-6 rounded-full ring-2 ring-background bg-primary/20 text-primary grid place-items-center text-[10px] font-bold">{t!.avatarInitials}</div>
+            <div key={t!.id} title={t!.name} className="h-4 w-4 rounded-full ring-1 ring-background bg-primary/20 text-primary grid place-items-center text-[8px] font-bold">{t!.avatarInitials}</div>
           ))}
         </div>
-        <span className="text-[10px] text-muted-foreground">Due {format(parseISO(job.dueAt), "d MMM")}</span>
+        <span className="text-[9px] text-muted-foreground">{format(parseISO(job.dueAt), "d MMM")}</span>
       </div>
       {onEscalate && (
-        <div className="mt-2 flex flex-wrap gap-1">
+        <div className="mt-1.5 flex flex-wrap gap-1" onPointerDown={(e) => e.stopPropagation()}>
           {job.priority !== "Escalated" ? (
-            <button onClick={() => onEscalate!(job.id)} className="text-[10px] rounded border border-destructive/40 text-destructive px-1.5 py-0.5 hover:bg-destructive/10 flex items-center gap-1"><ArrowUp className="h-3 w-3" />Escalate</button>
+            <button onClick={() => onEscalate!(job.id)} className="text-[9px] rounded border border-destructive/40 text-destructive px-1 py-0.5 hover:bg-destructive/10 flex items-center gap-0.5"><ArrowUp className="h-2.5 w-2.5" />Esc</button>
           ) : (
-            <button onClick={() => onDeescalate!(job.id)} className="text-[10px] rounded border border-border px-1.5 py-0.5 hover:bg-accent flex items-center gap-1"><ArrowDown className="h-3 w-3" />De-esc</button>
+            <button onClick={() => onDeescalate!(job.id)} className="text-[9px] rounded border border-border px-1 py-0.5 hover:bg-accent flex items-center gap-0.5"><ArrowDown className="h-2.5 w-2.5" />De-esc</button>
           )}
-          <button onClick={() => onHold!(job.id)} className="text-[10px] rounded border border-border px-1.5 py-0.5 hover:bg-accent flex items-center gap-1"><Pause className="h-3 w-3" />Hold</button>
-          <button onClick={() => onClose!(job.id)} className="text-[10px] rounded border border-success/40 text-success px-1.5 py-0.5 hover:bg-success/10 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" />Close</button>
+          <button onClick={() => onHold!(job.id)} className="text-[9px] rounded border border-border px-1 py-0.5 hover:bg-accent flex items-center gap-0.5"><Pause className="h-2.5 w-2.5" />Hold</button>
+          <button onClick={() => onClose!(job.id)} className="text-[9px] rounded border border-success/40 text-success px-1 py-0.5 hover:bg-success/10 flex items-center gap-0.5"><CheckCircle2 className="h-2.5 w-2.5" />Close</button>
         </div>
       )}
     </div>
   );
 }
 
-// ---------- Calendar ----------
+// ---------- Calendar (with mobile agenda) ----------
 function CalendarView({ jobs }: { jobs: Job[] }) {
-  const [cursor] = useState(new Date());
+  const [cursor, setCursor] = useState(new Date());
   const days = eachDayOfInterval({ start: startOfMonth(cursor), end: endOfMonth(cursor) });
   const startOffset = startOfMonth(cursor).getDay();
+  const [mode, setMode] = useState<"grid"|"agenda">(typeof window !== "undefined" && window.innerWidth < 640 ? "agenda" : "grid");
+  const jobsInMonth = jobs.filter(j => {
+    const d = parseISO(j.dueAt); return d >= startOfMonth(cursor) && d <= endOfMonth(cursor);
+  }).sort((a, b) => a.dueAt.localeCompare(b.dueAt));
+
   return (
     <Card className="bg-card border-border">
-      <CardHeader><CardTitle>{format(cursor, "MMMM yyyy")}</CardTitle></CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-7 gap-1 text-xs font-semibold text-muted-foreground mb-2">
-          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => <div key={d} className="p-2">{d}</div>)}
+      <CardHeader className="p-3 flex-row items-center justify-between space-y-0">
+        <div className="flex items-center gap-1.5">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCursor(c => addMonths(c, -1))}><ChevronLeft className="h-3.5 w-3.5" /></Button>
+          <CardTitle className="text-sm">{format(cursor, "MMMM yyyy")}</CardTitle>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCursor(c => addMonths(c, 1))}><ChevronRight className="h-3.5 w-3.5" /></Button>
         </div>
-        <div className="grid grid-cols-7 gap-1">
-          {Array.from({ length: startOffset }).map((_, i) => <div key={`e${i}`} />)}
-          {days.map(d => {
-            const dj = jobs.filter(j => isSameDay(parseISO(j.dueAt), d));
-            return (
-              <div key={d.toISOString()} className="min-h-[110px] rounded-md border border-border bg-background/40 p-2">
-                <div className="text-xs font-semibold mb-1">{format(d, "d")}</div>
-                <div className="space-y-1">
-                  {dj.slice(0, 3).map(j => (
-                    <Link key={j.id} to="/jobs/$id" params={{ id: j.id }} className={`block truncate text-[10px] rounded px-1.5 py-0.5 border ${statusColorClasses(j.status)}`}>{j.title}</Link>
-                  ))}
-                  {dj.length > 3 && <div className="text-[10px] text-muted-foreground">+{dj.length - 3} more</div>}
+        <div className="flex gap-1">
+          <Button variant={mode === "grid" ? "default" : "outline"} size="sm" className="h-7 text-xs" onClick={() => setMode("grid")}>Month</Button>
+          <Button variant={mode === "agenda" ? "default" : "outline"} size="sm" className="h-7 text-xs" onClick={() => setMode("agenda")}>Agenda</Button>
+        </div>
+      </CardHeader>
+      <CardContent className="p-3 pt-0">
+        {mode === "grid" ? (
+          <>
+            <div className="grid grid-cols-7 gap-0.5 text-[10px] font-semibold text-muted-foreground mb-1">
+              {["S","M","T","W","T","F","S"].map((d, i) => <div key={i} className="p-1 text-center">{d}</div>)}
+            </div>
+            <div className="grid grid-cols-7 gap-0.5">
+              {Array.from({ length: startOffset }).map((_, i) => <div key={`e${i}`} />)}
+              {days.map(d => {
+                const dj = jobs.filter(j => isSameDay(parseISO(j.dueAt), d));
+                return (
+                  <div key={d.toISOString()} className="min-h-[60px] md:min-h-[90px] rounded border border-border bg-background/40 p-1">
+                    <div className="text-[10px] font-semibold mb-0.5">{format(d, "d")}</div>
+                    <div className="space-y-0.5">
+                      {dj.slice(0, 2).map(j => (
+                        <Link key={j.id} to="/jobs/$id" params={{ id: j.id }} className={`block truncate text-[9px] rounded px-1 py-0.5 border ${statusColorClasses(j.status)}`}>{j.title.slice(0, 12)}</Link>
+                      ))}
+                      {dj.length > 2 && <div className="text-[9px] text-muted-foreground">+{dj.length - 2}</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <div className="space-y-1.5">
+            {jobsInMonth.length === 0 && <p className="text-xs text-muted-foreground text-center py-6">No jobs this month.</p>}
+            {jobsInMonth.map(j => (
+              <Link key={j.id} to="/jobs/$id" params={{ id: j.id }} className="flex items-center gap-2 rounded-md border border-border p-2 hover:border-primary/60">
+                <div className="text-center w-10 shrink-0">
+                  <div className="text-[9px] uppercase text-muted-foreground">{format(parseISO(j.dueAt), "MMM")}</div>
+                  <div className="text-base font-bold leading-none">{format(parseISO(j.dueAt), "d")}</div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-medium truncate">{j.title}</div>
+                  <div className="text-[10px] text-muted-foreground truncate">{j.branch}</div>
+                </div>
+                <Badge variant="outline" className={`${statusColorClasses(j.status)} text-[9px]`}>{j.status}</Badge>
+              </Link>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
 
 // ---------- Grid ----------
-function GridView({ jobs, onEscalate, onDeescalate, onHold, onClose }: {
-  jobs: Job[]; onEscalate: (id: string) => void; onDeescalate: (id: string) => void; onHold: (id: string) => void; onClose: (id: string) => void;
-}) {
+function GridView({ jobs, onEscalate, onDeescalate, onHold, onClose, onEdit, onDelete }: any) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 tv:grid-cols-4 gap-3">
-      {jobs.map(j => <JobCard key={j.id} job={j} onEscalate={onEscalate} onDeescalate={onDeescalate} onHold={onHold} onClose={onClose} />)}
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 tv:grid-cols-4 gap-2">
+      {jobs.map((j: Job) => <JobCard key={j.id} job={j} onEscalate={onEscalate} onDeescalate={onDeescalate} onHold={onHold} onClose={onClose} onEdit={onEdit} onDelete={onDelete} />)}
     </div>
   );
 }
 
-// ---------- TV wall ----------
+// ---------- TV wall (responsive: compact on mobile, huge on TV) ----------
 function TVView({ jobs }: { jobs: Job[] }) {
-  const active = jobs.filter(j => j.status !== "Closed").sort((a,b) => (a.priority === "Escalated" ? -1 : 1));
+  const { clients } = useStore();
+  const active = jobs.filter(j => j.status !== "Closed").sort((a, b) => (a.priority === "Escalated" ? -1 : 1));
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 tv:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 tv:grid-cols-5 gap-2.5">
       {active.map(j => {
-        const c = CLIENTS.find(x => x.id === j.clientId);
+        const c = clients.find(x => x.id === j.clientId);
         const techs = j.technicianIds.map(id => TECHNICIANS.find(t => t.id === id)?.name).filter(Boolean).join(", ");
         return (
-          <div key={j.id} className={`rounded-2xl border-2 p-5 ${statusColorClasses(j.status)} ${j.priority === "Escalated" ? "ring-2 ring-destructive animate-pulse" : ""}`}>
-            <div className="flex items-center justify-between text-xs uppercase tracking-widest opacity-80">
-              <span>{j.status}</span>
-              <span>{j.type}</span>
+          <Link key={j.id} to="/jobs/$id" params={{ id: j.id }}
+            className={`block rounded-lg border-2 p-2.5 tv:p-4 ${statusColorClasses(j.status)} ${j.priority === "Escalated" ? "ring-2 ring-destructive animate-pulse" : ""}`}>
+            <div className="flex items-center justify-between text-[9px] tv:text-sm uppercase tracking-wider opacity-80">
+              <span className="truncate">{j.status}</span>
+              <span className="truncate ml-1">{j.type}</span>
             </div>
-            <div className="mt-3 text-lg tv:text-2xl font-extrabold leading-tight">{c?.name}</div>
-            <div className="text-sm tv:text-lg opacity-90 mt-1">{j.branch}</div>
-            <div className="mt-3 text-xs tv:text-base opacity-80">{j.title}</div>
-            <div className="mt-4 flex items-center justify-between text-xs tv:text-base">
-              <span className="flex items-center gap-1"><User2 className="h-3 w-3 tv:h-4 tv:w-4" />{techs || "Unassigned"}</span>
-              <span>Due {format(parseISO(j.dueAt), "d MMM")}</span>
+            <div className="mt-1.5 text-sm tv:text-2xl font-extrabold leading-tight line-clamp-2">{c?.name}</div>
+            <div className="text-[11px] tv:text-lg opacity-90 mt-0.5 truncate">{j.branch}</div>
+            <div className="mt-1.5 text-[11px] tv:text-base opacity-80 line-clamp-2">{j.title}</div>
+            <div className="mt-2 flex items-center justify-between text-[9px] tv:text-sm gap-1">
+              <span className="flex items-center gap-1 truncate"><User2 className="h-2.5 w-2.5 tv:h-4 tv:w-4 shrink-0" /><span className="truncate">{techs || "Unassigned"}</span></span>
+              <span className="shrink-0">{format(parseISO(j.dueAt), "d MMM")}</span>
             </div>
-            <Progress value={j.progress} className="mt-3 h-2" />
-          </div>
+            <Progress value={j.progress} className="mt-1.5 h-1 tv:h-2" />
+          </Link>
         );
       })}
     </div>

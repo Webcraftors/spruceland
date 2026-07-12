@@ -2,8 +2,9 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Briefcase, Users2, Package, ShoppingCart,
   DollarSign, HardHat, BookOpen, Bell, Settings, Shield, LogOut, Menu, Search, MapPin, Sun, Moon, MoreHorizontal,
+  Activity, PanelLeftClose, PanelLeftOpen,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSession, ROLE_LABELS, can, type Module, type Location } from "@/lib/session";
 import { useTheme } from "@/lib/theme";
 import { useStore } from "@/lib/store";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { NotifQuickOpen } from "@/lib/live-notifications";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -29,11 +31,12 @@ const NAV: { to: string; label: string; icon: any; module: Module }[] = [
   { to: "/financials",    label: "Financials",    icon: DollarSign,      module: "financials" },
   { to: "/team",          label: "Team",          icon: HardHat,         module: "team" },
   { to: "/knowledge",     label: "Knowledge",     icon: BookOpen,        module: "knowledge" },
+  { to: "/activity",      label: "Activity",      icon: Activity,        module: "activity" },
   { to: "/permissions",   label: "Permissions",   icon: Shield,          module: "permissions" },
 ];
 
-// Bottom-nav shortlist (mobile): keep to 4 + More
 const BOTTOM_ORDER = ["/dashboard", "/jobs", "/clients", "/inventory"];
+const COLLAPSE_KEY = "spruceland.sidebar.collapsed";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { session, setSession } = useSession();
@@ -42,48 +45,85 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: s => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { notifications, markAllRead, markRead } = useStore();
+  const [collapsed, setCollapsed] = useState(false);
+  const { notifications, markAllRead, markRead, setActingAs } = useStore();
+
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(COLLAPSE_KEY);
+      if (v === "1") setCollapsed(true);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (session) setActingAs({ name: session.name, role: ROLE_LABELS[session.role] });
+  }, [session, setActingAs]);
 
   if (!session) {
     if (typeof window !== "undefined" && pathname !== "/login") navigate({ to: "/login" });
     return null;
   }
 
+  const toggleCollapse = () => {
+    setCollapsed(c => {
+      const next = !c;
+      try { localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0"); } catch {}
+      return next;
+    });
+  };
+
   const unread = notifications.filter(n => !n.read).length;
   const items = NAV.filter(n => can(session.role, n.module));
   const bottom = BOTTOM_ORDER.map(to => items.find(i => i.to === to)).filter(Boolean) as typeof items;
   const moreItems = items.filter(i => !BOTTOM_ORDER.includes(i.to));
 
-  const SidebarInner = (
+  const SidebarInner = ({ mini = false }: { mini?: boolean }) => (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2 px-4 py-4 border-b border-sidebar-border">
-        <img src={logoAsset.url} alt="Spruceland" className="h-8 w-auto" />
+      <div className={cn("flex items-center gap-2 border-b border-sidebar-border", mini ? "justify-center px-2 py-3" : "px-4 py-4")}>
+        {mini
+          ? <div className="h-8 w-8 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-extrabold">S</div>
+          : <img src={logoAsset.url} alt="Spruceland" className="h-8 w-auto" />}
       </div>
-      <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
-        {items.map(({ to, label, icon: Icon }) => {
-          const active = pathname === to || (to !== "/dashboard" && pathname.startsWith(to));
-          return (
-            <Link key={to} to={to} onClick={() => setMobileOpen(false)}
-              className={cn(
-                "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium transition-colors",
-                active ? "bg-sidebar-accent text-sidebar-primary" : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-              )}>
-              <Icon className="h-4 w-4 shrink-0" /><span className="truncate">{label}</span>
-            </Link>
-          );
-        })}
-      </nav>
-      <div className="border-t border-sidebar-border p-3 text-[11px] text-sidebar-foreground/60">
-        <div className="font-semibold text-sidebar-foreground">A Client Driven Partner</div>
-        <div className="mt-0.5">Spruceland Technologies Group Ltd</div>
-      </div>
+      <TooltipProvider delayDuration={200}>
+        <nav className={cn("flex-1 overflow-y-auto space-y-0.5", mini ? "p-1.5" : "p-2")}>
+          {items.map(({ to, label, icon: Icon }) => {
+            const active = pathname === to || (to !== "/dashboard" && pathname.startsWith(to));
+            const link = (
+              <Link key={to} to={to} onClick={() => setMobileOpen(false)}
+                className={cn(
+                  "flex items-center rounded-md text-[13px] font-medium transition-colors",
+                  mini ? "justify-center h-9 w-9 mx-auto" : "gap-2.5 px-2.5 py-2",
+                  active ? "bg-sidebar-accent text-sidebar-primary" : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                )}>
+                <Icon className="h-4 w-4 shrink-0" />
+                {!mini && <span className="truncate">{label}</span>}
+              </Link>
+            );
+            return mini ? (
+              <Tooltip key={to}>
+                <TooltipTrigger asChild>{link}</TooltipTrigger>
+                <TooltipContent side="right" className="text-xs">{label}</TooltipContent>
+              </Tooltip>
+            ) : link;
+          })}
+        </nav>
+      </TooltipProvider>
+      {!mini && (
+        <div className="border-t border-sidebar-border p-3 text-[11px] text-sidebar-foreground/60">
+          <div className="font-semibold text-sidebar-foreground">A Client Driven Partner</div>
+          <div className="mt-0.5">Spruceland Technologies Group Ltd</div>
+        </div>
+      )}
     </div>
   );
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground flex">
-      <aside className="hidden lg:flex w-56 tv:w-72 shrink-0 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
-        {SidebarInner}
+      <aside className={cn(
+        "hidden lg:flex shrink-0 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-[width] duration-200",
+        collapsed ? "w-14" : "w-56 tv:w-72",
+      )}>
+        <SidebarInner mini={collapsed} />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
@@ -95,9 +135,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-64 bg-sidebar text-sidebar-foreground border-sidebar-border">
-              <SheetTitle className="sr-only">Navigation</SheetTitle>{SidebarInner}
+              <SheetTitle className="sr-only">Navigation</SheetTitle><SidebarInner />
             </SheetContent>
           </Sheet>
+
+          <Button variant="ghost" size="icon" className="hidden lg:inline-flex h-9 w-9" onClick={toggleCollapse} aria-label="Toggle sidebar">
+            {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+          </Button>
 
           <img src={logoAsset.url} alt="Spruceland" className="h-7 w-auto lg:hidden" />
 
@@ -176,6 +220,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild><Link to="/settings"><Settings className="mr-2 h-3.5 w-3.5" />Settings</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link to="/activity"><Activity className="mr-2 h-3.5 w-3.5" />Activity log</Link></DropdownMenuItem>
               <DropdownMenuItem onClick={() => { setSession(null); navigate({ to: "/login" }); }}>
                 <LogOut className="mr-2 h-3.5 w-3.5" />Sign out
               </DropdownMenuItem>

@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className={cn("flex items-center gap-2 border-b border-sidebar-border", mini ? "justify-center px-2 py-3" : "px-4 py-4")}>
         {mini
           ? <div className="h-8 w-8 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-extrabold">S</div>
-          : <img src={logoAsset.url} alt="Spruceland" className="h-8 w-auto" />}
+          : <img src={LOGO_URL} alt="Spruceland" className="h-8 w-auto" />}
       </div>
       <TooltipProvider delayDuration={200}>
         <nav className={cn("flex-1 overflow-y-auto space-y-0.5", mini ? "p-1.5" : "p-2")}>
@@ -143,7 +143,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
           </Button>
 
-          <img src={logoAsset.url} alt="Spruceland" className="h-7 w-auto lg:hidden" />
+          <img src={LOGO_URL} alt="Spruceland" className="h-7 w-auto lg:hidden" />
 
           <Button variant="outline" size="sm" className="hidden md:inline-flex flex-1 max-w-sm justify-start text-muted-foreground text-xs h-8 gap-2" onClick={() => setSearchOpen(true)}>
             <Search className="h-3.5 w-3.5" />Search jobs, clients, inventory…

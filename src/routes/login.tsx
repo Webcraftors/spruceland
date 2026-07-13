@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { SessionProvider, useSession, ROLE_LABELS, type Role, type Location } from "@/lib/session";
-import logoAsset from "@/assets/spruceland-logo.png.asset.json";
+const LOGO_URL = "/spruceland-logo.png";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Sign in — Spruceland Ops" }, { name: "description", content: "Sign in to the Spruceland operations dashboard." }] }),
@@ -42,7 +42,7 @@ function LoginPage() {
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(var(--sidebar-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--sidebar-foreground) 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
         <div className="relative flex items-center gap-3">
           <div className="rounded-lg bg-sidebar-accent/60 backdrop-blur px-3 py-2">
-            <img src={logoAsset.url} alt="Spruceland Technologies" className="h-10 w-auto" />
+            <img src={LOGO_URL} alt="Spruceland Technologies" className="h-10 w-auto" />
           </div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-sidebar-foreground/60">Operations Console</div>
         </div>
@@ -69,7 +69,7 @@ function LoginPage() {
         <Card className="w-full max-w-md border-border bg-card">
           <CardContent className="p-8">
             <div className="lg:hidden mb-6 flex justify-center">
-              <img src={logoAsset.url} alt="Spruceland" className="h-12 w-auto" />
+              <img src={LOGO_URL} alt="Spruceland" className="h-12 w-auto" />
             </div>
             <h2 className="text-2xl font-bold">Sign in</h2>
             <p className="text-sm text-muted-foreground mt-1">Choose your role and location to continue.</p>

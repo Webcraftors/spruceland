@@ -8,7 +8,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useSession, ROLE_LABELS, can, type Module, type Location } from "@/lib/session";
 import { useTheme } from "@/lib/theme";
 import { useStore } from "@/lib/store";
-import logoAsset from "@/assets/spruceland-logo.png.asset.json";
+const LOGO_URL = "/spruceland-logo.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {

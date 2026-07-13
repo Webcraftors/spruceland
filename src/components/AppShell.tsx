@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className={cn("flex items-center gap-2 border-b border-sidebar-border", mini ? "justify-center px-2 py-3" : "px-4 py-4")}>
         {mini
           ? <div className="h-8 w-8 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-extrabold">S</div>
-          : <img src={LOGO_URL} alt="Spruceland" className="h-8 w-auto" />}
+          : <div className="rounded-md bg-white/95 px-2 py-1"><img src={LOGO_URL} alt="Spruceland" className="h-7 w-auto" /></div>}
       </div>
       <TooltipProvider delayDuration={200}>
         <nav className={cn("flex-1 overflow-y-auto space-y-0.5", mini ? "p-1.5" : "p-2")}>

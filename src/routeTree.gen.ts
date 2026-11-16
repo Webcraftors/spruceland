@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ClientRouteImport } from './routes/client'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClientAppRouteImport } from './routes/client_.app'
 import { Route as AppTeamRouteImport } from './routes/_app.team'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppPermissionsRouteImport } from './routes/_app.permissions'
@@ -46,6 +47,11 @@ const AppRoute = AppRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientAppRoute = ClientAppRouteImport.update({
+  id: '/client_/app',
+  path: '/client/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppTeamRoute = AppTeamRouteImport.update({
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/permissions': typeof AppPermissionsRoute
   '/settings': typeof AppSettingsRoute
   '/team': typeof AppTeamRoute
+  '/client/app': typeof ClientAppRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/permissions': typeof AppPermissionsRoute
   '/settings': typeof AppSettingsRoute
   '/team': typeof AppTeamRoute
+  '/client/app': typeof ClientAppRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
@@ -182,6 +190,7 @@ export interface FileRoutesById {
   '/_app/permissions': typeof AppPermissionsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/team': typeof AppTeamRoute
+  '/client_/app': typeof ClientAppRoute
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/jobs/$id': typeof AppJobsIdRoute
   '/_app/knowledge/$slug': typeof AppKnowledgeSlugRoute
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/settings'
     | '/team'
+    | '/client/app'
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/settings'
     | '/team'
+    | '/client/app'
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
     | '/_app/permissions'
     | '/_app/settings'
     | '/_app/team'
+    | '/client_/app'
     | '/_app/clients/$id'
     | '/_app/jobs/$id'
     | '/_app/knowledge/$slug'
@@ -255,6 +267,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   ClientRoute: typeof ClientRoute
   LoginRoute: typeof LoginRoute
+  ClientAppRoute: typeof ClientAppRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client_/app': {
+      id: '/client_/app'
+      path: '/client/app'
+      fullPath: '/client/app'
+      preLoaderRoute: typeof ClientAppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/team': {
@@ -467,6 +487,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   ClientRoute: ClientRoute,
   LoginRoute: LoginRoute,
+  ClientAppRoute: ClientAppRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -221,7 +221,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild><Link to="/settings"><Settings className="mr-2 h-3.5 w-3.5" />Settings</Link></DropdownMenuItem>
               <DropdownMenuItem asChild><Link to="/activity"><Activity className="mr-2 h-3.5 w-3.5" />Activity log</Link></DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { setSession(null); navigate({ to: "/login" }); }}>
+              <DropdownMenuItem onClick={() => { setSession(null); navigate({ to: "/" }); }}>
                 <LogOut className="mr-2 h-3.5 w-3.5" />Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

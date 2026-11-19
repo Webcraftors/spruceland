@@ -26,9 +26,12 @@ import { Route as AppFinancialsRouteImport } from './routes/_app.financials'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppClientsRouteImport } from './routes/_app.clients'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
+import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
 import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
 import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
 import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
+import { Route as ClientAppTicketsIndexRouteImport } from './routes/client_.app.tickets.index'
+import { Route as ClientAppTicketsNewRouteImport } from './routes/client_.app.tickets.new'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -114,6 +117,11 @@ const AppActivityRoute = AppActivityRouteImport.update({
   path: '/activity',
   getParentRoute: () => AppRoute,
 } as any)
+const ClientAppIndexRoute = ClientAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClientAppRoute,
+} as any)
 const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -128,6 +136,16 @@ const AppClientsIdRoute = AppClientsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AppClientsRoute,
+} as any)
+const ClientAppTicketsIndexRoute = ClientAppTicketsIndexRouteImport.update({
+  id: '/tickets/',
+  path: '/tickets/',
+  getParentRoute: () => ClientAppRoute,
+} as any)
+const ClientAppTicketsNewRoute = ClientAppTicketsNewRouteImport.update({
+  id: '/tickets/new',
+  path: '/tickets/new',
+  getParentRoute: () => ClientAppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -146,10 +164,13 @@ export interface FileRoutesByFullPath {
   '/permissions': typeof AppPermissionsRoute
   '/settings': typeof AppSettingsRoute
   '/team': typeof AppTeamRoute
-  '/client/app': typeof ClientAppRoute
+  '/client/app': typeof ClientAppRouteWithChildren
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/client/app/': typeof ClientAppIndexRoute
+  '/client/app/tickets/new': typeof ClientAppTicketsNewRoute
+  '/client/app/tickets/': typeof ClientAppTicketsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -167,10 +188,12 @@ export interface FileRoutesByTo {
   '/permissions': typeof AppPermissionsRoute
   '/settings': typeof AppSettingsRoute
   '/team': typeof AppTeamRoute
-  '/client/app': typeof ClientAppRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/client/app': typeof ClientAppIndexRoute
+  '/client/app/tickets/new': typeof ClientAppTicketsNewRoute
+  '/client/app/tickets': typeof ClientAppTicketsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -190,10 +213,13 @@ export interface FileRoutesById {
   '/_app/permissions': typeof AppPermissionsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/team': typeof AppTeamRoute
-  '/client_/app': typeof ClientAppRoute
+  '/client_/app': typeof ClientAppRouteWithChildren
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/jobs/$id': typeof AppJobsIdRoute
   '/_app/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/client_/app/': typeof ClientAppIndexRoute
+  '/client_/app/tickets/new': typeof ClientAppTicketsNewRoute
+  '/client_/app/tickets/': typeof ClientAppTicketsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -217,6 +243,9 @@ export interface FileRouteTypes {
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/client/app/'
+    | '/client/app/tickets/new'
+    | '/client/app/tickets/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -234,10 +263,12 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/settings'
     | '/team'
-    | '/client/app'
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/client/app'
+    | '/client/app/tickets/new'
+    | '/client/app/tickets'
   id:
     | '__root__'
     | '/'
@@ -260,6 +291,9 @@ export interface FileRouteTypes {
     | '/_app/clients/$id'
     | '/_app/jobs/$id'
     | '/_app/knowledge/$slug'
+    | '/client_/app/'
+    | '/client_/app/tickets/new'
+    | '/client_/app/tickets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -267,7 +301,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   ClientRoute: typeof ClientRoute
   LoginRoute: typeof LoginRoute
-  ClientAppRoute: typeof ClientAppRoute
+  ClientAppRoute: typeof ClientAppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -391,6 +425,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppActivityRouteImport
       parentRoute: typeof AppRoute
     }
+    '/client_/app/': {
+      id: '/client_/app/'
+      path: '/'
+      fullPath: '/client/app/'
+      preLoaderRoute: typeof ClientAppIndexRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
     '/_app/knowledge/$slug': {
       id: '/_app/knowledge/$slug'
       path: '/$slug'
@@ -411,6 +452,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/clients/$id'
       preLoaderRoute: typeof AppClientsIdRouteImport
       parentRoute: typeof AppClientsRoute
+    }
+    '/client_/app/tickets/': {
+      id: '/client_/app/tickets/'
+      path: '/tickets'
+      fullPath: '/client/app/tickets/'
+      preLoaderRoute: typeof ClientAppTicketsIndexRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
+    '/client_/app/tickets/new': {
+      id: '/client_/app/tickets/new'
+      path: '/tickets/new'
+      fullPath: '/client/app/tickets/new'
+      preLoaderRoute: typeof ClientAppTicketsNewRouteImport
+      parentRoute: typeof ClientAppRoute
     }
   }
 }
@@ -482,12 +537,28 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface ClientAppRouteChildren {
+  ClientAppIndexRoute: typeof ClientAppIndexRoute
+  ClientAppTicketsNewRoute: typeof ClientAppTicketsNewRoute
+  ClientAppTicketsIndexRoute: typeof ClientAppTicketsIndexRoute
+}
+
+const ClientAppRouteChildren: ClientAppRouteChildren = {
+  ClientAppIndexRoute: ClientAppIndexRoute,
+  ClientAppTicketsNewRoute: ClientAppTicketsNewRoute,
+  ClientAppTicketsIndexRoute: ClientAppTicketsIndexRoute,
+}
+
+const ClientAppRouteWithChildren = ClientAppRoute._addFileChildren(
+  ClientAppRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   ClientRoute: ClientRoute,
   LoginRoute: LoginRoute,
-  ClientAppRoute: ClientAppRoute,
+  ClientAppRoute: ClientAppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

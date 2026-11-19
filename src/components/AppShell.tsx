@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Ticket, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Briefcase, Users2, Package, ShoppingCart,
   DollarSign, HardHat, BookOpen, Bell, Settings, Shield, LogOut, Menu, Search, MapPin, Sun, Moon, MoreHorizontal,
@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 const NAV: { to: string; label: string; icon: any; module: Module }[] = [
   { to: "/dashboard",     label: "Dashboard",     icon: LayoutDashboard, module: "dashboard" },
   { to: "/jobs",          label: "Jobs",          icon: Briefcase,       module: "jobs" },
+  { to: "/client-tickets", label: "Client Tickets", icon: Ticket,         module: "jobs" },
   { to: "/clients",       label: "Clients",       icon: Users2,          module: "clients" },
   { to: "/inventory",     label: "Inventory",     icon: Package,         module: "inventory" },
   { to: "/orders",        label: "Orders",        icon: ShoppingCart,    module: "orders" },

@@ -13,7 +13,7 @@ import { validateSignOff } from "@/domain/ticket-workflow";
 import { techById } from "@/data/technicians";
 import { pageMeta } from "@/lib/meta";
 
-export const Route = createFileRoute("/client_/app/tickets/")({
+export const Route = createFileRoute("/client_/app/tickets/$id")({
   head: ({ params }) => pageMeta(`Ticket ${params.id} — Spruceland Client Portal`, "Breakdown ticket status, technician report and sign-off."),
   component: TicketDetail,
 });

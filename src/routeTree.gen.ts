@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ClientRouteImport } from './routes/client'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JobcardIdRouteImport } from './routes/jobcard.$id'
 import { Route as ClientAppRouteImport } from './routes/client_.app'
 import { Route as AppTeamRouteImport } from './routes/_app.team'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
@@ -27,11 +28,16 @@ import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppClientsRouteImport } from './routes/_app.clients'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
 import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
+import { Route as AppClientTicketsIndexRouteImport } from './routes/_app.client-tickets.index'
+import { Route as ClientAppScheduleRouteImport } from './routes/client_.app.schedule'
+import { Route as ClientAppProfileRouteImport } from './routes/client_.app.profile'
 import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
 import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
 import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
+import { Route as AppClientTicketsIdRouteImport } from './routes/_app.client-tickets.$id'
 import { Route as ClientAppTicketsIndexRouteImport } from './routes/client_.app.tickets.index'
 import { Route as ClientAppTicketsNewRouteImport } from './routes/client_.app.tickets.new'
+import { Route as ClientAppTicketsIdRouteImport } from './routes/client_.app.tickets.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -50,6 +56,11 @@ const AppRoute = AppRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobcardIdRoute = JobcardIdRouteImport.update({
+  id: '/jobcard/$id',
+  path: '/jobcard/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClientAppRoute = ClientAppRouteImport.update({
@@ -122,6 +133,21 @@ const ClientAppIndexRoute = ClientAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ClientAppRoute,
 } as any)
+const AppClientTicketsIndexRoute = AppClientTicketsIndexRouteImport.update({
+  id: '/client-tickets/',
+  path: '/client-tickets/',
+  getParentRoute: () => AppRoute,
+} as any)
+const ClientAppScheduleRoute = ClientAppScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => ClientAppRoute,
+} as any)
+const ClientAppProfileRoute = ClientAppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => ClientAppRoute,
+} as any)
 const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -137,6 +163,11 @@ const AppClientsIdRoute = AppClientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppClientsRoute,
 } as any)
+const AppClientTicketsIdRoute = AppClientTicketsIdRouteImport.update({
+  id: '/client-tickets/$id',
+  path: '/client-tickets/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const ClientAppTicketsIndexRoute = ClientAppTicketsIndexRouteImport.update({
   id: '/tickets/',
   path: '/tickets/',
@@ -145,6 +176,11 @@ const ClientAppTicketsIndexRoute = ClientAppTicketsIndexRouteImport.update({
 const ClientAppTicketsNewRoute = ClientAppTicketsNewRouteImport.update({
   id: '/tickets/new',
   path: '/tickets/new',
+  getParentRoute: () => ClientAppRoute,
+} as any)
+const ClientAppTicketsIdRoute = ClientAppTicketsIdRouteImport.update({
+  id: '/tickets/$id',
+  path: '/tickets/$id',
   getParentRoute: () => ClientAppRoute,
 } as any)
 
@@ -165,10 +201,16 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/team': typeof AppTeamRoute
   '/client/app': typeof ClientAppRouteWithChildren
+  '/jobcard/$id': typeof JobcardIdRoute
+  '/client-tickets/$id': typeof AppClientTicketsIdRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/client/app/profile': typeof ClientAppProfileRoute
+  '/client/app/schedule': typeof ClientAppScheduleRoute
+  '/client-tickets/': typeof AppClientTicketsIndexRoute
   '/client/app/': typeof ClientAppIndexRoute
+  '/client/app/tickets/$id': typeof ClientAppTicketsIdRoute
   '/client/app/tickets/new': typeof ClientAppTicketsNewRoute
   '/client/app/tickets/': typeof ClientAppTicketsIndexRoute
 }
@@ -188,10 +230,16 @@ export interface FileRoutesByTo {
   '/permissions': typeof AppPermissionsRoute
   '/settings': typeof AppSettingsRoute
   '/team': typeof AppTeamRoute
+  '/jobcard/$id': typeof JobcardIdRoute
+  '/client-tickets/$id': typeof AppClientTicketsIdRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/client/app/profile': typeof ClientAppProfileRoute
+  '/client/app/schedule': typeof ClientAppScheduleRoute
+  '/client-tickets': typeof AppClientTicketsIndexRoute
   '/client/app': typeof ClientAppIndexRoute
+  '/client/app/tickets/$id': typeof ClientAppTicketsIdRoute
   '/client/app/tickets/new': typeof ClientAppTicketsNewRoute
   '/client/app/tickets': typeof ClientAppTicketsIndexRoute
 }
@@ -214,10 +262,16 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/team': typeof AppTeamRoute
   '/client_/app': typeof ClientAppRouteWithChildren
+  '/jobcard/$id': typeof JobcardIdRoute
+  '/_app/client-tickets/$id': typeof AppClientTicketsIdRoute
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/jobs/$id': typeof AppJobsIdRoute
   '/_app/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/client_/app/profile': typeof ClientAppProfileRoute
+  '/client_/app/schedule': typeof ClientAppScheduleRoute
+  '/_app/client-tickets/': typeof AppClientTicketsIndexRoute
   '/client_/app/': typeof ClientAppIndexRoute
+  '/client_/app/tickets/$id': typeof ClientAppTicketsIdRoute
   '/client_/app/tickets/new': typeof ClientAppTicketsNewRoute
   '/client_/app/tickets/': typeof ClientAppTicketsIndexRoute
 }
@@ -240,10 +294,16 @@ export interface FileRouteTypes {
     | '/settings'
     | '/team'
     | '/client/app'
+    | '/jobcard/$id'
+    | '/client-tickets/$id'
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/client/app/profile'
+    | '/client/app/schedule'
+    | '/client-tickets/'
     | '/client/app/'
+    | '/client/app/tickets/$id'
     | '/client/app/tickets/new'
     | '/client/app/tickets/'
   fileRoutesByTo: FileRoutesByTo
@@ -263,10 +323,16 @@ export interface FileRouteTypes {
     | '/permissions'
     | '/settings'
     | '/team'
+    | '/jobcard/$id'
+    | '/client-tickets/$id'
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/client/app/profile'
+    | '/client/app/schedule'
+    | '/client-tickets'
     | '/client/app'
+    | '/client/app/tickets/$id'
     | '/client/app/tickets/new'
     | '/client/app/tickets'
   id:
@@ -288,10 +354,16 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/team'
     | '/client_/app'
+    | '/jobcard/$id'
+    | '/_app/client-tickets/$id'
     | '/_app/clients/$id'
     | '/_app/jobs/$id'
     | '/_app/knowledge/$slug'
+    | '/client_/app/profile'
+    | '/client_/app/schedule'
+    | '/_app/client-tickets/'
     | '/client_/app/'
+    | '/client_/app/tickets/$id'
     | '/client_/app/tickets/new'
     | '/client_/app/tickets/'
   fileRoutesById: FileRoutesById
@@ -302,6 +374,7 @@ export interface RootRouteChildren {
   ClientRoute: typeof ClientRoute
   LoginRoute: typeof LoginRoute
   ClientAppRoute: typeof ClientAppRouteWithChildren
+  JobcardIdRoute: typeof JobcardIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -332,6 +405,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobcard/$id': {
+      id: '/jobcard/$id'
+      path: '/jobcard/$id'
+      fullPath: '/jobcard/$id'
+      preLoaderRoute: typeof JobcardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/client_/app': {
@@ -432,6 +512,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientAppIndexRouteImport
       parentRoute: typeof ClientAppRoute
     }
+    '/_app/client-tickets/': {
+      id: '/_app/client-tickets/'
+      path: '/client-tickets'
+      fullPath: '/client-tickets/'
+      preLoaderRoute: typeof AppClientTicketsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/client_/app/schedule': {
+      id: '/client_/app/schedule'
+      path: '/schedule'
+      fullPath: '/client/app/schedule'
+      preLoaderRoute: typeof ClientAppScheduleRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
+    '/client_/app/profile': {
+      id: '/client_/app/profile'
+      path: '/profile'
+      fullPath: '/client/app/profile'
+      preLoaderRoute: typeof ClientAppProfileRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
     '/_app/knowledge/$slug': {
       id: '/_app/knowledge/$slug'
       path: '/$slug'
@@ -453,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientsIdRouteImport
       parentRoute: typeof AppClientsRoute
     }
+    '/_app/client-tickets/$id': {
+      id: '/_app/client-tickets/$id'
+      path: '/client-tickets/$id'
+      fullPath: '/client-tickets/$id'
+      preLoaderRoute: typeof AppClientTicketsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/client_/app/tickets/': {
       id: '/client_/app/tickets/'
       path: '/tickets'
@@ -465,6 +573,13 @@ declare module '@tanstack/react-router' {
       path: '/tickets/new'
       fullPath: '/client/app/tickets/new'
       preLoaderRoute: typeof ClientAppTicketsNewRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
+    '/client_/app/tickets/$id': {
+      id: '/client_/app/tickets/$id'
+      path: '/tickets/$id'
+      fullPath: '/client/app/tickets/$id'
+      preLoaderRoute: typeof ClientAppTicketsIdRouteImport
       parentRoute: typeof ClientAppRoute
     }
   }
@@ -518,6 +633,8 @@ interface AppRouteChildren {
   AppPermissionsRoute: typeof AppPermissionsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppTeamRoute: typeof AppTeamRoute
+  AppClientTicketsIdRoute: typeof AppClientTicketsIdRoute
+  AppClientTicketsIndexRoute: typeof AppClientTicketsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -533,18 +650,26 @@ const AppRouteChildren: AppRouteChildren = {
   AppPermissionsRoute: AppPermissionsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppTeamRoute: AppTeamRoute,
+  AppClientTicketsIdRoute: AppClientTicketsIdRoute,
+  AppClientTicketsIndexRoute: AppClientTicketsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface ClientAppRouteChildren {
+  ClientAppProfileRoute: typeof ClientAppProfileRoute
+  ClientAppScheduleRoute: typeof ClientAppScheduleRoute
   ClientAppIndexRoute: typeof ClientAppIndexRoute
+  ClientAppTicketsIdRoute: typeof ClientAppTicketsIdRoute
   ClientAppTicketsNewRoute: typeof ClientAppTicketsNewRoute
   ClientAppTicketsIndexRoute: typeof ClientAppTicketsIndexRoute
 }
 
 const ClientAppRouteChildren: ClientAppRouteChildren = {
+  ClientAppProfileRoute: ClientAppProfileRoute,
+  ClientAppScheduleRoute: ClientAppScheduleRoute,
   ClientAppIndexRoute: ClientAppIndexRoute,
+  ClientAppTicketsIdRoute: ClientAppTicketsIdRoute,
   ClientAppTicketsNewRoute: ClientAppTicketsNewRoute,
   ClientAppTicketsIndexRoute: ClientAppTicketsIndexRoute,
 }
@@ -559,6 +684,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientRoute: ClientRoute,
   LoginRoute: LoginRoute,
   ClientAppRoute: ClientAppRouteWithChildren,
+  JobcardIdRoute: JobcardIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

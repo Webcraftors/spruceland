@@ -119,7 +119,7 @@ function SignOffPanel({ ticketId, employee }: { ticketId: string; employee: { na
           <div className="space-y-1.5"><Label htmlFor="sr">NRC or Employee ID</Label><Input id="sr" className="h-11" value={typedRef} onChange={e => setRef(e.target.value)} placeholder="Same as you signed in with" /></div>
           {typedRef.length > 2 && errors.includes("NRC / Employee ID does not match.") && <p className="text-xs text-destructive">NRC / Employee ID does not match your sign-in.</p>}
           <Button className="w-full h-11 font-semibold" disabled={errors.length > 0} onClick={approve}>Agree — work completed</Button>
-          <button type="button" onClick={() => setDisputing(true)} className="w-full text-xs text-muted-foreground underline">Not fixed? Send it back</button>
+          <Button type="button" variant="link" onClick={() => setDisputing(true)} className="w-full text-xs text-muted-foreground">Not fixed? Send it back</Button>
         </div>
       ) : (
         <div className="mt-3 space-y-3">

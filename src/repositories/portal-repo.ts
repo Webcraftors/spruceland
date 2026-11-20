@@ -18,12 +18,12 @@ let cache: Ticket[] | null = null;
 function load(): Ticket[] {
   if (cache) return cache;
   try { cache = JSON.parse(localStorage.getItem(TICKETS_KEY) || "[]"); } catch { cache = []; }
-  return cache!;
+  return cache ?? [];
 }
 function save(next: Ticket[]) {
-  cache = next;
   try { localStorage.setItem(TICKETS_KEY, JSON.stringify(next)); }
-  catch { localStorage.setItem(TICKETS_KEY, JSON.stringify(next.map(t => ({ ...t, attachments: t.attachments.map(a => ({ ...a, preview: undefined })) })))); }
+  catch { throw new Error("Could not save this change. Free device storage and try again."); }
+  cache = next;
   listeners.forEach(l => l());
 }
 if (typeof window !== "undefined") {
@@ -59,6 +59,9 @@ export const ticketsRepo = {
   },
   async assign(id: string, technicianId: string, scheduledFor: string, actor: string) {
     return update(id, t => {
+      if (t.status !== "Open" && t.status !== "Assigned") throw new Error("Only open or assigned tickets can be assigned.");
+      if (!techById(technicianId)) throw new Error("Choose a valid technician.");
+      if (!Number.isFinite(Date.parse(scheduledFor))) throw new Error("Choose a valid visit date.");
       if (t.status === "Open") move(t, "Assigned");
       t.technicianId = technicianId; t.scheduledFor = scheduledFor;
       t.activity.push({ at: now(), actor, side: "spruceland", text: `Assigned to ${techById(technicianId)?.name ?? technicianId}` });
@@ -66,12 +69,14 @@ export const ticketsRepo = {
     });
   },
   async startWork(id: string, actor: string) {
-    return update(id, t => { move(t, "In Progress"); t.activity.push({ at: now(), actor, side: "spruceland", text: "Technician on site — work started" }); return t; });
+    return update(id, t => { move(t, "In Progress"); t.workStartedAt = now(); t.activity.push({ at: t.workStartedAt, actor, side: "spruceland", text: "Technician on site — work started" }); return t; });
   },
   async resolve(id: string, r: Omit<Resolution, "resolvedAt">) {
     return update(id, t => {
+      if (!r.diagnosis.trim() || !r.workDone.trim()) throw new Error("Enter the diagnosis and work completed.");
+      if (!t.technicianId || t.technicianId !== r.technicianId) throw new Error("The assigned technician must complete the repair report.");
       move(t, "Awaiting Sign-off");
-      t.resolution = { ...r, resolvedAt: now() };
+      t.resolution = { ...r, arrivedAt: t.workStartedAt ?? r.arrivedAt, resolvedAt: now() };
       t.activity.push({ at: now(), actor: r.technicianName, side: "spruceland", text: "Work completed — awaiting client sign-off" });
       return t;
     });
@@ -80,6 +85,7 @@ export const ticketsRepo = {
     const errors = validateSignOff(input, employee);
     if (errors.length) throw new Error(errors.join(" "));
     return update(id, t => {
+      if (!t.resolution) throw new Error("The technician report is required before sign-off.");
       move(t, "Closed");
       t.signOff = { name: input.typedName.trim(), employeeRef: input.typedRef.trim(), consent: true, signedAt: now() };
       t.activity.push({ at: now(), actor: employee.name, side: "client", text: "Signed off — ticket closed" });
@@ -87,6 +93,7 @@ export const ticketsRepo = {
     });
   },
   async dispute(id: string, reason: string, actor: string) {
+    if (reason.trim().length < 5) throw new Error("Tell us what is still wrong.");
     return update(id, t => { move(t, "In Progress"); t.activity.push({ at: now(), actor, side: "client", text: `Sign-off declined: ${reason}` }); return t; });
   },
   /** Demo only: give a site a realistic history the first time someone signs in there. */

@@ -76,6 +76,7 @@ export interface Ticket {
   createdAt: string;
   technicianId?: string;
   scheduledFor?: string;
+  workStartedAt?: string;
   resolution?: Resolution;
   signOff?: SignOff;
   activity: TicketActivity[];

@@ -1,5 +1,5 @@
 export type AuditAction = "create" | "update" | "delete" | "status" | "assign";
-export type AuditEntity = "job" | "client" | "inventory" | "order";
+export type AuditEntity = "job" | "client" | "inventory" | "order" | "ticket";
 
 export interface AuditEntry {
   id: string;

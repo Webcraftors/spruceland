@@ -27,6 +27,9 @@ describe("sign-off", () => {
   it("rejects missing consent", () => {
     expect(validateSignOff({ ...ok, consent: false }, emp).length).toBe(1);
   });
+  it("rejects approval without confirmation that work is complete", () => {
+    expect(validateSignOff({ ...ok, confirmComplete: false }, emp)).toEqual(["Confirm the work is complete."]);
+  });
   it("rejects wrong name", () => {
     expect(validateSignOff({ ...ok, typedName: "John" }, emp).length).toBe(1);
   });

@@ -8,16 +8,19 @@ import { Button } from "@/components/ui/button";
 import { useStore, type AuditEntry } from "@/lib/store";
 import { downloadCSV } from "@/lib/export";
 import { format, parseISO, formatDistanceToNow } from "date-fns";
-import { Briefcase, Users2, Package, ShoppingCart, Download, Activity } from "lucide-react";
+import { Briefcase, Users2, Package, ShoppingCart, Download, Activity, Ticket } from "lucide-react";
 import { toast } from "sonner";
+import { useTickets } from "@/repositories/portal-repo";
+import { ticketAuditEntries } from "@/domain/ticket-audit";
+import { pageMeta } from "@/lib/meta";
 
 export const Route = createFileRoute("/_app/activity")({
-  head: () => ({ meta: [{ title: "Activity log — Spruceland Ops" }, { name: "description", content: "Audit log of key CRUD actions." }] }),
+  head: () => pageMeta("Activity log — Spruceland Ops", "User and timestamp history for operational changes and client breakdown tickets."),
   component: ActivityPage,
 });
 
 const ENTITY_ICON: Record<AuditEntry["entity"], any> = {
-  job: Briefcase, client: Users2, inventory: Package, order: ShoppingCart,
+  job: Briefcase, client: Users2, inventory: Package, order: ShoppingCart, ticket: Ticket,
 };
 
 const ACTION_TONE: Record<AuditEntry["action"], string> = {
@@ -29,7 +32,9 @@ const ACTION_TONE: Record<AuditEntry["action"], string> = {
 };
 
 function ActivityPage() {
-  const { audit } = useStore();
+  const { audit: adminAudit } = useStore();
+  const tickets = useTickets();
+  const audit = useMemo(() => [...adminAudit, ...ticketAuditEntries(tickets)].sort((a, b) => b.time.localeCompare(a.time)), [adminAudit, tickets]);
   const [q, setQ] = useState("");
   const [entity, setEntity] = useState<string>("all");
   const [action, setAction] = useState<string>("all");
@@ -59,7 +64,7 @@ function ActivityPage() {
           <h1 className="text-xl md:text-2xl font-extrabold tracking-tight flex items-center gap-2">
             <Activity className="h-5 w-5 text-primary" />Activity & audit log
           </h1>
-          <p className="text-[11px] text-muted-foreground">Every create, update, delete, status change and assignment across jobs, clients, inventory, and orders.</p>
+          <p className="text-[11px] text-muted-foreground">Jobs, client tickets, clients, inventory and orders.</p>
         </div>
         <Button size="sm" className="h-8" onClick={exportCSV}><Download className="h-3.5 w-3.5 mr-1" />Export CSV</Button>
       </header>
@@ -73,6 +78,7 @@ function ActivityPage() {
               <SelectContent>
                 <SelectItem value="all">All entities</SelectItem>
                 <SelectItem value="job">Jobs</SelectItem>
+                <SelectItem value="ticket">Client tickets</SelectItem>
                 <SelectItem value="client">Clients</SelectItem>
                 <SelectItem value="inventory">Inventory</SelectItem>
                 <SelectItem value="order">Orders</SelectItem>

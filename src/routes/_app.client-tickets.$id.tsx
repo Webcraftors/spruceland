@@ -29,6 +29,7 @@ function AdminTicket() {
   if (!t) return <div className="p-10 text-center text-sm text-muted-foreground">Ticket not found. <Link to="/client-tickets" className="text-primary">Back</Link></div>;
   const run = async (fn: () => Promise<unknown>, msg: string) => { try { await fn(); toast.success(msg); } catch (e: any) { toast.error(e.message); } };
   const techId = t.technicianId ?? tech;
+  const assignedTech = t.technicianId ? techById(t.technicianId) : undefined;
 
   return (
     <div className="space-y-4 max-w-4xl">
@@ -48,7 +49,7 @@ function AdminTicket() {
             <Card title="Resolve — technician report">
               <div className="space-y-3">
                 {([["diagnosis", "Diagnosis"], ["workDone", "Work completed"], ["partsUsed", "Parts used"], ["readings", "Test readings / calibration results"]] as const).map(([k, l]) => (
-                  <div key={k} className="space-y-1.5"><Label>{l}</Label><Textarea rows={2} value={r[k]} onChange={e => setR({ ...r, [k]: e.target.value })} /></div>
+                  <div key={k} className="space-y-1.5"><Label htmlFor={`report-${k}`}>{l}</Label><Textarea id={`report-${k}`} rows={2} value={r[k]} onChange={e => setR({ ...r, [k]: e.target.value })} /></div>
                 ))}
                 <Button className="w-full" disabled={!r.diagnosis || !r.workDone} onClick={() => run(() => ticketsRepo.resolve(t.id, {
                   ...r, partsUsed: r.partsUsed || "None", readings: r.readings || "—",
@@ -77,7 +78,7 @@ function AdminTicket() {
                 </Select>
                 <div className="space-y-1.5"><Label>Visit date</Label><Input type="date" value={date} onChange={e => setDate(e.target.value)} /></div>
                 <Button variant="outline" className="w-full" disabled={!tech} onClick={() => run(() => ticketsRepo.assign(t.id, tech, new Date(date).toISOString(), actor), "Technician assigned")}>{t.status === "Open" ? "Assign" : "Re-assign"}</Button>
-                {t.status === "Assigned" && <Button className="w-full" onClick={() => run(() => ticketsRepo.startWork(t.id, techById(t.technicianId!)?.name ?? actor), "Work started")}>On site — start work</Button>}
+                {t.status === "Assigned" && <Button className="w-full" onClick={() => run(() => ticketsRepo.startWork(t.id, assignedTech?.name ?? actor), "Work started")}>On site — start work</Button>}
               </div>
             </Card>
           )}

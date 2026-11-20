@@ -1,6 +1,6 @@
-import { Ticket, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Briefcase, Users2, Package, ShoppingCart,
+  Ticket, LayoutDashboard, Briefcase, Users2, Package, ShoppingCart,
   DollarSign, HardHat, BookOpen, Bell, Settings, Shield, LogOut, Menu, Search, MapPin, Sun, Moon, MoreHorizontal,
   Activity, PanelLeftClose, PanelLeftOpen,
 } from "lucide-react";

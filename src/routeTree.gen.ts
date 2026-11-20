@@ -9,39 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ClientRouteImport } from './routes/client'
-import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as JobcardIdRouteImport } from './routes/jobcard.$id'
-import { Route as ClientAppRouteImport } from './routes/client_.app'
-import { Route as AppTeamRouteImport } from './routes/_app.team'
-import { Route as AppSettingsRouteImport } from './routes/_app.settings'
-import { Route as AppPermissionsRouteImport } from './routes/_app.permissions'
-import { Route as AppOrdersRouteImport } from './routes/_app.orders'
-import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
-import { Route as AppKnowledgeRouteImport } from './routes/_app.knowledge'
-import { Route as AppJobsRouteImport } from './routes/_app.jobs'
-import { Route as AppInventoryRouteImport } from './routes/_app.inventory'
-import { Route as AppFinancialsRouteImport } from './routes/_app.financials'
-import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
-import { Route as AppClientsRouteImport } from './routes/_app.clients'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as ClientRouteImport } from './routes/client'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
-import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
+import { Route as AppClientsRouteImport } from './routes/_app.clients'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppFinancialsRouteImport } from './routes/_app.financials'
+import { Route as AppInventoryRouteImport } from './routes/_app.inventory'
+import { Route as AppJobsRouteImport } from './routes/_app.jobs'
+import { Route as AppKnowledgeRouteImport } from './routes/_app.knowledge'
+import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
+import { Route as AppOrdersRouteImport } from './routes/_app.orders'
+import { Route as AppPermissionsRouteImport } from './routes/_app.permissions'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppTeamRouteImport } from './routes/_app.team'
+import { Route as ClientAppRouteImport } from './routes/client_.app'
+import { Route as JobcardIdRouteImport } from './routes/jobcard.$id'
 import { Route as AppClientTicketsIndexRouteImport } from './routes/_app.client-tickets.index'
-import { Route as ClientAppScheduleRouteImport } from './routes/client_.app.schedule'
-import { Route as ClientAppProfileRouteImport } from './routes/client_.app.profile'
-import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
-import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
-import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
 import { Route as AppClientTicketsIdRouteImport } from './routes/_app.client-tickets.$id'
+import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
+import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
+import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
+import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
+import { Route as ClientAppProfileRouteImport } from './routes/client_.app.profile'
+import { Route as ClientAppScheduleRouteImport } from './routes/client_.app.schedule'
 import { Route as ClientAppTicketsIndexRouteImport } from './routes/client_.app.tickets.index'
-import { Route as ClientAppTicketsNewRouteImport } from './routes/client_.app.tickets.new'
 import { Route as ClientAppTicketsIdRouteImport } from './routes/client_.app.tickets.$id'
+import { Route as ClientAppTicketsNewRouteImport } from './routes/client_.app.tickets.new'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClientRoute = ClientRouteImport.update({
@@ -49,73 +53,14 @@ const ClientRoute = ClientRouteImport.update({
   path: '/client',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JobcardIdRoute = JobcardIdRouteImport.update({
-  id: '/jobcard/$id',
-  path: '/jobcard/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClientAppRoute = ClientAppRouteImport.update({
-  id: '/client_/app',
-  path: '/client/app',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppTeamRoute = AppTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPermissionsRoute = AppPermissionsRouteImport.update({
-  id: '/permissions',
-  path: '/permissions',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppOrdersRoute = AppOrdersRouteImport.update({
-  id: '/orders',
-  path: '/orders',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppNotificationsRoute = AppNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
-  id: '/knowledge',
-  path: '/knowledge',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppJobsRoute = AppJobsRouteImport.update({
-  id: '/jobs',
-  path: '/jobs',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppInventoryRoute = AppInventoryRouteImport.update({
-  id: '/inventory',
-  path: '/inventory',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFinancialsRoute = AppFinancialsRouteImport.update({
-  id: '/financials',
-  path: '/financials',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AppActivityRoute = AppActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => AppRoute,
 } as any)
 const AppClientsRoute = AppClientsRouteImport.update({
@@ -123,24 +68,94 @@ const AppClientsRoute = AppClientsRouteImport.update({
   path: '/clients',
   getParentRoute: () => AppRoute,
 } as any)
-const AppActivityRoute = AppActivityRouteImport.update({
-  id: '/activity',
-  path: '/activity',
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
-const ClientAppIndexRoute = ClientAppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ClientAppRoute,
+const AppFinancialsRoute = AppFinancialsRouteImport.update({
+  id: '/financials',
+  path: '/financials',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJobsRoute = AppJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrdersRoute = AppOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPermissionsRoute = AppPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTeamRoute = AppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AppRoute,
+} as any)
+const ClientAppRoute = ClientAppRouteImport.update({
+  id: '/client_/app',
+  path: '/client/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobcardIdRoute = JobcardIdRouteImport.update({
+  id: '/jobcard/$id',
+  path: '/jobcard/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppClientTicketsIndexRoute = AppClientTicketsIndexRouteImport.update({
   id: '/client-tickets/',
   path: '/client-tickets/',
   getParentRoute: () => AppRoute,
 } as any)
-const ClientAppScheduleRoute = ClientAppScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
+const AppClientTicketsIdRoute = AppClientTicketsIdRouteImport.update({
+  id: '/client-tickets/$id',
+  path: '/client-tickets/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientsIdRoute = AppClientsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppClientsRoute,
+} as any)
+const AppJobsIdRoute = AppJobsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppJobsRoute,
+} as any)
+const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AppKnowledgeRoute,
+} as any)
+const ClientAppIndexRoute = ClientAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => ClientAppRoute,
 } as any)
 const ClientAppProfileRoute = ClientAppProfileRouteImport.update({
@@ -148,39 +163,24 @@ const ClientAppProfileRoute = ClientAppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => ClientAppRoute,
 } as any)
-const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => AppKnowledgeRoute,
-} as any)
-const AppJobsIdRoute = AppJobsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AppJobsRoute,
-} as any)
-const AppClientsIdRoute = AppClientsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AppClientsRoute,
-} as any)
-const AppClientTicketsIdRoute = AppClientTicketsIdRouteImport.update({
-  id: '/client-tickets/$id',
-  path: '/client-tickets/$id',
-  getParentRoute: () => AppRoute,
+const ClientAppScheduleRoute = ClientAppScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => ClientAppRoute,
 } as any)
 const ClientAppTicketsIndexRoute = ClientAppTicketsIndexRouteImport.update({
   id: '/tickets/',
   path: '/tickets/',
   getParentRoute: () => ClientAppRoute,
 } as any)
-const ClientAppTicketsNewRoute = ClientAppTicketsNewRouteImport.update({
-  id: '/tickets/new',
-  path: '/tickets/new',
-  getParentRoute: () => ClientAppRoute,
-} as any)
 const ClientAppTicketsIdRoute = ClientAppTicketsIdRouteImport.update({
   id: '/tickets/$id',
   path: '/tickets/$id',
+  getParentRoute: () => ClientAppRoute,
+} as any)
+const ClientAppTicketsNewRoute = ClientAppTicketsNewRouteImport.update({
+  id: '/tickets/new',
+  path: '/tickets/new',
   getParentRoute: () => ClientAppRoute,
 } as any)
 
@@ -379,18 +379,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/client': {
-      id: '/client'
-      path: '/client'
-      fullPath: '/client'
-      preLoaderRoute: typeof ClientRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -400,95 +393,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/client': {
+      id: '/client'
+      path: '/client'
+      fullPath: '/client'
+      preLoaderRoute: typeof ClientRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/jobcard/$id': {
-      id: '/jobcard/$id'
-      path: '/jobcard/$id'
-      fullPath: '/jobcard/$id'
-      preLoaderRoute: typeof JobcardIdRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/client_/app': {
-      id: '/client_/app'
-      path: '/client/app'
-      fullPath: '/client/app'
-      preLoaderRoute: typeof ClientAppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_app/team': {
-      id: '/_app/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof AppTeamRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/settings': {
-      id: '/_app/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/permissions': {
-      id: '/_app/permissions'
-      path: '/permissions'
-      fullPath: '/permissions'
-      preLoaderRoute: typeof AppPermissionsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/orders': {
-      id: '/_app/orders'
-      path: '/orders'
-      fullPath: '/orders'
-      preLoaderRoute: typeof AppOrdersRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/notifications': {
-      id: '/_app/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof AppNotificationsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/knowledge': {
-      id: '/_app/knowledge'
-      path: '/knowledge'
-      fullPath: '/knowledge'
-      preLoaderRoute: typeof AppKnowledgeRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/jobs': {
-      id: '/_app/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof AppJobsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/inventory': {
-      id: '/_app/inventory'
-      path: '/inventory'
-      fullPath: '/inventory'
-      preLoaderRoute: typeof AppInventoryRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/financials': {
-      id: '/_app/financials'
-      path: '/financials'
-      fullPath: '/financials'
-      preLoaderRoute: typeof AppFinancialsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
+    '/_app/activity': {
+      id: '/_app/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AppActivityRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/clients': {
@@ -498,19 +421,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/activity': {
-      id: '/_app/activity'
-      path: '/activity'
-      fullPath: '/activity'
-      preLoaderRoute: typeof AppActivityRouteImport
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/client_/app/': {
-      id: '/client_/app/'
-      path: '/'
-      fullPath: '/client/app/'
-      preLoaderRoute: typeof ClientAppIndexRouteImport
-      parentRoute: typeof ClientAppRoute
+    '/_app/financials': {
+      id: '/_app/financials'
+      path: '/financials'
+      fullPath: '/financials'
+      preLoaderRoute: typeof AppFinancialsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/inventory': {
+      id: '/_app/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/jobs': {
+      id: '/_app/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AppJobsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/knowledge': {
+      id: '/_app/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof AppKnowledgeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/orders': {
+      id: '/_app/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AppOrdersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/permissions': {
+      id: '/_app/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof AppPermissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/team': {
+      id: '/_app/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AppTeamRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/client_/app': {
+      id: '/client_/app'
+      path: '/client/app'
+      fullPath: '/client/app'
+      preLoaderRoute: typeof ClientAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobcard/$id': {
+      id: '/jobcard/$id'
+      path: '/jobcard/$id'
+      fullPath: '/jobcard/$id'
+      preLoaderRoute: typeof JobcardIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/client-tickets/': {
       id: '/_app/client-tickets/'
@@ -519,11 +512,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientTicketsIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/client_/app/schedule': {
-      id: '/client_/app/schedule'
-      path: '/schedule'
-      fullPath: '/client/app/schedule'
-      preLoaderRoute: typeof ClientAppScheduleRouteImport
+    '/_app/client-tickets/$id': {
+      id: '/_app/client-tickets/$id'
+      path: '/client-tickets/$id'
+      fullPath: '/client-tickets/$id'
+      preLoaderRoute: typeof AppClientTicketsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/clients/$id': {
+      id: '/_app/clients/$id'
+      path: '/$id'
+      fullPath: '/clients/$id'
+      preLoaderRoute: typeof AppClientsIdRouteImport
+      parentRoute: typeof AppClientsRoute
+    }
+    '/_app/jobs/$id': {
+      id: '/_app/jobs/$id'
+      path: '/$id'
+      fullPath: '/jobs/$id'
+      preLoaderRoute: typeof AppJobsIdRouteImport
+      parentRoute: typeof AppJobsRoute
+    }
+    '/_app/knowledge/$slug': {
+      id: '/_app/knowledge/$slug'
+      path: '/$slug'
+      fullPath: '/knowledge/$slug'
+      preLoaderRoute: typeof AppKnowledgeSlugRouteImport
+      parentRoute: typeof AppKnowledgeRoute
+    }
+    '/client_/app/': {
+      id: '/client_/app/'
+      path: '/'
+      fullPath: '/client/app/'
+      preLoaderRoute: typeof ClientAppIndexRouteImport
       parentRoute: typeof ClientAppRoute
     }
     '/client_/app/profile': {
@@ -533,33 +554,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientAppProfileRouteImport
       parentRoute: typeof ClientAppRoute
     }
-    '/_app/knowledge/$slug': {
-      id: '/_app/knowledge/$slug'
-      path: '/$slug'
-      fullPath: '/knowledge/$slug'
-      preLoaderRoute: typeof AppKnowledgeSlugRouteImport
-      parentRoute: typeof AppKnowledgeRoute
-    }
-    '/_app/jobs/$id': {
-      id: '/_app/jobs/$id'
-      path: '/$id'
-      fullPath: '/jobs/$id'
-      preLoaderRoute: typeof AppJobsIdRouteImport
-      parentRoute: typeof AppJobsRoute
-    }
-    '/_app/clients/$id': {
-      id: '/_app/clients/$id'
-      path: '/$id'
-      fullPath: '/clients/$id'
-      preLoaderRoute: typeof AppClientsIdRouteImport
-      parentRoute: typeof AppClientsRoute
-    }
-    '/_app/client-tickets/$id': {
-      id: '/_app/client-tickets/$id'
-      path: '/client-tickets/$id'
-      fullPath: '/client-tickets/$id'
-      preLoaderRoute: typeof AppClientTicketsIdRouteImport
-      parentRoute: typeof AppRoute
+    '/client_/app/schedule': {
+      id: '/client_/app/schedule'
+      path: '/schedule'
+      fullPath: '/client/app/schedule'
+      preLoaderRoute: typeof ClientAppScheduleRouteImport
+      parentRoute: typeof ClientAppRoute
     }
     '/client_/app/tickets/': {
       id: '/client_/app/tickets/'
@@ -568,18 +568,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientAppTicketsIndexRouteImport
       parentRoute: typeof ClientAppRoute
     }
-    '/client_/app/tickets/new': {
-      id: '/client_/app/tickets/new'
-      path: '/tickets/new'
-      fullPath: '/client/app/tickets/new'
-      preLoaderRoute: typeof ClientAppTicketsNewRouteImport
-      parentRoute: typeof ClientAppRoute
-    }
     '/client_/app/tickets/$id': {
       id: '/client_/app/tickets/$id'
       path: '/tickets/$id'
       fullPath: '/client/app/tickets/$id'
       preLoaderRoute: typeof ClientAppTicketsIdRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
+    '/client_/app/tickets/new': {
+      id: '/client_/app/tickets/new'
+      path: '/tickets/new'
+      fullPath: '/client/app/tickets/new'
+      preLoaderRoute: typeof ClientAppTicketsNewRouteImport
       parentRoute: typeof ClientAppRoute
     }
   }

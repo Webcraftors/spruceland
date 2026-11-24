@@ -1,7 +1,7 @@
 # Spruceland operational UI
 
 ## Current delivery
-The internal operations console and client-store portal are implemented using mock data. Client tickets and the client session persist in this browser; internal CRUD data remains in React memory. There is no connected backend, verified identity, native application, remote file storage, or live notification delivery. These are production-intended screens, not a production-secure system yet.
+The internal operations console and client-store portal still use mock data and unverified demo sign-in. Client tickets and the client session persist in this browser; internal CRUD data remains in React memory. Lovable Cloud is now connected and the Stage 1 leadership provisioning endpoint is implemented independently of the UI. Operational data, native applications, remote uploads and live notifications are not integrated yet. These are production-intended screens, not a production-secure system yet.
 
 ## Documentation map
 - [Architecture](architecture.md): portal boundaries, source responsibilities and current limitations.
@@ -9,6 +9,7 @@ The internal operations console and client-store portal are implemented using mo
 - [Access matrix](access-matrix.md): intended access, not a claim of enforced security.
 - [Backend contract](backend-contract.md): adapter responsibilities and integration acceptance criteria.
 - [Environments and native delivery](environments-and-native.md): development, staging, production and Capacitor constraints.
+- [Stage 1 backend report](stage-1-backend-report.md): leadership provisioning, verified database compatibility, security checks, deployment status and manual acceptance tests.
 
 ## Phased progress
 1. Foundations: typed tickets, state transitions, async mutation repository and documentation delivered. Assets still come from deterministic sample functions; repository-backed asset reads remain an integration task.

@@ -6,11 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PORTAL_CLIENTS, provincesFor, sitesFor, DEMO_EMPLOYEES, departmentsFor } from "@/data/portal";
-import { AuthForm } from "@/components/AuthForm";
-import { useAccount } from "@/lib/account";
-import { supabase } from "@/integrations/supabase/client";
-import type { Json } from "@/integrations/supabase/types";
-import { ticketsRepo } from "@/repositories/portal-repo";
+import { clientSessionRepo, ticketsRepo } from "@/repositories/portal-repo";
 
 export const Route = createFileRoute("/client")({
   head: () => ({
@@ -28,9 +24,6 @@ export const Route = createFileRoute("/client")({
 
 function ClientSignIn() {
   const navigate = useNavigate();
-  const { account, loading, refresh } = useAccount();
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(0);
   const [q, setQ] = useState("");
   const [clientId, setClientId] = useState("");
@@ -60,20 +53,10 @@ function ClientSignIn() {
       clientId: client.id, clientName: client.name, employeeName: name.trim(), employeeRef: ref.trim(),
       department: known?.department ?? departmentsFor(client.id)[0], site, signedInAt: new Date().toISOString(),
     };
-    if (!account) return;
-    setSaving(true); setError("");
-    try {
-      const { error } = await supabase.from('profiles').update({ full_name: name.trim(), employee_ref: ref.trim(), client_context: session as unknown as Json }).eq('id', account.user.id);
-      if (error) throw error;
-      await refresh();
-      await ticketsRepo.ensureSiteSeed(session);
-      await navigate({ to: "/client/app", replace: true });
-    } catch (e) { setError(e instanceof Error ? e.message : 'Could not save your store details.'); }
-    finally { setSaving(false); }
+    clientSessionRepo.set(session);
+    await ticketsRepo.ensureSiteSeed(session);
+    navigate({ to: "/client/app" });
   };
-
-  if (loading || !account) return <div className="min-h-dvh bg-background flex items-center justify-center px-5 py-10"><div className="w-full max-w-sm"><img src="/spruceland-logo.png" alt="Spruceland" className="h-12 w-auto mx-auto mb-8" /><AuthForm audience="client" /></div></div>;
-  if (account.client) return <div className="min-h-dvh bg-background flex items-center justify-center px-5 py-10"><div className="w-full max-w-sm"><AuthForm audience="client" /></div></div>;
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
@@ -136,8 +119,7 @@ function ClientSignIn() {
               </div>
             )}
             {sites.length === 1 && <p className="text-xs text-muted-foreground">Site: <span className="font-medium text-foreground">{sites[0].name}, {sites[0].city}</span></p>}
-            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" disabled={!canSubmit || saving} className="w-full h-12 text-base font-semibold">{saving ? "Saving…" : "Save store details"}</Button>
+            <Button type="submit" disabled={!canSubmit} className="w-full h-12 text-base font-semibold">Sign in</Button>
           </form>
         )}
       </main>

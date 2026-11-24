@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-import { useAccount } from "./account";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Role = "owner" | "head_tech" | "technician" | "administrator" | "crm";
 export type Location = "Lusaka" | "Ndola" | "Both";
@@ -33,13 +32,29 @@ export const PERMISSIONS: Record<Role, Module[]> = {
 
 export function can(role: Role, m: Module) { return PERMISSIONS[role].includes(m); }
 
-const Ctx = createContext<{ session: Session | null; setSession: (s: Session | null) => void }>({ session: null, setSession: () => {} });
+const KEY = "spruceland.session.v1";
+const Ctx = createContext<{ session: Session | null; setSession: (s: Session | null) => void }>({
+  session: null, setSession: () => {},
+});
+
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const { account } = useAccount();
-  const [location, setLocation] = useState<Location>("Lusaka");
-  const session: Session | null = account?.role ? { name: account.profile.full_name || account.user.email || 'Staff', role: account.role, location, subcontractor: false } : null;
-  // The office switch changes presentation only; it cannot change granted roles.
-  const setSession = (s: Session | null) => { if (s) setLocation(s.location); };
+  const [session, setSessionState] = useState<Session | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) setSessionState(JSON.parse(raw));
+    } catch {}
+    setHydrated(true);
+  }, []);
+  const setSession = (s: Session | null) => {
+    setSessionState(s);
+    if (typeof window !== "undefined") {
+      if (s) localStorage.setItem(KEY, JSON.stringify(s));
+      else localStorage.removeItem(KEY);
+    }
+  };
+  if (!hydrated) return null;
   return <Ctx.Provider value={{ session, setSession }}>{children}</Ctx.Provider>;
 }
 

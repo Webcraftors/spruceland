@@ -11,10 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ClientRouteImport } from './routes/client'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
 import { Route as AppClientsRouteImport } from './routes/_app.clients'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
@@ -34,6 +32,7 @@ import { Route as AppClientTicketsIdRouteImport } from './routes/_app.client-tic
 import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
 import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
 import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
+import { Route as ApiPublicProvisionLeadershipRouteImport } from './routes/api/public/provision-leadership'
 import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
 import { Route as ClientAppProfileRouteImport } from './routes/client_.app.profile'
 import { Route as ClientAppScheduleRouteImport } from './routes/client_.app.schedule'
@@ -50,11 +49,6 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ClientRoute = ClientRouteImport.update({
   id: '/client',
   path: '/client',
@@ -63,11 +57,6 @@ const ClientRoute = ClientRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppActivityRoute = AppActivityRouteImport.update({
@@ -165,6 +154,12 @@ const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => AppKnowledgeRoute,
 } as any)
+const ApiPublicProvisionLeadershipRoute =
+  ApiPublicProvisionLeadershipRouteImport.update({
+    id: '/api/public/provision-leadership',
+    path: '/api/public/provision-leadership',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ClientAppIndexRoute = ClientAppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -198,10 +193,8 @@ const ClientAppTicketsNewRoute = ClientAppTicketsNewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/client': typeof ClientRoute
   '/login': typeof LoginRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
@@ -220,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/api/public/provision-leadership': typeof ApiPublicProvisionLeadershipRoute
   '/client/app/profile': typeof ClientAppProfileRoute
   '/client/app/schedule': typeof ClientAppScheduleRoute
   '/client-tickets/': typeof AppClientTicketsIndexRoute
@@ -230,10 +224,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/client': typeof ClientRoute
   '/login': typeof LoginRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
@@ -251,6 +243,7 @@ export interface FileRoutesByTo {
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/api/public/provision-leadership': typeof ApiPublicProvisionLeadershipRoute
   '/client/app/profile': typeof ClientAppProfileRoute
   '/client/app/schedule': typeof ClientAppScheduleRoute
   '/client-tickets': typeof AppClientTicketsIndexRoute
@@ -263,10 +256,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/auth': typeof AuthRoute
   '/client': typeof ClientRoute
   '/login': typeof LoginRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/_app/activity': typeof AppActivityRoute
   '/_app/clients': typeof AppClientsRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
@@ -285,6 +276,7 @@ export interface FileRoutesById {
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/jobs/$id': typeof AppJobsIdRoute
   '/_app/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/api/public/provision-leadership': typeof ApiPublicProvisionLeadershipRoute
   '/client_/app/profile': typeof ClientAppProfileRoute
   '/client_/app/schedule': typeof ClientAppScheduleRoute
   '/_app/client-tickets/': typeof AppClientTicketsIndexRoute
@@ -297,10 +289,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
     | '/client'
     | '/login'
-    | '/reset-password'
     | '/activity'
     | '/clients'
     | '/dashboard'
@@ -319,6 +309,7 @@ export interface FileRouteTypes {
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/api/public/provision-leadership'
     | '/client/app/profile'
     | '/client/app/schedule'
     | '/client-tickets/'
@@ -329,10 +320,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/client'
     | '/login'
-    | '/reset-password'
     | '/activity'
     | '/clients'
     | '/dashboard'
@@ -350,6 +339,7 @@ export interface FileRouteTypes {
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/api/public/provision-leadership'
     | '/client/app/profile'
     | '/client/app/schedule'
     | '/client-tickets'
@@ -361,10 +351,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
-    | '/auth'
     | '/client'
     | '/login'
-    | '/reset-password'
     | '/_app/activity'
     | '/_app/clients'
     | '/_app/dashboard'
@@ -383,6 +371,7 @@ export interface FileRouteTypes {
     | '/_app/clients/$id'
     | '/_app/jobs/$id'
     | '/_app/knowledge/$slug'
+    | '/api/public/provision-leadership'
     | '/client_/app/profile'
     | '/client_/app/schedule'
     | '/_app/client-tickets/'
@@ -395,12 +384,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  AuthRoute: typeof AuthRoute
   ClientRoute: typeof ClientRoute
   LoginRoute: typeof LoginRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   ClientAppRoute: typeof ClientAppRouteWithChildren
   JobcardIdRoute: typeof JobcardIdRoute
+  ApiPublicProvisionLeadershipRoute: typeof ApiPublicProvisionLeadershipRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -419,13 +407,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/client': {
       id: '/client'
       path: '/client'
@@ -438,13 +419,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/activity': {
@@ -579,6 +553,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/knowledge/$slug'
       preLoaderRoute: typeof AppKnowledgeSlugRouteImport
       parentRoute: typeof AppKnowledgeRoute
+    }
+    '/api/public/provision-leadership': {
+      id: '/api/public/provision-leadership'
+      path: '/api/public/provision-leadership'
+      fullPath: '/api/public/provision-leadership'
+      preLoaderRoute: typeof ApiPublicProvisionLeadershipRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/client_/app/': {
       id: '/client_/app/'
@@ -721,12 +702,11 @@ const ClientAppRouteWithChildren = ClientAppRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  AuthRoute: AuthRoute,
   ClientRoute: ClientRoute,
   LoginRoute: LoginRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   ClientAppRoute: ClientAppRouteWithChildren,
   JobcardIdRoute: JobcardIdRoute,
+  ApiPublicProvisionLeadershipRoute: ApiPublicProvisionLeadershipRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -14,3 +14,6 @@
 - Derive client-ticket audit entries from persisted ticket activity; this keeps client history and the internal audit feed consistent without duplicate writes.
 - Persist the on-site start time before resolving a ticket; arrival time must not be replaced by the time the report was submitted.
 - Keep mock identities and local persistence explicitly non-production; real authorization, tenant isolation, audit integrity and uploads must be enforced by the future backend.
+- Implement leadership provisioning as a handler-authenticated TanStack HTTP route, not a new Edge Function; this project uses the supported Worker runtime and existing generated privileged client.
+- Resolve leadership allowlists only on the server after verifying the caller; delegate writes to the existing transactional SQL function to preserve idempotency and revocation history.
+- Keep Stage 1 backend provisioning disconnected from frontend sign-in and operational repositories; account integration belongs to a later explicitly approved stage.

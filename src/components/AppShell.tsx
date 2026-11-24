@@ -6,8 +6,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useSession, ROLE_LABELS, can, type Module, type Location } from "@/lib/session";
-import { useAccount } from "@/lib/account";
-import { toast } from "sonner";
 import { useTheme } from "@/lib/theme";
 import { useStore } from "@/lib/store";
 const LOGO_URL = "/spruceland-logo.png";
@@ -43,7 +41,6 @@ const COLLAPSE_KEY = "spruceland.sidebar.collapsed";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { session, setSession } = useSession();
-  const { signOut } = useAccount();
   const { theme, toggle: toggleTheme } = useTheme();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: s => s.location.pathname });
@@ -64,6 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [session, setActingAs]);
 
   if (!session) {
+    if (typeof window !== "undefined" && pathname !== "/login") navigate({ to: "/login" });
     return null;
   }
 
@@ -224,7 +222,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild><Link to="/settings"><Settings className="mr-2 h-3.5 w-3.5" />Settings</Link></DropdownMenuItem>
               <DropdownMenuItem asChild><Link to="/activity"><Activity className="mr-2 h-3.5 w-3.5" />Activity log</Link></DropdownMenuItem>
-              <DropdownMenuItem onClick={() => void signOut().catch(e => toast.error(e.message))}>
+              <DropdownMenuItem onClick={() => { setSession(null); navigate({ to: "/" }); }}>
                 <LogOut className="mr-2 h-3.5 w-3.5" />Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

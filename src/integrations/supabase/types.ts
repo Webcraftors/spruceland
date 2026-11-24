@@ -101,6 +101,101 @@ export type Database = {
           },
         ]
       }
+      configuration_definitions: {
+        Row: {
+          created_at: string
+          default_value: Json
+          description: string | null
+          display_name: string
+          id: string
+          module: string
+          organization_editable: boolean
+          setting_key: string
+          status: string
+          updated_at: string
+          validation_rules: Json
+          value_type: string
+        }
+        Insert: {
+          created_at?: string
+          default_value: Json
+          description?: string | null
+          display_name: string
+          id?: string
+          module: string
+          organization_editable?: boolean
+          setting_key: string
+          status?: string
+          updated_at?: string
+          validation_rules?: Json
+          value_type: string
+        }
+        Update: {
+          created_at?: string
+          default_value?: Json
+          description?: string | null
+          display_name?: string
+          id?: string
+          module?: string
+          organization_editable?: boolean
+          setting_key?: string
+          status?: string
+          updated_at?: string
+          validation_rules?: Json
+          value_type?: string
+        }
+        Relationships: []
+      }
+      configuration_suggestions: {
+        Row: {
+          category_code: string
+          country_code: string | null
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          industry_code: string | null
+          sort_order: number
+          status: string
+          suggestion_code: string
+          updated_at: string
+        }
+        Insert: {
+          category_code: string
+          country_code?: string | null
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          industry_code?: string | null
+          sort_order?: number
+          status?: string
+          suggestion_code: string
+          updated_at?: string
+        }
+        Update: {
+          category_code?: string
+          country_code?: string | null
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          industry_code?: string | null
+          sort_order?: number
+          status?: string
+          suggestion_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "configuration_suggestions_category_code_fkey"
+            columns: ["category_code"]
+            isOneToOne: false
+            referencedRelation: "suggestion_categories"
+            referencedColumns: ["category_code"]
+          },
+        ]
+      }
       department_members: {
         Row: {
           created_at: string
@@ -195,6 +290,1466 @@ export type Database = {
           },
         ]
       }
+      equipment: {
+        Row: {
+          asset_tag: string | null
+          condition_code: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          equipment_name: string
+          equipment_type_id: string
+          id: string
+          installed_on: string | null
+          lifecycle_status: string
+          location_id: string | null
+          manufacturer_name: string | null
+          model_id: string | null
+          model_name: string | null
+          notes: string | null
+          organization_id: string
+          record_version: number
+          serial_number: string | null
+          supplied_on: string | null
+          supplier_name: string | null
+          supplier_organization_id: string | null
+          updated_at: string
+          updated_by: string
+          warranty_end_on: string | null
+          warranty_start_on: string | null
+        }
+        Insert: {
+          asset_tag?: string | null
+          condition_code?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          equipment_name: string
+          equipment_type_id: string
+          id?: string
+          installed_on?: string | null
+          lifecycle_status?: string
+          location_id?: string | null
+          manufacturer_name?: string | null
+          model_id?: string | null
+          model_name?: string | null
+          notes?: string | null
+          organization_id: string
+          record_version?: number
+          serial_number?: string | null
+          supplied_on?: string | null
+          supplier_name?: string | null
+          supplier_organization_id?: string | null
+          updated_at?: string
+          updated_by: string
+          warranty_end_on?: string | null
+          warranty_start_on?: string | null
+        }
+        Update: {
+          asset_tag?: string | null
+          condition_code?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          equipment_name?: string
+          equipment_type_id?: string
+          id?: string
+          installed_on?: string | null
+          lifecycle_status?: string
+          location_id?: string | null
+          manufacturer_name?: string | null
+          model_id?: string | null
+          model_name?: string | null
+          notes?: string | null
+          organization_id?: string
+          record_version?: number
+          serial_number?: string | null
+          supplied_on?: string | null
+          supplier_name?: string | null
+          supplier_organization_id?: string | null
+          updated_at?: string
+          updated_by?: string
+          warranty_end_on?: string | null
+          warranty_start_on?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_equipment_type_id_organization_id_fkey"
+            columns: ["equipment_type_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_types"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_location_id_organization_id_fkey"
+            columns: ["location_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_model_id_organization_id_equipment_type_id_fkey"
+            columns: ["model_id", "organization_id", "equipment_type_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_models"
+            referencedColumns: ["id", "organization_id", "equipment_type_id"]
+          },
+          {
+            foreignKeyName: "equipment_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_registered_condition_fkey"
+            columns: ["organization_id", "condition_code"]
+            isOneToOne: false
+            referencedRelation: "equipment_conditions"
+            referencedColumns: ["organization_id", "condition_code"]
+          },
+          {
+            foreignKeyName: "equipment_supplier_organization_id_fkey"
+            columns: ["supplier_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_categories: {
+        Row: {
+          category_code: string
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          organization_id: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category_code: string
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          organization_id: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category_code?: string
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          organization_id?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_categories_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_change_requests: {
+        Row: {
+          actor_organization_id: string | null
+          created_at: string
+          equipment_id: string
+          execution_result: Json | null
+          expected_record_version: number
+          id: string
+          organization_id: string
+          reason: string
+          request_payload: Json
+          request_type: string
+          requested_by: string
+          resolution_reason: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          actor_organization_id?: string | null
+          created_at?: string
+          equipment_id: string
+          execution_result?: Json | null
+          expected_record_version: number
+          id?: string
+          organization_id: string
+          reason: string
+          request_payload: Json
+          request_type: string
+          requested_by: string
+          resolution_reason?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          actor_organization_id?: string | null
+          created_at?: string
+          equipment_id?: string
+          execution_result?: Json | null
+          expected_record_version?: number
+          id?: string
+          organization_id?: string
+          reason?: string
+          request_payload?: Json
+          request_type?: string
+          requested_by?: string
+          resolution_reason?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_change_request_owner_fk"
+            columns: ["equipment_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_change_requests_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_change_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_change_requests_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_change_requests_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_change_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_conditions: {
+        Row: {
+          condition_code: string
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          organization_id: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          condition_code: string
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          organization_id: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          condition_code?: string
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          organization_id?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_conditions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_maintenance_occurrences: {
+        Row: {
+          created_at: string
+          due_on: string
+          equipment_id: string
+          id: string
+          maintenance_plan_id: string
+          maintenance_type_id: string
+          organization_id: string
+          record_version: number
+          resolution_reason: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          sequence_number: number
+          started_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          due_on: string
+          equipment_id: string
+          id?: string
+          maintenance_plan_id: string
+          maintenance_type_id: string
+          organization_id: string
+          record_version?: number
+          resolution_reason?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          sequence_number: number
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          due_on?: string
+          equipment_id?: string
+          id?: string
+          maintenance_plan_id?: string
+          maintenance_type_id?: string
+          organization_id?: string
+          record_version?: number
+          resolution_reason?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          sequence_number?: number
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_maintenance_occurrences_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_occurrence_plan_fk"
+            columns: [
+              "maintenance_plan_id",
+              "organization_id",
+              "equipment_id",
+              "maintenance_type_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "equipment_maintenance_plans"
+            referencedColumns: [
+              "id",
+              "organization_id",
+              "equipment_id",
+              "maintenance_type_id",
+            ]
+          },
+        ]
+      }
+      equipment_maintenance_plans: {
+        Row: {
+          created_at: string
+          created_by: string
+          equipment_id: string
+          first_due_on: string
+          id: string
+          instructions: string | null
+          interval_unit: string | null
+          interval_value: number | null
+          maintenance_type_id: string
+          organization_id: string
+          plan_name: string
+          record_version: number
+          recurrence_type: string
+          reminder_days: number
+          scheduling_basis: string
+          status: string
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          equipment_id: string
+          first_due_on: string
+          id?: string
+          instructions?: string | null
+          interval_unit?: string | null
+          interval_value?: number | null
+          maintenance_type_id: string
+          organization_id: string
+          plan_name: string
+          record_version?: number
+          recurrence_type: string
+          reminder_days?: number
+          scheduling_basis?: string
+          status?: string
+          updated_at?: string
+          updated_by: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          equipment_id?: string
+          first_due_on?: string
+          id?: string
+          instructions?: string | null
+          interval_unit?: string | null
+          interval_value?: number | null
+          maintenance_type_id?: string
+          organization_id?: string
+          plan_name?: string
+          record_version?: number
+          recurrence_type?: string
+          reminder_days?: number
+          scheduling_basis?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_maintenance_plans_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_maintenance_plans_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_maintenance_plans_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_plan_equipment_fk"
+            columns: ["equipment_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "maintenance_plan_type_fk"
+            columns: ["maintenance_type_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_maintenance_types"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      equipment_maintenance_types: {
+        Row: {
+          created_at: string
+          created_by: string
+          default_interval_unit: string | null
+          default_interval_value: number | null
+          description: string | null
+          display_name: string
+          id: string
+          organization_id: string
+          sort_order: number
+          status: string
+          type_code: string
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          default_interval_unit?: string | null
+          default_interval_value?: number | null
+          description?: string | null
+          display_name: string
+          id?: string
+          organization_id: string
+          sort_order?: number
+          status?: string
+          type_code: string
+          updated_at?: string
+          updated_by: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          default_interval_unit?: string | null
+          default_interval_value?: number | null
+          description?: string | null
+          display_name?: string
+          id?: string
+          organization_id?: string
+          sort_order?: number
+          status?: string
+          type_code?: string
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_maintenance_types_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_maintenance_types_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_maintenance_types_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_manufacturers: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          manufacturer_name: string
+          organization_id: string
+          status: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          manufacturer_name: string
+          organization_id: string
+          status?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          manufacturer_name?: string
+          organization_id?: string
+          status?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_manufacturers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_models: {
+        Row: {
+          created_at: string
+          default_specifications: Json
+          description: string | null
+          equipment_type_id: string
+          id: string
+          manufacturer_id: string
+          model_name: string
+          model_number: string | null
+          organization_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_specifications?: Json
+          description?: string | null
+          equipment_type_id: string
+          id?: string
+          manufacturer_id: string
+          model_name: string
+          model_number?: string | null
+          organization_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_specifications?: Json
+          description?: string | null
+          equipment_type_id?: string
+          id?: string
+          manufacturer_id?: string
+          model_name?: string
+          model_number?: string | null
+          organization_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_models_equipment_type_id_organization_id_fkey"
+            columns: ["equipment_type_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_types"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_models_manufacturer_id_organization_id_fkey"
+            columns: ["manufacturer_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_manufacturers"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_models_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_notification_events: {
+        Row: {
+          audit_log_id: string
+          channel: string
+          created_at: string
+          equipment_id: string
+          event_type: string
+          id: string
+          organization_id: string
+        }
+        Insert: {
+          audit_log_id: string
+          channel?: string
+          created_at?: string
+          equipment_id: string
+          event_type: string
+          id?: string
+          organization_id: string
+        }
+        Update: {
+          audit_log_id?: string
+          channel?: string
+          created_at?: string
+          equipment_id?: string
+          event_type?: string
+          id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_notification_events_audit_log_id_fkey"
+            columns: ["audit_log_id"]
+            isOneToOne: true
+            referencedRelation: "audit_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_notification_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_notification_owner_fk"
+            columns: ["equipment_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      equipment_relationship_locations: {
+        Row: {
+          created_at: string
+          location_id: string
+          relationship_id: string
+        }
+        Insert: {
+          created_at?: string
+          location_id: string
+          relationship_id: string
+        }
+        Update: {
+          created_at?: string
+          location_id?: string
+          relationship_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_relationship_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_relationship_locations_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_service_relationships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_replacements: {
+        Row: {
+          actor_organization_id: string | null
+          created_at: string
+          id: string
+          organization_id: string
+          original_equipment_id: string
+          reason: string
+          replaced_by: string
+          replacement_equipment_id: string
+        }
+        Insert: {
+          actor_organization_id?: string | null
+          created_at?: string
+          id?: string
+          organization_id: string
+          original_equipment_id: string
+          reason: string
+          replaced_by: string
+          replacement_equipment_id: string
+        }
+        Update: {
+          actor_organization_id?: string | null
+          created_at?: string
+          id?: string
+          organization_id?: string
+          original_equipment_id?: string
+          reason?: string
+          replaced_by?: string
+          replacement_equipment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_replacement_new_fk"
+            columns: ["replacement_equipment_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_replacement_original_fk"
+            columns: ["original_equipment_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_replacements_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_replacements_replaced_by_fkey"
+            columns: ["replaced_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_service_records: {
+        Row: {
+          actor_organization_id: string | null
+          created_at: string
+          equipment_id: string
+          equipment_snapshot: Json
+          findings: string | null
+          follow_up_required: boolean
+          id: string
+          maintenance_occurrence_id: string | null
+          maintenance_type_id: string
+          organization_id: string
+          performed_by_name: string | null
+          recommendations: string | null
+          recommended_follow_up_on: string | null
+          recorded_by: string
+          service_date: string
+          service_outcome: string
+          service_reference: string | null
+          supersedes_service_record_id: string | null
+          work_performed: string
+        }
+        Insert: {
+          actor_organization_id?: string | null
+          created_at?: string
+          equipment_id: string
+          equipment_snapshot: Json
+          findings?: string | null
+          follow_up_required?: boolean
+          id?: string
+          maintenance_occurrence_id?: string | null
+          maintenance_type_id: string
+          organization_id: string
+          performed_by_name?: string | null
+          recommendations?: string | null
+          recommended_follow_up_on?: string | null
+          recorded_by: string
+          service_date: string
+          service_outcome: string
+          service_reference?: string | null
+          supersedes_service_record_id?: string | null
+          work_performed: string
+        }
+        Update: {
+          actor_organization_id?: string | null
+          created_at?: string
+          equipment_id?: string
+          equipment_snapshot?: Json
+          findings?: string | null
+          follow_up_required?: boolean
+          id?: string
+          maintenance_occurrence_id?: string | null
+          maintenance_type_id?: string
+          organization_id?: string
+          performed_by_name?: string | null
+          recommendations?: string | null
+          recommended_follow_up_on?: string | null
+          recorded_by?: string
+          service_date?: string
+          service_outcome?: string
+          service_reference?: string | null
+          supersedes_service_record_id?: string | null
+          work_performed?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_service_records_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_service_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_service_records_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_record_equipment_fk"
+            columns: ["equipment_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "service_record_occurrence_fk"
+            columns: [
+              "maintenance_occurrence_id",
+              "organization_id",
+              "equipment_id",
+              "maintenance_type_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "equipment_maintenance_occurrences"
+            referencedColumns: [
+              "id",
+              "organization_id",
+              "equipment_id",
+              "maintenance_type_id",
+            ]
+          },
+          {
+            foreignKeyName: "service_record_supersedes_fk"
+            columns: [
+              "supersedes_service_record_id",
+              "organization_id",
+              "equipment_id",
+              "maintenance_type_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "equipment_service_records"
+            referencedColumns: [
+              "id",
+              "organization_id",
+              "equipment_id",
+              "maintenance_type_id",
+            ]
+          },
+          {
+            foreignKeyName: "service_record_type_fk"
+            columns: ["maintenance_type_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_maintenance_types"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      equipment_service_relationships: {
+        Row: {
+          allow_compliance_records: boolean
+          allow_equipment_configuration: boolean
+          allow_equipment_decommission: boolean
+          allow_equipment_registration: boolean
+          allow_equipment_transfer: boolean
+          allow_equipment_update: boolean
+          allow_equipment_view: boolean
+          allow_service_records: boolean
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          owner_organization_id: string
+          provider_organization_id: string
+          relationship_name: string
+          scope_type: string
+          status: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          allow_compliance_records?: boolean
+          allow_equipment_configuration?: boolean
+          allow_equipment_decommission?: boolean
+          allow_equipment_registration?: boolean
+          allow_equipment_transfer?: boolean
+          allow_equipment_update?: boolean
+          allow_equipment_view?: boolean
+          allow_service_records?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          owner_organization_id: string
+          provider_organization_id: string
+          relationship_name: string
+          scope_type?: string
+          status?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          allow_compliance_records?: boolean
+          allow_equipment_configuration?: boolean
+          allow_equipment_decommission?: boolean
+          allow_equipment_registration?: boolean
+          allow_equipment_transfer?: boolean
+          allow_equipment_update?: boolean
+          allow_equipment_view?: boolean
+          allow_service_records?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          owner_organization_id?: string
+          provider_organization_id?: string
+          relationship_name?: string
+          scope_type?: string
+          status?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_service_relationships_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_service_relationships_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_service_relationships_owner_organization_id_fkey"
+            columns: ["owner_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_service_relationships_provider_organization_id_fkey"
+            columns: ["provider_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_specification_fields: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_name: string
+          equipment_type_id: string
+          field_code: string
+          id: string
+          is_required: boolean
+          organization_id: string
+          sort_order: number
+          status: string
+          unit_label: string | null
+          updated_at: string
+          validation_rules: Json
+          value_type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_name: string
+          equipment_type_id: string
+          field_code: string
+          id?: string
+          is_required?: boolean
+          organization_id: string
+          sort_order?: number
+          status?: string
+          unit_label?: string | null
+          updated_at?: string
+          validation_rules?: Json
+          value_type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          equipment_type_id?: string
+          field_code?: string
+          id?: string
+          is_required?: boolean
+          organization_id?: string
+          sort_order?: number
+          status?: string
+          unit_label?: string | null
+          updated_at?: string
+          validation_rules?: Json
+          value_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_specification_field_equipment_type_id_organizati_fkey"
+            columns: ["equipment_type_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_types"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_specification_fields_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_specification_values: {
+        Row: {
+          created_at: string
+          equipment_id: string
+          equipment_type_id: string
+          id: string
+          organization_id: string
+          specification_field_id: string
+          specification_value: Json
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          created_at?: string
+          equipment_id: string
+          equipment_type_id: string
+          id?: string
+          organization_id: string
+          specification_field_id: string
+          specification_value: Json
+          updated_at?: string
+          updated_by: string
+        }
+        Update: {
+          created_at?: string
+          equipment_id?: string
+          equipment_type_id?: string
+          id?: string
+          organization_id?: string
+          specification_field_id?: string
+          specification_value?: Json
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_specification_value_equipment_id_organization_id_fkey"
+            columns: ["equipment_id", "organization_id", "equipment_type_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id", "organization_id", "equipment_type_id"]
+          },
+          {
+            foreignKeyName: "equipment_specification_value_specification_field_id_organ_fkey"
+            columns: [
+              "specification_field_id",
+              "organization_id",
+              "equipment_type_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "equipment_specification_fields"
+            referencedColumns: ["id", "organization_id", "equipment_type_id"]
+          },
+          {
+            foreignKeyName: "equipment_specification_values_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_types: {
+        Row: {
+          category_id: string
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          organization_id: string
+          sort_order: number
+          status: string
+          type_code: string
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          organization_id: string
+          sort_order?: number
+          status?: string
+          type_code: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          organization_id?: string
+          sort_order?: number
+          status?: string
+          type_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_types_category_id_organization_id_fkey"
+            columns: ["category_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_categories"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "equipment_types_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invitation_applications: {
+        Row: {
+          application_id: string
+          created_at: string
+          invitation_id: string
+          organization_id: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          invitation_id: string
+          organization_id: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          invitation_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitation_applications_invitation_id_organization_id_fkey"
+            columns: ["invitation_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "user_invitations"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "invitation_applications_organization_id_application_id_fkey"
+            columns: ["organization_id", "application_id"]
+            isOneToOne: false
+            referencedRelation: "organization_applications"
+            referencedColumns: ["organization_id", "application_id"]
+          },
+        ]
+      }
+      invitation_departments: {
+        Row: {
+          created_at: string
+          department_id: string
+          invitation_id: string
+          organization_id: string
+        }
+        Insert: {
+          created_at?: string
+          department_id: string
+          invitation_id: string
+          organization_id: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string
+          invitation_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitation_departments_department_id_organization_id_fkey"
+            columns: ["department_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "invitation_departments_invitation_id_organization_id_fkey"
+            columns: ["invitation_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "user_invitations"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      invitation_locations: {
+        Row: {
+          created_at: string
+          invitation_id: string
+          location_id: string
+          organization_id: string
+        }
+        Insert: {
+          created_at?: string
+          invitation_id: string
+          location_id: string
+          organization_id: string
+        }
+        Update: {
+          created_at?: string
+          invitation_id?: string
+          location_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitation_locations_invitation_id_organization_id_fkey"
+            columns: ["invitation_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "user_invitations"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "invitation_locations_location_id_organization_id_fkey"
+            columns: ["location_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      invitation_roles: {
+        Row: {
+          created_at: string
+          invitation_id: string
+          organization_id: string
+          role_id: string
+        }
+        Insert: {
+          created_at?: string
+          invitation_id: string
+          organization_id: string
+          role_id: string
+        }
+        Update: {
+          created_at?: string
+          invitation_id?: string
+          organization_id?: string
+          role_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitation_roles_invitation_id_organization_id_fkey"
+            columns: ["invitation_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "user_invitations"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "invitation_roles_role_id_organization_id_fkey"
+            columns: ["role_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      leadership_bootstrap_mappings: {
+        Row: {
+          application_id: string
+          bootstrap_key: string
+          created_at: string
+          enabled: boolean
+          is_platform_level: boolean
+          leadership_key: string | null
+          organization_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          bootstrap_key: string
+          created_at?: string
+          enabled?: boolean
+          is_platform_level?: boolean
+          leadership_key?: string | null
+          organization_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          bootstrap_key?: string
+          created_at?: string
+          enabled?: boolean
+          is_platform_level?: boolean
+          leadership_key?: string | null
+          organization_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leadership_bootstrap_mappings_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leadership_bootstrap_mappings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leadership_bootstrap_org_app_fkey"
+            columns: ["organization_id", "application_id"]
+            isOneToOne: false
+            referencedRelation: "organization_applications"
+            referencedColumns: ["organization_id", "application_id"]
+          },
+          {
+            foreignKeyName: "leadership_bootstrap_role_fkey"
+            columns: ["organization_id", "leadership_key"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["organization_id", "leadership_key"]
+          },
+        ]
+      }
       leadership_provisioning: {
         Row: {
           leadership_type: string
@@ -213,10 +1768,61 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "leadership_provisioning_bootstrap_key_fkey"
+            columns: ["leadership_type"]
+            isOneToOne: false
+            referencedRelation: "leadership_bootstrap_mappings"
+            referencedColumns: ["bootstrap_key"]
+          },
+          {
             foreignKeyName: "leadership_provisioning_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      location_types: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          organization_id: string
+          sort_order: number
+          status: string
+          type_code: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          organization_id: string
+          sort_order?: number
+          status?: string
+          type_code: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          organization_id?: string
+          sort_order?: number
+          status?: string
+          type_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "location_types_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -244,7 +1850,7 @@ export type Database = {
           created_at?: string
           id?: string
           location_code?: string | null
-          location_type?: string
+          location_type: string
           name: string
           organization_id: string
           parent_location_id?: string | null
@@ -288,6 +1894,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "locations_registered_type_fkey"
+            columns: ["organization_id", "location_type"]
+            isOneToOne: false
+            referencedRelation: "location_types"
+            referencedColumns: ["organization_id", "type_code"]
           },
         ]
       }
@@ -334,6 +1947,45 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "organization_applications"
             referencedColumns: ["organization_id", "application_id"]
+          },
+        ]
+      }
+      member_locations: {
+        Row: {
+          assigned_at: string
+          id: string
+          location_id: string
+          member_id: string
+          organization_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          id?: string
+          location_id: string
+          member_id: string
+          organization_id: string
+        }
+        Update: {
+          assigned_at?: string
+          id?: string
+          location_id?: string
+          member_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_locations_location_id_organization_id_fkey"
+            columns: ["location_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "member_locations_member_id_organization_id_fkey"
+            columns: ["member_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "organization_members"
+            referencedColumns: ["id", "organization_id"]
           },
         ]
       }
@@ -457,6 +2109,58 @@ export type Database = {
           },
         ]
       }
+      organization_settings: {
+        Row: {
+          configuration_id: string
+          created_at: string
+          id: string
+          organization_id: string
+          setting_value: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          configuration_id: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          setting_value: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          configuration_id?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          setting_value?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_settings_configuration_id_fkey"
+            columns: ["configuration_id"]
+            isOneToOne: false
+            referencedRelation: "configuration_definitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -492,6 +2196,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_delegable: boolean
           module: string
           permission_code: string
         }
@@ -499,6 +2204,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_delegable?: boolean
           module: string
           permission_code: string
         }
@@ -506,6 +2212,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_delegable?: boolean
           module?: string
           permission_code?: string
         }
@@ -633,7 +2340,9 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_protected: boolean
           is_system_role: boolean
+          leadership_key: string | null
           name: string
           organization_id: string
           updated_at: string
@@ -642,7 +2351,9 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_protected?: boolean
           is_system_role?: boolean
+          leadership_key?: string | null
           name: string
           organization_id: string
           updated_at?: string
@@ -651,7 +2362,9 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_protected?: boolean
           is_system_role?: boolean
+          leadership_key?: string | null
           name?: string
           organization_id?: string
           updated_at?: string
@@ -666,12 +2379,851 @@ export type Database = {
           },
         ]
       }
+      suggestion_categories: {
+        Row: {
+          category_code: string
+          created_at: string
+          description: string | null
+          display_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category_code: string
+          created_at?: string
+          description?: string | null
+          display_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category_code?: string
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          employee_ref: string | null
+          expires_at: string
+          full_name: string | null
+          id: string
+          invited_by: string
+          onboarding_method: string
+          organization_id: string
+          phone: string | null
+          revoked_at: string | null
+          status: string
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          employee_ref?: string | null
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invited_by: string
+          onboarding_method?: string
+          organization_id: string
+          phone?: string | null
+          revoked_at?: string | null
+          status?: string
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          employee_ref?: string | null
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string
+          onboarding_method?: string
+          organization_id?: string
+          phone?: string | null
+          revoked_at?: string | null
+          status?: string
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_invitations_accepted_by_fkey"
+            columns: ["accepted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      accept_user_invitation: { Args: { p_token: string }; Returns: Json }
+      advance_equipment_maintenance_plan: {
+        Args: {
+          p_completion_date: string
+          p_plan_id: string
+          p_previous_due_on: string
+        }
+        Returns: Json
+      }
+      calculate_equipment_maintenance_due_date: {
+        Args: {
+          p_base_date: string
+          p_interval_unit: string
+          p_interval_value: number
+        }
+        Returns: string
+      }
+      can_access_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_operation: string
+        }
+        Returns: boolean
+      }
+      can_access_equipment_change_request: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_operation: string
+        }
+        Returns: boolean
+      }
+      can_access_equipment_scope: {
+        Args: {
+          p_actor_organization_id: string
+          p_location_id: string
+          p_operation: string
+          p_owner_organization_id: string
+        }
+        Returns: boolean
+      }
+      can_create_location: {
+        Args: { p_organization_id: string; p_parent_location_id?: string }
+        Returns: boolean
+      }
+      can_delegate_permission: {
+        Args: { p_organization_id: string; p_permission_id: string }
+        Returns: boolean
+      }
+      can_manage_all_locations: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_applications: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_configuration: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_departments: {
+        Args: { p_operation: string; p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_equipment_configuration: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_equipment_maintenance: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_equipment_maintenance_plan: {
+        Args: { p_actor_organization_id: string; p_equipment_id: string }
+        Returns: boolean
+      }
+      can_manage_equipment_relationships: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_invitations: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_location: {
+        Args: { p_location_id: string; p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_location_types: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_members: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_organization: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_roles: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_suggestions: { Args: never; Returns: boolean }
+      can_manage_target_member: {
+        Args: { p_member_id: string; p_organization_id: string }
+        Returns: boolean
+      }
+      can_manage_target_role: {
+        Args: { p_organization_id: string; p_role_id: string }
+        Returns: boolean
+      }
+      can_transfer_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_destination_location_id: string
+          p_equipment_id: string
+        }
+        Returns: boolean
+      }
+      can_update_location: {
+        Args: { p_location_id: string; p_organization_id: string }
+        Returns: boolean
+      }
+      can_view_configuration: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      can_view_equipment_configuration: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      correct_equipment_service_record: {
+        Args: {
+          p_actor_organization_id: string
+          p_changes: Json
+          p_reason: string
+          p_service_record_id: string
+        }
+        Returns: Json
+      }
+      create_client_organization: {
+        Args: { p_name: string; p_slug: string }
+        Returns: Json
+      }
+      create_custom_role: {
+        Args: {
+          p_description?: string
+          p_name: string
+          p_organization_id: string
+        }
+        Returns: Json
+      }
+      create_department: {
+        Args: {
+          p_description?: string
+          p_name: string
+          p_organization_id: string
+          p_parent_department_id?: string
+        }
+        Returns: Json
+      }
+      create_equipment_maintenance_plan: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_first_due_on: string
+          p_instructions: string
+          p_interval_unit: string
+          p_interval_value: number
+          p_maintenance_type_id: string
+          p_plan_name: string
+          p_recurrence_type: string
+          p_reminder_days?: number
+          p_scheduling_basis: string
+        }
+        Returns: Json
+      }
+      create_location: {
+        Args: {
+          p_address?: string
+          p_city?: string
+          p_country?: string
+          p_location_code?: string
+          p_location_type: string
+          p_name: string
+          p_organization_id: string
+          p_parent_location_id?: string
+          p_province?: string
+        }
+        Returns: Json
+      }
+      create_user_invitation: {
+        Args: {
+          p_application_ids?: string[]
+          p_department_ids?: string[]
+          p_email: string
+          p_employee_ref?: string
+          p_full_name?: string
+          p_location_ids?: string[]
+          p_onboarding_method?: string
+          p_organization_id: string
+          p_phone?: string
+          p_role_ids: string[]
+          p_token_hash: string
+        }
+        Returns: string
+      }
       current_internal_role: { Args: never; Returns: string }
+      delete_custom_role: {
+        Args: { p_organization_id: string; p_reason: string; p_role_id: string }
+        Returns: Json
+      }
+      equipment_operation_permission: {
+        Args: { p_operation: string }
+        Returns: string
+      }
+      equipment_specification_snapshot: {
+        Args: { p_equipment_id: string }
+        Returns: Json
+      }
+      expire_user_invitations: {
+        Args: { p_organization_id: string }
+        Returns: number
+      }
+      get_assignable_member_roles: {
+        Args: { p_organization_id: string }
+        Returns: {
+          description: string
+          permission_count: number
+          role_id: string
+          role_name: string
+        }[]
+      }
+      get_configuration_suggestions: {
+        Args: {
+          p_category_code?: string
+          p_country_code?: string
+          p_industry_code?: string
+          p_organization_id: string
+        }
+        Returns: {
+          category_code: string
+          country_code: string
+          description: string
+          display_name: string
+          industry_code: string
+          sort_order: number
+          suggestion_code: string
+          suggestion_id: string
+        }[]
+      }
+      get_delegable_permissions: {
+        Args: { p_organization_id: string }
+        Returns: {
+          description: string
+          module: string
+          permission_code: string
+          permission_id: string
+        }[]
+      }
+      get_equipment_configuration: {
+        Args: { p_include_inactive?: boolean; p_organization_id: string }
+        Returns: Json
+      }
+      get_equipment_details: {
+        Args: { p_actor_organization_id: string; p_equipment_id: string }
+        Returns: Json
+      }
+      get_equipment_history: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_limit?: number
+          p_offset?: number
+        }
+        Returns: Json
+      }
+      get_equipment_maintenance_types: {
+        Args: { p_include_inactive?: boolean; p_organization_id: string }
+        Returns: Json
+      }
+      get_equipment_replacements: {
+        Args: { p_actor_organization_id: string; p_equipment_id: string }
+        Returns: Json
+      }
+      get_equipment_service_relationships: {
+        Args: { p_organization_id: string }
+        Returns: Json
+      }
+      get_equipment_specifications: {
+        Args: { p_actor_organization_id: string; p_equipment_id: string }
+        Returns: Json
+      }
+      get_managed_configuration_suggestions: {
+        Args: { p_category_code?: string; p_include_inactive?: boolean }
+        Returns: {
+          category_code: string
+          country_code: string | null
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          industry_code: string | null
+          sort_order: number
+          status: string
+          suggestion_code: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "configuration_suggestions"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_managed_locations: {
+        Args: { p_include_inactive?: boolean; p_organization_id: string }
+        Returns: {
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          id: string
+          location_code: string | null
+          location_type: string
+          name: string
+          organization_id: string
+          parent_location_id: string | null
+          province: string | null
+          status: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "locations"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_managed_members: {
+        Args: {
+          p_limit?: number
+          p_membership_status?: string
+          p_offset?: number
+          p_organization_id: string
+        }
+        Returns: {
+          application_ids: string[]
+          can_manage: boolean
+          department_ids: string[]
+          email: string
+          employee_ref: string
+          full_name: string
+          is_protected: boolean
+          joined_at: string
+          location_ids: string[]
+          member_id: string
+          membership_status: string
+          phone: string
+          profile_status: string
+          role_ids: string[]
+          user_id: string
+        }[]
+      }
+      get_managed_organization_applications: {
+        Args: { p_organization_id: string }
+        Returns: {
+          application_code: string
+          application_id: string
+          application_name: string
+          application_status: string
+          application_type: string
+          assigned_members: number
+          is_enabled: boolean
+          is_protected: boolean
+          is_registered: boolean
+        }[]
+      }
+      get_managed_role_permissions: {
+        Args: { p_organization_id: string; p_role_id: string }
+        Returns: {
+          description: string
+          is_delegable: boolean
+          module: string
+          permission_code: string
+          permission_id: string
+        }[]
+      }
+      get_managed_roles: {
+        Args: { p_organization_id: string }
+        Returns: {
+          created_at: string
+          description: string
+          is_protected: boolean
+          is_system_role: boolean
+          leadership_key: string
+          member_count: number
+          permission_count: number
+          role_id: string
+          role_name: string
+          updated_at: string
+        }[]
+      }
+      get_managed_suggestion_categories: {
+        Args: { p_include_inactive?: boolean }
+        Returns: {
+          category_code: string
+          created_at: string
+          description: string | null
+          display_name: string
+          status: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "suggestion_categories"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_my_applications: {
+        Args: never
+        Returns: {
+          application_code: string
+          application_id: string
+          organization_id: string
+          organization_slug: string
+        }[]
+      }
+      get_my_locations: {
+        Args: { p_organization_id: string }
+        Returns: {
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          id: string
+          location_code: string | null
+          location_type: string
+          name: string
+          organization_id: string
+          parent_location_id: string | null
+          province: string | null
+          status: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "locations"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_my_member_id: { Args: { p_organization_id: string }; Returns: string }
+      get_my_permissions: {
+        Args: { p_organization_id: string }
+        Returns: {
+          permission_code: string
+        }[]
+      }
+      get_organization_configuration: {
+        Args: { p_organization_id: string }
+        Returns: {
+          default_value: Json
+          description: string
+          display_name: string
+          effective_value: Json
+          is_overridden: boolean
+          module: string
+          organization_editable: boolean
+          setting_key: string
+          value_type: string
+        }[]
+      }
+      get_organization_location_types: {
+        Args: { p_include_inactive?: boolean; p_organization_id: string }
+        Returns: {
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          organization_id: string
+          sort_order: number
+          status: string
+          type_code: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "location_types"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      has_application_access: {
+        Args: { p_application_code: string; p_organization_id: string }
+        Returns: boolean
+      }
+      has_equipment_provider_access: {
+        Args: {
+          p_location_id: string
+          p_operation: string
+          p_owner_organization_id: string
+          p_provider_organization_id: string
+        }
+        Returns: boolean
+      }
+      has_location_access: {
+        Args: { p_location_id: string; p_organization_id: string }
+        Returns: boolean
+      }
+      has_org_permission: {
+        Args: { p_organization_id: string; p_permission_code: string }
+        Returns: boolean
+      }
+      has_org_role: {
+        Args: { p_organization_id: string; p_role_name: string }
+        Returns: boolean
+      }
+      invitation_authority_valid: {
+        Args: { p_invitation_id: string }
+        Returns: boolean
+      }
+      inviter_authority_valid: {
+        Args: { p_organization_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      inviter_can_assign_resources: {
+        Args: {
+          p_application_ids: string[]
+          p_department_ids: string[]
+          p_location_ids: string[]
+          p_organization_id: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      inviter_can_assign_role: {
+        Args: {
+          p_organization_id: string
+          p_role_id: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      is_active_user: { Args: never; Returns: boolean }
+      is_org_member: { Args: { p_organization_id: string }; Returns: boolean }
+      is_organization_leadership: {
+        Args: { p_organization_id: string }
+        Returns: boolean
+      }
+      is_platform_admin: { Args: never; Returns: boolean }
+      is_protected_membership: {
+        Args: { p_member_id: string; p_organization_id: string }
+        Returns: boolean
+      }
+      list_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_lifecycle_status?: string
+          p_limit?: number
+          p_location_id?: string
+          p_offset?: number
+          p_owner_organization_id: string
+        }
+        Returns: {
+          asset_tag: string | null
+          condition_code: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          equipment_name: string
+          equipment_type_id: string
+          id: string
+          installed_on: string | null
+          lifecycle_status: string
+          location_id: string | null
+          manufacturer_name: string | null
+          model_id: string | null
+          model_name: string | null
+          notes: string | null
+          organization_id: string
+          record_version: number
+          serial_number: string | null
+          supplied_on: string | null
+          supplier_name: string | null
+          supplier_organization_id: string | null
+          updated_at: string
+          updated_by: string
+          warranty_end_on: string | null
+          warranty_start_on: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "equipment"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      list_equipment_change_requests: {
+        Args: {
+          p_actor_organization_id: string
+          p_limit?: number
+          p_offset?: number
+          p_owner_organization_id: string
+          p_status?: string
+        }
+        Returns: Json
+      }
+      list_equipment_maintenance_plans: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id?: string
+          p_limit?: number
+          p_offset?: number
+          p_owner_organization_id: string
+        }
+        Returns: Json
+      }
+      list_equipment_maintenance_schedule: {
+        Args: {
+          p_actor_organization_id: string
+          p_due_status?: string
+          p_from_date?: string
+          p_limit?: number
+          p_offset?: number
+          p_owner_organization_id: string
+          p_to_date?: string
+        }
+        Returns: Json
+      }
+      list_equipment_notification_events: {
+        Args: {
+          p_actor_organization_id: string
+          p_limit?: number
+          p_offset?: number
+          p_owner_organization_id: string
+        }
+        Returns: Json
+      }
+      list_equipment_notification_events_legacy: {
+        Args: {
+          p_actor_organization_id: string
+          p_limit?: number
+          p_offset?: number
+          p_owner_organization_id: string
+        }
+        Returns: Json
+      }
+      list_equipment_service_records: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id?: string
+          p_include_superseded?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_owner_organization_id: string
+        }
+        Returns: Json
+      }
+      list_org_invitations: {
+        Args: { p_organization_id: string }
+        Returns: {
+          accepted_at: string
+          created_at: string
+          email: string
+          expires_at: string
+          full_name: string
+          invitation_id: string
+          invited_by: string
+          onboarding_method: string
+          status: string
+        }[]
+      }
+      lock_authorized_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_expected_record_version: number
+          p_operation: string
+        }
+        Returns: {
+          asset_tag: string | null
+          condition_code: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          equipment_name: string
+          equipment_type_id: string
+          id: string
+          installed_on: string | null
+          lifecycle_status: string
+          location_id: string | null
+          manufacturer_name: string | null
+          model_id: string | null
+          model_name: string | null
+          notes: string | null
+          organization_id: string
+          record_version: number
+          serial_number: string | null
+          supplied_on: string | null
+          supplier_name: string | null
+          supplier_organization_id: string | null
+          updated_at: string
+          updated_by: string
+          warranty_end_on: string | null
+          warranty_start_on: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "equipment"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      lock_equipment_configuration: {
+        Args: { p_organization_id: string }
+        Returns: undefined
+      }
+      lock_equipment_mutation: {
+        Args: {
+          p_actor_organization_id: string
+          p_owner_organization_id: string
+        }
+        Returns: undefined
+      }
+      lock_invitation_resources: {
+        Args: { p_organization_id: string }
+        Returns: undefined
+      }
       provision_leadership: {
         Args: {
           p_leadership_type: string
@@ -679,6 +3231,527 @@ export type Database = {
           p_verified_email: string
         }
         Returns: Json
+      }
+      record_equipment_service: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_expected_occurrence_version: number
+          p_maintenance_type_id: string
+          p_occurrence_id: string
+          p_reason: string
+          p_service_date: string
+          p_service_details: Json
+        }
+        Returns: Json
+      }
+      register_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_asset_tag?: string
+          p_description?: string
+          p_equipment_name: string
+          p_equipment_type_id: string
+          p_location_id?: string
+          p_model_id?: string
+          p_owner_organization_id: string
+          p_reason?: string
+          p_serial_number?: string
+        }
+        Returns: Json
+      }
+      replace_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_original_equipment_id: string
+          p_original_expected_version: number
+          p_reason: string
+          p_replacement_equipment_id: string
+          p_replacement_expected_version: number
+        }
+        Returns: Json
+      }
+      reschedule_equipment_maintenance_occurrence: {
+        Args: {
+          p_actor_organization_id: string
+          p_expected_version: number
+          p_new_due_on: string
+          p_occurrence_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      reset_organization_setting: {
+        Args: { p_organization_id: string; p_setting_key: string }
+        Returns: Json
+      }
+      resolve_equipment_change_request: {
+        Args: {
+          p_actor_organization_id: string
+          p_decision: string
+          p_reason: string
+          p_request_id: string
+        }
+        Returns: Json
+      }
+      review_equipment_change_request: {
+        Args: {
+          p_actor_organization_id: string
+          p_reason: string
+          p_request_id: string
+        }
+        Returns: Json
+      }
+      revoke_user_invitation: {
+        Args: { p_invitation_id: string }
+        Returns: boolean
+      }
+      save_configuration_suggestion: {
+        Args: {
+          p_category_code: string
+          p_country_code?: string
+          p_description?: string
+          p_display_name: string
+          p_industry_code?: string
+          p_sort_order?: number
+          p_status?: string
+          p_suggestion_code: string
+          p_suggestion_id: string
+        }
+        Returns: Json
+      }
+      save_equipment_category: {
+        Args: {
+          p_category_code: string
+          p_description?: string
+          p_display_name: string
+          p_organization_id: string
+          p_sort_order?: number
+          p_status?: string
+        }
+        Returns: Json
+      }
+      save_equipment_condition: {
+        Args: {
+          p_condition_code: string
+          p_description?: string
+          p_display_name: string
+          p_organization_id: string
+          p_sort_order?: number
+          p_status?: string
+        }
+        Returns: Json
+      }
+      save_equipment_maintenance_type: {
+        Args: {
+          p_default_interval_unit?: string
+          p_default_interval_value?: number
+          p_description?: string
+          p_display_name: string
+          p_maintenance_type_id: string
+          p_organization_id: string
+          p_sort_order?: number
+          p_status?: string
+          p_type_code: string
+        }
+        Returns: Json
+      }
+      save_equipment_manufacturer: {
+        Args: {
+          p_description?: string
+          p_manufacturer_id: string
+          p_manufacturer_name: string
+          p_organization_id: string
+          p_status?: string
+          p_website_url?: string
+        }
+        Returns: Json
+      }
+      save_equipment_model: {
+        Args: {
+          p_default_specifications?: Json
+          p_description?: string
+          p_equipment_type_id: string
+          p_manufacturer_id: string
+          p_model_id: string
+          p_model_name: string
+          p_model_number?: string
+          p_organization_id: string
+          p_status?: string
+        }
+        Returns: Json
+      }
+      save_equipment_service_relationship: {
+        Args: {
+          p_capabilities: Json
+          p_expected_updated_at: string
+          p_location_ids: string[]
+          p_owner_organization_id: string
+          p_provider_organization_id: string
+          p_reason: string
+          p_relationship_name: string
+          p_scope_type: string
+          p_status: string
+          p_valid_until: string
+        }
+        Returns: Json
+      }
+      save_equipment_specification_field: {
+        Args: {
+          p_description?: string
+          p_display_name: string
+          p_equipment_type_id: string
+          p_field_code: string
+          p_is_required?: boolean
+          p_organization_id: string
+          p_sort_order?: number
+          p_status?: string
+          p_unit_label?: string
+          p_validation_rules?: Json
+          p_value_type: string
+        }
+        Returns: Json
+      }
+      save_equipment_specifications: {
+        Args: {
+          p_actor_organization_id: string
+          p_apply_model_defaults: boolean
+          p_equipment_id: string
+          p_expected_record_version: number
+          p_reason: string
+          p_values: Json
+        }
+        Returns: Json
+      }
+      save_equipment_type: {
+        Args: {
+          p_category_id: string
+          p_description?: string
+          p_display_name: string
+          p_organization_id: string
+          p_sort_order?: number
+          p_status?: string
+          p_type_code: string
+        }
+        Returns: Json
+      }
+      save_location_type: {
+        Args: {
+          p_description?: string
+          p_display_name: string
+          p_organization_id: string
+          p_sort_order?: number
+          p_status?: string
+          p_type_code: string
+        }
+        Returns: Json
+      }
+      save_suggestion_category: {
+        Args: {
+          p_category_code: string
+          p_description?: string
+          p_display_name: string
+          p_status?: string
+        }
+        Returns: Json
+      }
+      set_department_status: {
+        Args: {
+          p_department_id: string
+          p_organization_id: string
+          p_reason: string
+          p_status: string
+        }
+        Returns: Json
+      }
+      set_equipment_lifecycle_status: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_expected_record_version: number
+          p_reason: string
+          p_target_status: string
+        }
+        Returns: Json
+      }
+      set_equipment_maintenance_plan_status: {
+        Args: {
+          p_actor_organization_id: string
+          p_expected_version: number
+          p_plan_id: string
+          p_reason: string
+          p_target_status: string
+        }
+        Returns: Json
+      }
+      set_location_status: {
+        Args: {
+          p_location_id: string
+          p_organization_id: string
+          p_reason: string
+          p_status: string
+        }
+        Returns: Json
+      }
+      set_member_applications: {
+        Args: {
+          p_application_ids: string[]
+          p_expected_application_ids: string[]
+          p_member_id: string
+          p_organization_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      set_member_resource_assignments: {
+        Args: {
+          p_department_ids: string[]
+          p_expected_department_ids: string[]
+          p_expected_location_ids: string[]
+          p_location_ids: string[]
+          p_member_id: string
+          p_organization_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      set_member_roles: {
+        Args: {
+          p_expected_role_ids: string[]
+          p_member_id: string
+          p_organization_id: string
+          p_reason: string
+          p_role_ids: string[]
+        }
+        Returns: Json
+      }
+      set_member_status: {
+        Args: {
+          p_expected_status: string
+          p_member_id: string
+          p_organization_id: string
+          p_reason: string
+          p_status: string
+        }
+        Returns: Json
+      }
+      set_organization_application_status: {
+        Args: {
+          p_application_id: string
+          p_enabled: boolean
+          p_expected_enabled: boolean
+          p_organization_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      set_organization_setting: {
+        Args: {
+          p_organization_id: string
+          p_setting_key: string
+          p_value: Json
+        }
+        Returns: Json
+      }
+      set_organization_status: {
+        Args: { p_organization_id: string; p_reason: string; p_status: string }
+        Returns: Json
+      }
+      set_role_permissions:
+        | {
+            Args: {
+              p_expected_permission_ids: string[]
+              p_organization_id: string
+              p_permission_ids: string[]
+              p_reason: string
+              p_role_id: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              p_organization_id: string
+              p_permission_ids: string[]
+              p_reason: string
+              p_role_id: string
+            }
+            Returns: Json
+          }
+      skip_equipment_maintenance_occurrence: {
+        Args: {
+          p_actor_organization_id: string
+          p_expected_version: number
+          p_occurrence_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      start_equipment_maintenance_occurrence: {
+        Args: {
+          p_actor_organization_id: string
+          p_expected_version: number
+          p_occurrence_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      submit_equipment_change_request: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_expected_record_version: number
+          p_reason: string
+          p_request_payload: Json
+          p_request_type: string
+        }
+        Returns: Json
+      }
+      transfer_equipment: {
+        Args: {
+          p_actor_organization_id: string
+          p_destination_location_id: string
+          p_equipment_id: string
+          p_expected_record_version: number
+          p_reason: string
+        }
+        Returns: Json
+      }
+      update_custom_role: {
+        Args: {
+          p_description: string
+          p_name: string
+          p_organization_id: string
+          p_role_id: string
+        }
+        Returns: Json
+      }
+      update_department: {
+        Args: {
+          p_department_id: string
+          p_description: string
+          p_name: string
+          p_organization_id: string
+          p_parent_department_id: string
+        }
+        Returns: Json
+      }
+      update_equipment_details: {
+        Args: {
+          p_actor_organization_id: string
+          p_changes: Json
+          p_equipment_id: string
+          p_expected_record_version: number
+          p_reason: string
+        }
+        Returns: Json
+      }
+      update_equipment_maintenance_plan: {
+        Args: {
+          p_actor_organization_id: string
+          p_changes: Json
+          p_expected_version: number
+          p_plan_id: string
+          p_reason: string
+        }
+        Returns: Json
+      }
+      update_location: {
+        Args: {
+          p_address: string
+          p_city: string
+          p_country: string
+          p_location_code: string
+          p_location_id: string
+          p_location_type: string
+          p_name: string
+          p_organization_id: string
+          p_parent_location_id: string
+          p_province: string
+        }
+        Returns: Json
+      }
+      update_organization: {
+        Args: { p_name: string; p_organization_id: string }
+        Returns: Json
+      }
+      user_has_organization_permission: {
+        Args: {
+          p_organization_id: string
+          p_permission_code: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      validate_configuration_value: {
+        Args: { p_configuration_id: string; p_value: Json }
+        Returns: boolean
+      }
+      validate_department_parent: {
+        Args: {
+          p_department_id: string
+          p_organization_id: string
+          p_parent_department_id: string
+        }
+        Returns: boolean
+      }
+      validate_equipment_model_defaults: {
+        Args: {
+          p_defaults: Json
+          p_equipment_type_id: string
+          p_organization_id: string
+        }
+        Returns: boolean
+      }
+      validate_equipment_readiness: {
+        Args: { p_equipment_id: string }
+        Returns: undefined
+      }
+      validate_equipment_specification_rules: {
+        Args: { p_rules: Json; p_value_type: string }
+        Returns: boolean
+      }
+      validate_equipment_specification_value: {
+        Args: { p_rules: Json; p_value: Json; p_value_type: string }
+        Returns: boolean
+      }
+      validate_invitation_resources: {
+        Args: {
+          p_application_ids: string[]
+          p_department_ids: string[]
+          p_location_ids: string[]
+          p_organization_id: string
+        }
+        Returns: boolean
+      }
+      validate_location_parent: {
+        Args: {
+          p_location_id: string
+          p_organization_id: string
+          p_parent_location_id: string
+        }
+        Returns: boolean
+      }
+      write_equipment_configuration_audit: {
+        Args: {
+          p_entity_id: string
+          p_entity_type: string
+          p_new_values: Json
+          p_old_values: Json
+          p_organization_id: string
+        }
+        Returns: undefined
+      }
+      write_shared_equipment_audit: {
+        Args: {
+          p_action: string
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_new_values: Json
+          p_old_values: Json
+          p_owner_organization_id: string
+          p_reason: string
+        }
+        Returns: undefined
       }
     }
     Enums: {

@@ -186,6 +186,39 @@ export type Database = {
             referencedRelation: "departments"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "departments_parent_same_org_fkey"
+            columns: ["parent_department_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      leadership_provisioning: {
+        Row: {
+          leadership_type: string
+          provisioned_at: string
+          user_id: string
+        }
+        Insert: {
+          leadership_type: string
+          provisioned_at?: string
+          user_id: string
+        }
+        Update: {
+          leadership_type?: string
+          provisioned_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leadership_provisioning_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       locations: {
@@ -249,6 +282,13 @@ export type Database = {
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "locations_parent_same_org_fkey"
+            columns: ["parent_location_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id", "organization_id"]
+          },
         ]
       }
       member_app_access: {
@@ -287,6 +327,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "organization_members"
             referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "member_app_access_org_application_fkey"
+            columns: ["organization_id", "application_id"]
+            isOneToOne: false
+            referencedRelation: "organization_applications"
+            referencedColumns: ["organization_id", "application_id"]
           },
         ]
       }
@@ -618,7 +665,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      provision_leadership: {
+        Args: {
+          p_leadership_type: string
+          p_user_id: string
+          p_verified_email: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

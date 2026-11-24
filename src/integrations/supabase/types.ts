@@ -2662,6 +2662,10 @@ export type Database = {
         Args: { p_equipment_id: string; p_operation: string }
         Returns: boolean
       }
+      caller_can_upload_equipment_document: {
+        Args: { p_object_name: string }
+        Returns: boolean
+      }
       can_access_equipment: {
         Args: {
           p_actor_organization_id: string

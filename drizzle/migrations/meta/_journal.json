@@ -22,6 +22,13 @@
       "when": 1795539067267,
       "tag": "0002_fix_equipment_document_upload_policy",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795541241509,
+      "tag": "0003_stage4_breakdowns_notifications",
+      "breakpoints": true
     }
   ]
 }

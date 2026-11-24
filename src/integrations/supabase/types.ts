@@ -101,6 +101,207 @@ export type Database = {
           },
         ]
       }
+      breakdown_email_drafts: {
+        Row: {
+          body: string
+          breakdown_id: string
+          cc_recipients: string[]
+          created_at: string
+          id: string
+          organization_id: string
+          prepared_for: string
+          status: string
+          subject: string
+          to_recipients: string[]
+        }
+        Insert: {
+          body: string
+          breakdown_id: string
+          cc_recipients?: string[]
+          created_at?: string
+          id?: string
+          organization_id: string
+          prepared_for: string
+          status?: string
+          subject: string
+          to_recipients?: string[]
+        }
+        Update: {
+          body?: string
+          breakdown_id?: string
+          cc_recipients?: string[]
+          created_at?: string
+          id?: string
+          organization_id?: string
+          prepared_for?: string
+          status?: string
+          subject?: string
+          to_recipients?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdown_email_drafts_breakdown_id_fkey"
+            columns: ["breakdown_id"]
+            isOneToOne: true
+            referencedRelation: "breakdowns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdown_email_drafts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breakdowns: {
+        Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
+          channel: string
+          client_request_key: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          equipment_id: string | null
+          escalated_at: string | null
+          escalation_reason: string | null
+          fault_category: string | null
+          fault_description: string
+          id: string
+          location_id: string | null
+          organization_id: string
+          priority: string
+          reference: string
+          reported_at: string
+          reported_by: string
+          updated_at: string
+        }
+        Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          channel?: string
+          client_request_key?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          equipment_id?: string | null
+          escalated_at?: string | null
+          escalation_reason?: string | null
+          fault_category?: string | null
+          fault_description: string
+          id?: string
+          location_id?: string | null
+          organization_id: string
+          priority?: string
+          reference?: string
+          reported_at?: string
+          reported_by: string
+          updated_at?: string
+        }
+        Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          channel?: string
+          client_request_key?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          equipment_id?: string | null
+          escalated_at?: string | null
+          escalation_reason?: string | null
+          fault_category?: string | null
+          fault_description?: string
+          id?: string
+          location_id?: string | null
+          organization_id?: string
+          priority?: string
+          reference?: string
+          reported_at?: string
+          reported_by?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdowns_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdowns_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdowns_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_branding: {
+        Row: {
+          address: string | null
+          email: string | null
+          legal_name: string
+          logo_public_url: string | null
+          logo_storage_path: string | null
+          organization_id: string
+          phone: string | null
+          registration_number: string | null
+          tax_number: string | null
+          trading_name: string | null
+          updated_at: string
+          updated_by: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          email?: string | null
+          legal_name: string
+          logo_public_url?: string | null
+          logo_storage_path?: string | null
+          organization_id: string
+          phone?: string | null
+          registration_number?: string | null
+          tax_number?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          email?: string | null
+          legal_name?: string
+          logo_public_url?: string | null
+          logo_storage_path?: string | null
+          organization_id?: string
+          phone?: string | null
+          registration_number?: string | null
+          tax_number?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_branding_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuration_definitions: {
         Row: {
           created_at: string
@@ -1835,6 +2036,292 @@ export type Database = {
           },
         ]
       }
+      job_cards: {
+        Row: {
+          client_representative_name: string | null
+          correction_reason: string | null
+          created_at: string
+          created_by: string
+          fault_identified: string
+          id: string
+          job_id: string
+          no_signature_reason: string | null
+          organization_id: string
+          physical_card_reference: string | null
+          recommendations: string | null
+          reference: string
+          repair_outcome: string
+          revision: number
+          service_date: string
+          signature_data: string | null
+          signature_method: string
+          snapshot: Json
+          supersedes_job_card_id: string | null
+          technician_id: string
+          work_carried_out: string
+        }
+        Insert: {
+          client_representative_name?: string | null
+          correction_reason?: string | null
+          created_at?: string
+          created_by: string
+          fault_identified: string
+          id?: string
+          job_id: string
+          no_signature_reason?: string | null
+          organization_id: string
+          physical_card_reference?: string | null
+          recommendations?: string | null
+          reference?: string
+          repair_outcome: string
+          revision?: number
+          service_date?: string
+          signature_data?: string | null
+          signature_method: string
+          snapshot: Json
+          supersedes_job_card_id?: string | null
+          technician_id: string
+          work_carried_out: string
+        }
+        Update: {
+          client_representative_name?: string | null
+          correction_reason?: string | null
+          created_at?: string
+          created_by?: string
+          fault_identified?: string
+          id?: string
+          job_id?: string
+          no_signature_reason?: string | null
+          organization_id?: string
+          physical_card_reference?: string | null
+          recommendations?: string | null
+          reference?: string
+          repair_outcome?: string
+          revision?: number
+          service_date?: string
+          signature_data?: string | null
+          signature_method?: string
+          snapshot?: Json
+          supersedes_job_card_id?: string | null
+          technician_id?: string
+          work_carried_out?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_cards_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_cards_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_cards_supersedes_job_card_id_fkey"
+            columns: ["supersedes_job_card_id"]
+            isOneToOne: false
+            referencedRelation: "job_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_events: {
+        Row: {
+          action: string
+          actor_user_id: string
+          created_at: string
+          from_status: string | null
+          id: string
+          job_id: string
+          reason: string | null
+          technician_id: string | null
+          to_status: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id: string
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          job_id: string
+          reason?: string | null
+          technician_id?: string | null
+          to_status?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          job_id?: string
+          reason?: string | null
+          technician_id?: string | null
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_events_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          accepted_at: string | null
+          assigned_at: string | null
+          assigned_technician_id: string | null
+          breakdown_id: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          close_reason: string | null
+          closed_at: string | null
+          completed_at: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          created_by: string
+          description: string
+          en_route_at: string | null
+          equipment_id: string | null
+          hold_reason: string | null
+          id: string
+          internal_notes: string | null
+          job_type: string
+          location_id: string | null
+          maintenance_occurrence_id: string | null
+          organization_id: string
+          parent_job_id: string | null
+          priority: string
+          reference: string
+          repair_outcome: string | null
+          scheduled_for: string | null
+          started_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          assigned_at?: string | null
+          assigned_technician_id?: string | null
+          breakdown_id?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          close_reason?: string | null
+          closed_at?: string | null
+          completed_at?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by: string
+          description: string
+          en_route_at?: string | null
+          equipment_id?: string | null
+          hold_reason?: string | null
+          id?: string
+          internal_notes?: string | null
+          job_type?: string
+          location_id?: string | null
+          maintenance_occurrence_id?: string | null
+          organization_id: string
+          parent_job_id?: string | null
+          priority?: string
+          reference?: string
+          repair_outcome?: string | null
+          scheduled_for?: string | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          assigned_at?: string | null
+          assigned_technician_id?: string | null
+          breakdown_id?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          close_reason?: string | null
+          closed_at?: string | null
+          completed_at?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          en_route_at?: string | null
+          equipment_id?: string | null
+          hold_reason?: string | null
+          id?: string
+          internal_notes?: string | null
+          job_type?: string
+          location_id?: string | null
+          maintenance_occurrence_id?: string | null
+          organization_id?: string
+          parent_job_id?: string | null
+          priority?: string
+          reference?: string
+          repair_outcome?: string | null
+          scheduled_for?: string | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_breakdown_id_fkey"
+            columns: ["breakdown_id"]
+            isOneToOne: false
+            referencedRelation: "breakdowns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_maintenance_occurrence_id_fkey"
+            columns: ["maintenance_occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_maintenance_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobs_parent_job_id_fkey"
+            columns: ["parent_job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leadership_bootstrap_mappings: {
         Row: {
           application_id: string
@@ -2172,6 +2659,147 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "roles"
             referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      notification_deliveries: {
+        Row: {
+          channel: string
+          created_at: string
+          email_recipients: string[]
+          event_type: string
+          id: string
+          organization_id: string
+          payload: Json
+          processed_at: string | null
+          recipient_user_ids: string[]
+          status: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          email_recipients?: string[]
+          event_type: string
+          id?: string
+          organization_id: string
+          payload: Json
+          processed_at?: string | null
+          recipient_user_ids?: string[]
+          status?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          email_recipients?: string[]
+          event_type?: string
+          id?: string
+          organization_id?: string
+          payload?: Json
+          processed_at?: string | null
+          recipient_user_ids?: string[]
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_deliveries_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_settings: {
+        Row: {
+          email_enabled: boolean
+          email_recipients: string[]
+          event_type: string
+          id: string
+          in_app_enabled: boolean
+          organization_id: string
+          push_enabled: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          email_enabled?: boolean
+          email_recipients?: string[]
+          event_type: string
+          id?: string
+          in_app_enabled?: boolean
+          organization_id: string
+          push_enabled?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          email_enabled?: boolean
+          email_recipients?: string[]
+          event_type?: string
+          id?: string
+          in_app_enabled?: boolean
+          organization_id?: string
+          push_enabled?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          link: string | null
+          notification_type: string
+          organization_id: string
+          read_at: string | null
+          recipient_user_id: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          link?: string | null
+          notification_type: string
+          organization_id: string
+          read_at?: string | null
+          recipient_user_id: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          link?: string | null
+          notification_type?: string
+          organization_id?: string
+          read_at?: string | null
+          recipient_user_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2553,6 +3181,27 @@ export type Database = {
         }
         Relationships: []
       }
+      technician_availability: {
+        Row: {
+          note: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          note?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          note?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_invitations: {
         Row: {
           accepted_at: string | null
@@ -2649,6 +3298,10 @@ export type Database = {
       archive_equipment_document: {
         Args: { p_actor_organization_id: string; p_document_id: string }
         Returns: Json
+      }
+      breakdown_derived_status: {
+        Args: { p_b: Database["public"]["Tables"]["breakdowns"]["Row"] }
+        Returns: string
       }
       calculate_equipment_maintenance_due_date: {
         Args: {
@@ -2776,6 +3429,10 @@ export type Database = {
         Args: { p_location_id: string; p_organization_id: string }
         Returns: boolean
       }
+      can_view_client_service_record: {
+        Args: { p_loc: string; p_org: string }
+        Returns: boolean
+      }
       can_view_configuration: {
         Args: { p_organization_id: string }
         Returns: boolean
@@ -2885,6 +3542,10 @@ export type Database = {
           role_id: string
           role_name: string
         }[]
+      }
+      get_breakdown_email_draft: {
+        Args: { p_breakdown_id: string }
+        Returns: Json
       }
       get_configuration_suggestions: {
         Args: {
@@ -3209,6 +3870,23 @@ export type Database = {
         Args: { p_member_id: string; p_organization_id: string }
         Returns: boolean
       }
+      is_stgl: { Args: { p_perm: string }; Returns: boolean }
+      job_public_json: {
+        Args: {
+          p_internal: boolean
+          p_job: Database["public"]["Tables"]["jobs"]["Row"]
+        }
+        Returns: Json
+      }
+      list_breakdowns: {
+        Args: {
+          p_limit?: number
+          p_offset?: number
+          p_organization_id?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
       list_equipment: {
         Args: {
           p_actor_organization_id: string
@@ -3333,6 +4011,11 @@ export type Database = {
         Args: { p_actor_organization_id: string; p_equipment_id: string }
         Returns: Json
       }
+      list_my_notifications: {
+        Args: { p_limit?: number; p_offset?: number; p_unread_only?: boolean }
+        Returns: Json
+      }
+      list_notification_settings: { Args: never; Returns: Json }
       list_org_invitations: {
         Args: { p_organization_id: string }
         Returns: {
@@ -3401,6 +4084,61 @@ export type Database = {
       }
       lock_invitation_resources: {
         Args: { p_organization_id: string }
+        Returns: undefined
+      }
+      log_job_event: {
+        Args: {
+          p_action: string
+          p_from: string
+          p_job: Database["public"]["Tables"]["jobs"]["Row"]
+          p_reason: string
+        }
+        Returns: undefined
+      }
+      mark_all_notifications_read: { Args: never; Returns: number }
+      mark_notification_read: {
+        Args: { p_notification_id: string }
+        Returns: boolean
+      }
+      notify_job_parties: {
+        Args: {
+          p_body: string
+          p_job: Database["public"]["Tables"]["jobs"]["Row"]
+          p_title: string
+          p_to_client: boolean
+          p_to_managers: boolean
+          p_to_tech: boolean
+          p_type: string
+        }
+        Returns: undefined
+      }
+      notify_members: {
+        Args: {
+          p_body: string
+          p_entity_id: string
+          p_entity_type: string
+          p_exclude?: string
+          p_link: string
+          p_loc: string
+          p_loc_scoped: boolean
+          p_org: string
+          p_perm: string
+          p_title: string
+          p_type: string
+        }
+        Returns: number
+      }
+      notify_user: {
+        Args: {
+          p_body: string
+          p_entity_id: string
+          p_entity_type: string
+          p_link: string
+          p_org: string
+          p_title: string
+          p_type: string
+          p_user: string
+        }
         Returns: undefined
       }
       provision_leadership: {
@@ -3474,6 +4212,22 @@ export type Database = {
           p_reason: string
           p_replacement_equipment_id: string
           p_replacement_expected_version: number
+        }
+        Returns: Json
+      }
+      report_breakdown: {
+        Args: {
+          p_channel?: string
+          p_client_request_key?: string
+          p_contact_email?: string
+          p_contact_name?: string
+          p_contact_phone?: string
+          p_equipment_id: string
+          p_fault_category?: string
+          p_fault_description: string
+          p_location_id: string
+          p_organization_id: string
+          p_priority?: string
         }
         Returns: Json
       }
@@ -3652,6 +4406,16 @@ export type Database = {
         }
         Returns: Json
       }
+      save_notification_setting: {
+        Args: {
+          p_email: boolean
+          p_email_recipients: string[]
+          p_event_type: string
+          p_in_app: boolean
+          p_push: boolean
+        }
+        Returns: Json
+      }
       save_suggestion_category: {
         Args: {
           p_category_code: string
@@ -3801,6 +4565,7 @@ export type Database = {
         }
         Returns: Json
       }
+      stgl_organization_id: { Args: never; Returns: string }
       submit_equipment_change_request: {
         Args: {
           p_actor_organization_id: string
@@ -3819,6 +4584,15 @@ export type Database = {
           p_equipment_id: string
           p_expected_record_version: number
           p_reason: string
+        }
+        Returns: Json
+      }
+      update_breakdown: {
+        Args: {
+          p_action: string
+          p_breakdown_id: string
+          p_priority?: string
+          p_reason?: string
         }
         Returns: Json
       }
@@ -3879,6 +4653,14 @@ export type Database = {
       update_organization: {
         Args: { p_name: string; p_organization_id: string }
         Returns: Json
+      }
+      user_can_see_location: {
+        Args: { p_loc: string; p_org: string; p_user: string }
+        Returns: boolean
+      }
+      user_has_org_permission: {
+        Args: { p_org: string; p_perm: string; p_user: string }
+        Returns: boolean
       }
       user_has_organization_permission: {
         Args: {

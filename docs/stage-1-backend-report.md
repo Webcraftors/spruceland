@@ -76,12 +76,15 @@ Live local HTTP checks executed against the actual endpoint:
 - Missing token POST: 401, generic authentication error.
 - Invalid synthetic token POST: 401, generic authentication error.
 - Untrusted Origin POST: 403, generic origin error.
+- GET: 405; same-origin POST preflight: 204.
 
 Read-only catalog checks verified the real schema, counts, matching role/application mappings, function definition and API-role execution privileges. No real leadership assignment was written during tests.
 
 ## Deployment status
 
-The endpoint is implemented and preview rejection checks passed. Publication and post-publication rejection checks are recorded below when executed. This is a TanStack endpoint, not a separately deployed Supabase Edge Function. New server endpoint/secret changes require publishing the application to affect the live deployment.
+Publishing was requested for `https://spruceland.lovable.app`. After publication, actual POST requests to `https://spruceland.lovable.app/api/public/provision-leadership` returned 401 for both missing and invalid synthetic tokens, with the expected generic JSON responses. This verifies the published endpoint's rejection paths, not a successful leadership assignment or every aspect of the deployment. This is a TanStack endpoint, not a separately deployed Supabase Edge Function. New server endpoint/secret changes require publishing the application to affect the live deployment.
+
+The final preview build/typecheck log reported `build OK`. All 33 targeted tests passed. Basic security checks reported no issues; deep code security analysis was not run. Final read-only counts remain 0 platform administrators and 0 leadership provisioning records, confirming the safe checks did not provision leadership. Source comparison against the pre-authentication UI shows only the new API route in the frontend directory tree; existing screens, components, session code, styles and package files match that baseline.
 
 ## Secure manual acceptance tests
 

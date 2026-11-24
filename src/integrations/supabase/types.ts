@@ -3035,6 +3035,110 @@ export type Database = {
           },
         ]
       }
+      product_categories: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+          status: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+          status?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category_id: string | null
+          cost_price: number | null
+          created_at: string
+          created_by: string
+          currency: string
+          description: string | null
+          id: string
+          image_urls: string[]
+          internal_notes: string | null
+          is_active: boolean
+          is_published: boolean
+          low_stock_threshold: number
+          name: string
+          quantity_on_hand: number
+          quantity_reserved: number
+          selling_price: number
+          sku: string
+          supplier_reference: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          cost_price?: number | null
+          created_at?: string
+          created_by: string
+          currency?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          internal_notes?: string | null
+          is_active?: boolean
+          is_published?: boolean
+          low_stock_threshold?: number
+          name: string
+          quantity_on_hand?: number
+          quantity_reserved?: number
+          selling_price?: number
+          sku: string
+          supplier_reference?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          cost_price?: number | null
+          created_at?: string
+          created_by?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          internal_notes?: string | null
+          is_active?: boolean
+          is_published?: boolean
+          low_stock_threshold?: number
+          name?: string
+          quantity_on_hand?: number
+          quantity_reserved?: number
+          selling_price?: number
+          sku?: string
+          supplier_reference?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -3147,6 +3251,210 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "roles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          actor_user_id: string
+          created_at: string
+          id: string
+          movement_type: string
+          on_hand_after: number
+          order_id: string | null
+          product_id: string
+          quantity: number
+          reason: string | null
+          reference: string | null
+          reserved_after: number
+          supplier_reference: string | null
+        }
+        Insert: {
+          actor_user_id: string
+          created_at?: string
+          id?: string
+          movement_type: string
+          on_hand_after: number
+          order_id?: string | null
+          product_id: string
+          quantity: number
+          reason?: string | null
+          reference?: string | null
+          reserved_after: number
+          supplier_reference?: string | null
+        }
+        Update: {
+          actor_user_id?: string
+          created_at?: string
+          id?: string
+          movement_type?: string
+          on_hand_after?: number
+          order_id?: string | null
+          product_id?: string
+          quantity?: number
+          reason?: string | null
+          reference?: string | null
+          reserved_after?: number
+          supplier_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "store_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_order_lines: {
+        Row: {
+          currency: string
+          id: string
+          line_total: number
+          order_id: string
+          product_id: string
+          product_name: string
+          quantity: number
+          sku: string
+          unit: string
+          unit_price: number
+        }
+        Insert: {
+          currency: string
+          id?: string
+          line_total: number
+          order_id: string
+          product_id: string
+          product_name: string
+          quantity: number
+          sku: string
+          unit: string
+          unit_price: number
+        }
+        Update: {
+          currency?: string
+          id?: string
+          line_total?: number
+          order_id?: string
+          product_id?: string
+          product_name?: string
+          quantity?: number
+          sku?: string
+          unit?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_order_lines_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "store_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_order_lines_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_orders: {
+        Row: {
+          cancelled_at: string | null
+          client_request_key: string | null
+          completed_at: string | null
+          confirmed_at: string | null
+          currency: string
+          delivered_at: string | null
+          delivery_instructions: string | null
+          delivery_location_id: string | null
+          dispatched_at: string | null
+          id: string
+          invoice_reference: string | null
+          organization_id: string
+          payment_status: string
+          placed_at: string
+          placed_by: string
+          purchase_order_reference: string | null
+          quotation_reference: string | null
+          reference: string
+          status: string
+          status_reason: string | null
+          subtotal: number
+          updated_at: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          client_request_key?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          currency: string
+          delivered_at?: string | null
+          delivery_instructions?: string | null
+          delivery_location_id?: string | null
+          dispatched_at?: string | null
+          id?: string
+          invoice_reference?: string | null
+          organization_id: string
+          payment_status?: string
+          placed_at?: string
+          placed_by: string
+          purchase_order_reference?: string | null
+          quotation_reference?: string | null
+          reference?: string
+          status?: string
+          status_reason?: string | null
+          subtotal: number
+          updated_at?: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          client_request_key?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          currency?: string
+          delivered_at?: string | null
+          delivery_instructions?: string | null
+          delivery_location_id?: string | null
+          dispatched_at?: string | null
+          id?: string
+          invoice_reference?: string | null
+          organization_id?: string
+          payment_status?: string
+          placed_at?: string
+          placed_by?: string
+          purchase_order_reference?: string | null
+          quotation_reference?: string | null
+          reference?: string
+          status?: string
+          status_reason?: string | null
+          subtotal?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_orders_delivery_location_id_fkey"
+            columns: ["delivery_location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_orders_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -3299,9 +3607,25 @@ export type Database = {
         Args: { p_actor_organization_id: string; p_document_id: string }
         Returns: Json
       }
+      assert_eligible_technician: {
+        Args: { p_user: string }
+        Returns: undefined
+      }
+      assign_job: {
+        Args: {
+          p_job_id: string
+          p_scheduled_for?: string
+          p_technician_id: string
+        }
+        Returns: Json
+      }
       breakdown_derived_status: {
         Args: { p_b: Database["public"]["Tables"]["breakdowns"]["Row"] }
         Returns: string
+      }
+      build_job_card_snapshot: {
+        Args: { p_job: Database["public"]["Tables"]["jobs"]["Row"] }
+        Returns: Json
       }
       calculate_equipment_maintenance_due_date: {
         Args: {
@@ -3441,12 +3765,39 @@ export type Database = {
         Args: { p_organization_id: string }
         Returns: boolean
       }
+      complete_job: {
+        Args: {
+          p_client_representative_name?: string
+          p_fault_identified: string
+          p_job_id: string
+          p_no_signature_reason?: string
+          p_physical_card_reference?: string
+          p_recommendations?: string
+          p_repair_outcome: string
+          p_signature_data?: string
+          p_signature_method: string
+          p_work_carried_out: string
+        }
+        Returns: Json
+      }
       correct_equipment_service_record: {
         Args: {
           p_actor_organization_id: string
           p_changes: Json
           p_reason: string
           p_service_record_id: string
+        }
+        Returns: Json
+      }
+      correct_job_card: {
+        Args: {
+          p_correction_reason: string
+          p_fault_identified?: string
+          p_job_card_id: string
+          p_physical_card_reference?: string
+          p_recommendations?: string
+          p_repair_outcome?: string
+          p_work_carried_out?: string
         }
         Returns: Json
       }
@@ -3484,6 +3835,22 @@ export type Database = {
           p_recurrence_type: string
           p_reminder_days?: number
           p_scheduling_basis: string
+        }
+        Returns: Json
+      }
+      create_job: {
+        Args: {
+          p_breakdown_id?: string
+          p_description: string
+          p_equipment_id?: string
+          p_internal_notes?: string
+          p_job_type?: string
+          p_location_id?: string
+          p_maintenance_occurrence_id?: string
+          p_organization_id: string
+          p_priority?: string
+          p_scheduled_for?: string
+          p_technician_id?: string
         }
         Returns: Json
       }
@@ -3547,6 +3914,7 @@ export type Database = {
         Args: { p_breakdown_id: string }
         Returns: Json
       }
+      get_company_branding: { Args: never; Returns: Json }
       get_configuration_suggestions: {
         Args: {
           p_category_code?: string
@@ -3607,6 +3975,8 @@ export type Database = {
         Args: { p_actor_organization_id: string; p_equipment_id: string }
         Returns: Json
       }
+      get_job: { Args: { p_job_id: string }; Returns: Json }
+      get_job_card: { Args: { p_job_card_id: string }; Returns: Json }
       get_managed_configuration_suggestions: {
         Args: { p_category_code?: string; p_include_inactive?: boolean }
         Returns: {
@@ -3808,6 +4178,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_store_order: { Args: { p_order_id: string }; Returns: Json }
       has_application_access: {
         Args: { p_application_code: string; p_organization_id: string }
         Returns: boolean
@@ -3871,6 +4242,7 @@ export type Database = {
         Returns: boolean
       }
       is_stgl: { Args: { p_perm: string }; Returns: boolean }
+      job_dashboard_summary: { Args: never; Returns: Json }
       job_public_json: {
         Args: {
           p_internal: boolean
@@ -4011,6 +4383,28 @@ export type Database = {
         Args: { p_actor_organization_id: string; p_equipment_id: string }
         Returns: Json
       }
+      list_inventory: {
+        Args: {
+          p_limit?: number
+          p_low_stock_only?: boolean
+          p_offset?: number
+          p_search?: string
+        }
+        Returns: Json
+      }
+      list_jobs: {
+        Args: {
+          p_limit?: number
+          p_location_id?: string
+          p_offset?: number
+          p_organization_id?: string
+          p_overdue_only?: boolean
+          p_status?: string
+          p_technician_id?: string
+          p_view?: string
+        }
+        Returns: Json
+      }
       list_my_notifications: {
         Args: { p_limit?: number; p_offset?: number; p_unread_only?: boolean }
         Returns: Json
@@ -4029,6 +4423,27 @@ export type Database = {
           onboarding_method: string
           status: string
         }[]
+      }
+      list_stock_movements: {
+        Args: { p_limit?: number; p_product_id: string }
+        Returns: Json
+      }
+      list_store_orders: {
+        Args: {
+          p_limit?: number
+          p_offset?: number
+          p_organization_id?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
+      list_store_products: {
+        Args: {
+          p_category_id?: string
+          p_organization_id: string
+          p_search?: string
+        }
+        Returns: Json
       }
       lock_authorized_equipment: {
         Args: {
@@ -4095,6 +4510,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      manage_job: {
+        Args: { p_action: string; p_job_id: string; p_reason?: string }
+        Returns: Json
+      }
       mark_all_notifications_read: { Args: never; Returns: number }
       mark_notification_read: {
         Args: { p_notification_id: string }
@@ -4141,6 +4560,22 @@ export type Database = {
         }
         Returns: undefined
       }
+      order_json: {
+        Args: { p_o: Database["public"]["Tables"]["store_orders"]["Row"] }
+        Returns: Json
+      }
+      pickup_job: { Args: { p_job_id: string }; Returns: Json }
+      place_store_order: {
+        Args: {
+          p_client_request_key?: string
+          p_delivery_instructions?: string
+          p_delivery_location_id?: string
+          p_lines: Json
+          p_organization_id: string
+          p_purchase_order_reference?: string
+        }
+        Returns: Json
+      }
       provision_leadership: {
         Args: {
           p_leadership_type: string
@@ -4174,6 +4609,17 @@ export type Database = {
           p_supersedes_verification_id?: string
           p_valid_until: string
           p_verified_on: string
+        }
+        Returns: Json
+      }
+      record_stock_movement: {
+        Args: {
+          p_movement_type: string
+          p_product_id: string
+          p_quantity: number
+          p_reason?: string
+          p_reference?: string
+          p_supplier_reference?: string
         }
         Returns: Json
       }
@@ -4265,6 +4711,20 @@ export type Database = {
       revoke_user_invitation: {
         Args: { p_invitation_id: string }
         Returns: boolean
+      }
+      save_company_branding: {
+        Args: {
+          p_address: string
+          p_email: string
+          p_legal_name: string
+          p_logo_public_url: string
+          p_phone: string
+          p_registration_number: string
+          p_tax_number: string
+          p_trading_name: string
+          p_website: string
+        }
+        Returns: Json
       }
       save_configuration_suggestion: {
         Args: {
@@ -4416,6 +4876,35 @@ export type Database = {
         }
         Returns: Json
       }
+      save_product: {
+        Args: {
+          p_category_id: string
+          p_cost_price?: number
+          p_currency?: string
+          p_description?: string
+          p_image_urls?: string[]
+          p_internal_notes?: string
+          p_is_active?: boolean
+          p_is_published?: boolean
+          p_low_stock_threshold?: number
+          p_name: string
+          p_product_id: string
+          p_selling_price: number
+          p_sku: string
+          p_supplier_reference?: string
+          p_unit?: string
+        }
+        Returns: Json
+      }
+      save_product_category: {
+        Args: {
+          p_code: string
+          p_name: string
+          p_sort_order?: number
+          p_status?: string
+        }
+        Returns: Json
+      }
       save_suggestion_category: {
         Args: {
           p_category_code: string
@@ -4547,6 +5036,20 @@ export type Database = {
             }
             Returns: Json
           }
+      set_store_order_commercial: {
+        Args: {
+          p_invoice_reference?: string
+          p_order_id: string
+          p_payment_status?: string
+          p_purchase_order_reference?: string
+          p_quotation_reference?: string
+        }
+        Returns: Json
+      }
+      set_technician_availability: {
+        Args: { p_note?: string; p_status: string }
+        Returns: Json
+      }
       skip_equipment_maintenance_occurrence: {
         Args: {
           p_actor_organization_id: string
@@ -4577,6 +5080,7 @@ export type Database = {
         }
         Returns: Json
       }
+      technician_home: { Args: never; Returns: Json }
       transfer_equipment: {
         Args: {
           p_actor_organization_id: string
@@ -4585,6 +5089,10 @@ export type Database = {
           p_expected_record_version: number
           p_reason: string
         }
+        Returns: Json
+      }
+      transition_job: {
+        Args: { p_action: string; p_job_id: string; p_reason?: string }
         Returns: Json
       }
       update_breakdown: {
@@ -4652,6 +5160,10 @@ export type Database = {
       }
       update_organization: {
         Args: { p_name: string; p_organization_id: string }
+        Returns: Json
+      }
+      update_store_order: {
+        Args: { p_action: string; p_order_id: string; p_reason?: string }
         Returns: Json
       }
       user_can_see_location: {

@@ -1,0 +1,2 @@
+GRANT ALL ON public.organizations, public.organization_members, public.member_roles, public.roles, public.role_permissions, public.permissions,
+  public.profiles, public.member_locations, public.locations TO service_role;

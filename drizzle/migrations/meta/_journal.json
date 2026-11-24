@@ -29,6 +29,27 @@
       "when": 1795541241509,
       "tag": "0003_stage4_breakdowns_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795541391820,
+      "tag": "0004_stage5_job_lifecycle_job_cards",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795541493158,
+      "tag": "0005_stage4_inventory_client_store",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795541543194,
+      "tag": "0006_service_role_foundation_grants",
+      "breakpoints": true
     }
   ]
 }

@@ -18,11 +18,11 @@ Read-only queries against the live database:
 | B1 | Leadership grant/revocation live test | Blocked | Endpoint returns 401 correctly | Needs approved verified accounts |
 | C | Stage 2 Auth & security | Verified (backend) | Invitations, RBAC, tenant isolation, private storage — 12/12 E2E | Frontend sign-in = Stage 7 |
 | D | Stage 3 Equipment & compliance | Verified (backend) | Added ZMA verifications + documents; 31/31 E2E | — |
-| E | Stage 4 Breakdowns & jobs | Not started | none | Next action: design breakdown/job tables + transition functions |
-| F | Stage 4 Inventory & client store | Not started | none | Products, stock movements, store publication, orders |
-| G | Stage 5 Technician ops + job cards | Not started | Mock workflow rules in `src/domain/ticket-workflow.ts` (tested) | Port rules to DB functions; sign-off lock |
-| H | Internal notifications | Not started | `equipment_notification_events` | General notifications table + event triggers; email drafts |
-| I | Handover | Not started | `docs/*` from UI phase | `99-handover.md` |
+| E | Stage 4 Breakdowns & jobs | Verified (backend) | Breakdowns, jobs, derived status, dashboard data — 109/109 E2E (shared) | Frontend = Stage 7 |
+| F | Stage 4 Inventory & client store | Verified (backend) | Products, append-only stock, reservations, store, orders | — |
+| G | Stage 5 Technician ops + job cards | Verified (backend) | Pickup race, lifecycle, job cards + revisions | Branding details from STGL |
+| H | Internal notifications | Verified (backend) | Inbox, settings, push/email outbox, breakdown email drafts | Providers = Stage 6 |
+| I | Handover | Done | `99-handover.md` | — |
 
 ## Out of scope (Deferred)
 Stages 6–8: external email/push delivery, frontend integration, APK/store, payments, final production deploy.

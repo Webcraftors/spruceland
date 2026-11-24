@@ -32,3 +32,6 @@ Active: Master Backend Implementation Stages 1–5 — live status in `docs/back
 - [x] Architecture, domain, access, environment and backend/Capacitor documentation delivered.
 - [x] Original repair-to-approval browser workflow verified in the prior UI phase; no new browser lifecycle claim for Stage 1.
 - [x] Remaining production work documented; screens and operational data remain mock-backed.
+- [x] Backend Stages 1–5 (see docs/backend-implementation/99-handover.md)
+- [ ] Stage 6 push/email providers — needs OneSignal and Resend keys
+- [ ] Leadership grant/revoke live test — needs approved staff emails

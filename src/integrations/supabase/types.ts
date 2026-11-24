@@ -625,6 +625,73 @@ export type Database = {
           },
         ]
       }
+      equipment_documents: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          document_type: string
+          equipment_id: string
+          file_name: string
+          id: string
+          mime_type: string | null
+          organization_id: string
+          status: string
+          storage_path: string
+          uploaded_by: string
+          verification_id: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          document_type: string
+          equipment_id: string
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          organization_id: string
+          status?: string
+          storage_path: string
+          uploaded_by: string
+          verification_id?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          document_type?: string
+          equipment_id?: string
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          organization_id?: string
+          status?: string
+          storage_path?: string
+          uploaded_by?: string
+          verification_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_documents_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_documents_verification_id_fkey"
+            columns: ["verification_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_verifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_maintenance_occurrences: {
         Row: {
           created_at: string
@@ -1540,6 +1607,86 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_verifications: {
+        Row: {
+          actor_organization_id: string | null
+          authority: string
+          certificate_number: string | null
+          created_at: string
+          equipment_id: string
+          id: string
+          notes: string | null
+          organization_id: string
+          outcome: string
+          recorded_by: string
+          seal_number: string | null
+          supersedes_verification_id: string | null
+          valid_until: string
+          verified_on: string
+        }
+        Insert: {
+          actor_organization_id?: string | null
+          authority?: string
+          certificate_number?: string | null
+          created_at?: string
+          equipment_id: string
+          id?: string
+          notes?: string | null
+          organization_id: string
+          outcome: string
+          recorded_by: string
+          seal_number?: string | null
+          supersedes_verification_id?: string | null
+          valid_until: string
+          verified_on: string
+        }
+        Update: {
+          actor_organization_id?: string | null
+          authority?: string
+          certificate_number?: string | null
+          created_at?: string
+          equipment_id?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          outcome?: string
+          recorded_by?: string
+          seal_number?: string | null
+          supersedes_verification_id?: string | null
+          valid_until?: string
+          verified_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_verifications_actor_organization_id_fkey"
+            columns: ["actor_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_verifications_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_verifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_verifications_supersedes_verification_id_fkey"
+            columns: ["supersedes_verification_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_verifications"
             referencedColumns: ["id"]
           },
         ]
@@ -2499,6 +2646,10 @@ export type Database = {
         }
         Returns: Json
       }
+      archive_equipment_document: {
+        Args: { p_actor_organization_id: string; p_document_id: string }
+        Returns: Json
+      }
       calculate_equipment_maintenance_due_date: {
         Args: {
           p_base_date: string
@@ -2506,6 +2657,10 @@ export type Database = {
           p_interval_value: number
         }
         Returns: string
+      }
+      caller_can_access_equipment: {
+        Args: { p_equipment_id: string; p_operation: string }
+        Returns: boolean
       }
       can_access_equipment: {
         Args: {
@@ -3103,6 +3258,22 @@ export type Database = {
         }
         Returns: Json
       }
+      list_equipment_compliance_status: {
+        Args: {
+          p_actor_organization_id: string
+          p_due_within_days?: number
+          p_owner_organization_id: string
+        }
+        Returns: Json
+      }
+      list_equipment_documents: {
+        Args: {
+          p_actor_organization_id: string
+          p_equipment_id: string
+          p_include_archived?: boolean
+        }
+        Returns: Json
+      }
       list_equipment_maintenance_plans: {
         Args: {
           p_actor_organization_id: string
@@ -3152,6 +3323,10 @@ export type Database = {
           p_offset?: number
           p_owner_organization_id: string
         }
+        Returns: Json
+      }
+      list_equipment_verifications: {
+        Args: { p_actor_organization_id: string; p_equipment_id: string }
         Returns: Json
       }
       list_org_invitations: {
@@ -3245,6 +3420,21 @@ export type Database = {
         }
         Returns: Json
       }
+      record_equipment_verification: {
+        Args: {
+          p_actor_organization_id: string
+          p_authority?: string
+          p_certificate_number?: string
+          p_equipment_id: string
+          p_notes?: string
+          p_outcome: string
+          p_seal_number?: string
+          p_supersedes_verification_id?: string
+          p_valid_until: string
+          p_verified_on: string
+        }
+        Returns: Json
+      }
       register_equipment: {
         Args: {
           p_actor_organization_id: string
@@ -3257,6 +3447,18 @@ export type Database = {
           p_owner_organization_id: string
           p_reason?: string
           p_serial_number?: string
+        }
+        Returns: Json
+      }
+      register_equipment_document: {
+        Args: {
+          p_actor_organization_id: string
+          p_document_type: string
+          p_equipment_id: string
+          p_file_name: string
+          p_mime_type?: string
+          p_storage_path: string
+          p_verification_id?: string
         }
         Returns: Json
       }

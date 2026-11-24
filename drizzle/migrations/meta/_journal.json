@@ -8,6 +8,13 @@
       "when": 1795498732854,
       "tag": "0000_account_profiles_and_internal_access",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795538941723,
+      "tag": "0001_equipment_compliance_and_documents",
+      "breakpoints": true
     }
   ]
 }

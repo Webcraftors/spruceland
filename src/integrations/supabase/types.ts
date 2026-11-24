@@ -556,8 +556,10 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          client_context: Json | null
           created_at: string
           email: string | null
+          employee_ref: string | null
           full_name: string | null
           id: string
           phone: string | null
@@ -566,8 +568,10 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          client_context?: Json | null
           created_at?: string
           email?: string | null
+          employee_ref?: string | null
           full_name?: string | null
           id: string
           phone?: string | null
@@ -576,8 +580,10 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          client_context?: Json | null
           created_at?: string
           email?: string | null
+          employee_ref?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -665,6 +671,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      current_internal_role: { Args: never; Returns: string }
       provision_leadership: {
         Args: {
           p_leadership_type: string

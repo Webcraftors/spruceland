@@ -1,10 +1,18 @@
-import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { Home, Ticket, CalendarClock, User, Plus } from "lucide-react";
-import { useClientSession } from "@/repositories/portal-repo";
+import { readAccount } from "@/lib/account-access";
+import { useAccount } from "@/lib/account";
+import { toast } from "sonner";
 import { ClientSessionCtx } from "@/components/portal/shared";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/client_/app")({
+  ssr: false,
+  beforeLoad: async () => {
+    const account = await readAccount();
+    if (!account || !account.client || account.profile.status !== 'active') throw redirect({ to: '/client' });
+    return { clientSession: account.client };
+  },
   component: ClientLayout,
 });
 
@@ -16,18 +24,10 @@ const NAV = [
 ] as const;
 
 function ClientLayout() {
-  const [s, setS] = useClientSession();
-  const navigate = useNavigate();
+  const { clientSession: s } = Route.useRouteContext();
+  const { signOut: accountSignOut } = useAccount();
   const path = useRouterState({ select: r => r.location.pathname });
-  if (s === undefined) return <div className="min-h-dvh grid place-items-center text-sm text-muted-foreground">Loading…</div>;
-  if (!s) {
-    return (
-      <div className="min-h-dvh grid place-items-center p-6 text-center">
-        <div><p className="text-sm text-muted-foreground">You're signed out.</p><Link to="/client" className="mt-3 inline-block font-semibold text-primary">Sign in to the Client Portal</Link></div>
-      </div>
-    );
-  }
-  const signOut = () => { setS(null); navigate({ to: "/" }); };
+  const signOut = () => { void accountSignOut().catch(e => toast.error(e.message)); };
   const active = (to: string, exact?: boolean) => exact ? path === to || path === to + "/" : path.startsWith(to);
 
   return (

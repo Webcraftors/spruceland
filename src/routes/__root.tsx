@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { AccountProvider } from "@/lib/account";
 import { ThemeProvider } from "@/lib/theme";
 
 function NotFoundComponent() {
@@ -56,8 +57,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Spruceland — Field Service & Weighing Operations" },
       { name: "twitter:description", content: "Spruceland Technologies operations dashboard: jobs, clients, inventory and financials across Lusaka and Ndola." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/85b9ef51-9ed1-45bd-a0d0-53f9c173b887" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/85b9ef51-9ed1-45bd-a0d0-53f9c173b887" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -92,7 +91,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <Outlet />
+        <AccountProvider><Outlet /></AccountProvider>
         <Toaster richColors position="top-right" />
       </ThemeProvider>
     </QueryClientProvider>

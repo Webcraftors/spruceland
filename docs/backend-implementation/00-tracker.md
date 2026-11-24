@@ -14,11 +14,11 @@ Read-only queries against the live database:
 
 | # | Group | Status | Found | Next action |
 |---|---|---|---|---|
-| B | Stage 1 close-out | In progress | Foundation tables + provisioning RPC + endpoint (33 tests) | Baseline-snapshot live schema into repo docs; run linter; write `01-database-foundation.md` |
+| B | Stage 1 close-out | Verified | Baseline + access model documented; linter reviewed | Full schema dump before staging (Stage 8) |
 | B1 | Leadership grant/revocation live test | Blocked | Endpoint returns 401 correctly | Needs approved verified accounts |
-| C | Stage 2 Auth & security | Not started | `profiles`, role/permission helpers, invitations exist | Sign-in backend, invitation accept flow test, storage buckets + policies, cross-tenant tests |
-| D | Stage 3 Equipment & compliance | In progress (pre-existing) | 18 equipment tables + list/get/maintenance/change-request functions | Verify each function with test users; gap check ZMA verification + documents |
-| E | Stage 4 Breakdowns & jobs | Not started | none | Design tables + status-transition functions |
+| C | Stage 2 Auth & security | Verified (backend) | Invitations, RBAC, tenant isolation, private storage — 12/12 E2E | Frontend sign-in = Stage 7 |
+| D | Stage 3 Equipment & compliance | Verified (backend) | Added ZMA verifications + documents; 31/31 E2E | — |
+| E | Stage 4 Breakdowns & jobs | Not started | none | Next action: design breakdown/job tables + transition functions |
 | F | Stage 4 Inventory & client store | Not started | none | Products, stock movements, store publication, orders |
 | G | Stage 5 Technician ops + job cards | Not started | Mock workflow rules in `src/domain/ticket-workflow.ts` (tested) | Port rules to DB functions; sign-off lock |
 | H | Internal notifications | Not started | `equipment_notification_events` | General notifications table + event triggers; email drafts |

@@ -17,3 +17,4 @@
 - Implement leadership provisioning as a handler-authenticated TanStack HTTP route, not a new Edge Function; this project uses the supported Worker runtime and existing generated privileged client.
 - Resolve leadership allowlists only on the server after verifying the caller; delegate writes to the existing transactional SQL function to preserve idempotency and revocation history.
 - Keep Stage 1 backend provisioning disconnected from frontend sign-in and operational repositories; account integration belongs to a later explicitly approved stage.
+- Expose operational tables only through permission-checking SECURITY DEFINER functions (no table grants); keeps tenant/location rules in one place.

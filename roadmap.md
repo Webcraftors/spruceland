@@ -1,9 +1,9 @@
 # Roadmap
 Active: Master Backend Implementation Stages 1–5 — live status in `docs/backend-implementation/00-tracker.md`.
 - [x] Phase A audit
-- [ ] Phase B Stage 1 close-out
-- [ ] Phase C Stage 2 auth & security
-- [ ] Phase D Stage 3 equipment & compliance
+- [x] Phase B Stage 1 close-out
+- [x] Phase C Stage 2 auth & security (backend)
+- [x] Phase D Stage 3 equipment & compliance (backend)
 - [ ] Phase E breakdowns & jobs
 - [ ] Phase F inventory & client store
 - [ ] Phase G technician ops & job cards

@@ -4,6 +4,7 @@ import {
   Ticket, LayoutDashboard, Briefcase, Users2, Package, ShoppingCart,
   DollarSign, HardHat, BookOpen, Bell, Settings, Shield, LogOut, Menu, Search, MapPin, Sun, Moon, MoreHorizontal,
   Activity, PanelLeftClose, PanelLeftOpen,
+  Scale,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useSession, ROLE_LABELS, can, type Module, type Location } from "@/lib/session";
@@ -27,6 +28,7 @@ const NAV: { to: string; label: string; icon: any; module: Module }[] = [
   { to: "/dashboard",     label: "Dashboard",     icon: LayoutDashboard, module: "dashboard" },
   { to: "/jobs",          label: "Jobs",          icon: Briefcase,       module: "jobs" },
   { to: "/client-tickets", label: "Client Tickets", icon: Ticket,         module: "jobs" },
+  { to: "/equipment",     label: "Equipment & ZMA", icon: Scale,         module: "inventory" },
   { to: "/clients",       label: "Clients",       icon: Users2,          module: "clients" },
   { to: "/inventory",     label: "Inventory",     icon: Package,         module: "inventory" },
   { to: "/orders",        label: "Orders",        icon: ShoppingCart,    module: "orders" },

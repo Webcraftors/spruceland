@@ -1,3 +1,4 @@
+import { LiveOrders } from "@/components/live/LiveStock";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
@@ -39,6 +40,7 @@ function OrdersPage() {
         </div>
         <Button size="sm" className="h-8" onClick={() => { setEditing(null); setDlgOpen(true); }}><Plus className="h-3.5 w-3.5 mr-1" />New order</Button>
       </header>
+      <LiveOrders />
 
       {/* Desktop table */}
       <Card className="bg-card border-border hidden md:block">

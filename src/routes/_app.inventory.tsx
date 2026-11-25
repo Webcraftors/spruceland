@@ -1,3 +1,4 @@
+import { LiveInventory } from "@/components/live/LiveStock";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
@@ -41,6 +42,7 @@ function InventoryPage() {
         </div>
         <Button size="sm" className="h-8" onClick={() => { setEditing(null); setDlgOpen(true); }}><Plus className="h-3.5 w-3.5 mr-1" />New item</Button>
       </header>
+      <LiveInventory />
 
       <div className="grid grid-cols-3 gap-2">
         <Kpi icon={Package} label="SKUs" value={scoped.length.toString()} />

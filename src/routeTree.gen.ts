@@ -18,6 +18,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
 import { Route as AppClientsRouteImport } from './routes/_app.clients'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppEquipmentRouteImport } from './routes/_app.equipment'
 import { Route as AppFinancialsRouteImport } from './routes/_app.financials'
 import { Route as AppInventoryRouteImport } from './routes/_app.inventory'
 import { Route as AppJobsRouteImport } from './routes/_app.jobs'
@@ -85,6 +86,11 @@ const AppClientsRoute = AppClientsRouteImport.update({
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEquipmentRoute = AppEquipmentRouteImport.update({
+  id: '/equipment',
+  path: '/equipment',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFinancialsRoute = AppFinancialsRouteImport.update({
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
+  '/equipment': typeof AppEquipmentRoute
   '/financials': typeof AppFinancialsRoute
   '/inventory': typeof AppInventoryRoute
   '/jobs': typeof AppJobsRouteWithChildren
@@ -253,6 +260,7 @@ export interface FileRoutesByTo {
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
+  '/equipment': typeof AppEquipmentRoute
   '/financials': typeof AppFinancialsRoute
   '/inventory': typeof AppInventoryRoute
   '/jobs': typeof AppJobsRouteWithChildren
@@ -288,6 +296,7 @@ export interface FileRoutesById {
   '/_app/activity': typeof AppActivityRoute
   '/_app/clients': typeof AppClientsRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/equipment': typeof AppEquipmentRoute
   '/_app/financials': typeof AppFinancialsRoute
   '/_app/inventory': typeof AppInventoryRoute
   '/_app/jobs': typeof AppJobsRouteWithChildren
@@ -324,6 +333,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/clients'
     | '/dashboard'
+    | '/equipment'
     | '/financials'
     | '/inventory'
     | '/jobs'
@@ -358,6 +368,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/clients'
     | '/dashboard'
+    | '/equipment'
     | '/financials'
     | '/inventory'
     | '/jobs'
@@ -392,6 +403,7 @@ export interface FileRouteTypes {
     | '/_app/activity'
     | '/_app/clients'
     | '/_app/dashboard'
+    | '/_app/equipment'
     | '/_app/financials'
     | '/_app/inventory'
     | '/_app/jobs'
@@ -494,6 +506,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/equipment': {
+      id: '/_app/equipment'
+      path: '/equipment'
+      fullPath: '/equipment'
+      preLoaderRoute: typeof AppEquipmentRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/financials': {
@@ -706,6 +725,7 @@ interface AppRouteChildren {
   AppActivityRoute: typeof AppActivityRoute
   AppClientsRoute: typeof AppClientsRouteWithChildren
   AppDashboardRoute: typeof AppDashboardRoute
+  AppEquipmentRoute: typeof AppEquipmentRoute
   AppFinancialsRoute: typeof AppFinancialsRoute
   AppInventoryRoute: typeof AppInventoryRoute
   AppJobsRoute: typeof AppJobsRouteWithChildren
@@ -723,6 +743,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppActivityRoute: AppActivityRoute,
   AppClientsRoute: AppClientsRouteWithChildren,
   AppDashboardRoute: AppDashboardRoute,
+  AppEquipmentRoute: AppEquipmentRoute,
   AppFinancialsRoute: AppFinancialsRoute,
   AppInventoryRoute: AppInventoryRoute,
   AppJobsRoute: AppJobsRouteWithChildren,

@@ -1,3 +1,4 @@
+import { LiveJobs } from "@/components/live/LiveJobs";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { z } from "zod";
@@ -90,6 +91,7 @@ function JobsPage() {
           <Button size="sm" className="h-8" onClick={openNew}><Plus className="h-3.5 w-3.5 mr-1" />New job</Button>
         </div>
       </header>
+      <LiveJobs />
 
       <Tabs value={view} onValueChange={(v) => navigate({ to: "/jobs", search: { view: v as any } })}>
         <TabsList className="h-8">

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "857196637",
+    "project_id": "stgl-scales-and-weighbridges",
+    "storage_bucket": "stgl-scales-and-weighbridges.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857196637:android:5154685192fc605b4625b4",
+        "android_client_info": {
+          "package_name": "com.sprucelandiq.technician"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG86_fEv2t46ExduYtg0aKvdGB_I3PQzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857196637:android:82e520afa7a2c34f4625b4",
+        "android_client_info": {
+          "package_name": "com.sprucelandiq.yalelo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG86_fEv2t46ExduYtg0aKvdGB_I3PQzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

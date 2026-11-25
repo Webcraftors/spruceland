@@ -21,3 +21,6 @@
 - Derive breakdown status from its latest job instead of storing it; two independent statuses would drift.
 - Change stock only through stock-movement or order functions (append-only history, server-side prices); prevents overselling and tampered totals.
 - Choose notification recipients server-side by permission and location scope, and queue push/email as pending until a real provider confirms delivery.
+- Send email/push only from the server outbox dispatcher (`notification_deliveries`, cron route) or server functions; DB functions only queue, so providers can change without touching SQL.
+- Never let delivery code read or modify `breakdown_email_drafts`; drafts are staff-owned and preserved as written.
+- Build both Android apps from one codebase via `CAP_FLAVOR` + Vite mode; package names are permanent and must not change.

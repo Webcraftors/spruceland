@@ -30,3 +30,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# generated native projects are regenerated with cap sync

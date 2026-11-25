@@ -35,3 +35,11 @@ Active: Master Backend Implementation Stages 1–5 — live status in `docs/back
 - [x] Backend Stages 1–5 (see docs/backend-implementation/99-handover.md)
 - [ ] Stage 6 push/email providers — needs OneSignal and Resend keys
 - [ ] Leadership grant/revoke live test — needs approved staff emails
+
+## Final MVP (current)
+- [x] Resend email: invitations, new breakdowns, escalations; live test delivered
+- [x] OneSignal push sender (Technician + Yalelo apps) and 5-minute dispatcher
+- [x] Capacitor setup for com.sprucelandiq.technician / com.sprucelandiq.yalelo
+- [ ] Connect all staff/client screens to real sign-in and data (Stage 7) — next run
+- [ ] Image uploads, bulk import, Coming-soon modules — next run
+- [ ] Job card company details — waiting on STGL address/phone/registration/tax numbers

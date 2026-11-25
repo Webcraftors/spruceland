@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as ClientRouteImport } from './routes/client'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
 import { Route as AppClientsRouteImport } from './routes/_app.clients'
@@ -36,6 +37,7 @@ import { Route as ApiPublicProvisionLeadershipRouteImport } from './routes/api/p
 import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
 import { Route as ClientAppProfileRouteImport } from './routes/client_.app.profile'
 import { Route as ClientAppScheduleRouteImport } from './routes/client_.app.schedule'
+import { Route as ApiPublicCronDispatchNotificationsRouteImport } from './routes/api/public/cron/dispatch-notifications'
 import { Route as ClientAppTicketsIndexRouteImport } from './routes/client_.app.tickets.index'
 import { Route as ClientAppTicketsIdRouteImport } from './routes/client_.app.tickets.$id'
 import { Route as ClientAppTicketsNewRouteImport } from './routes/client_.app.tickets.new'
@@ -52,6 +54,11 @@ const AppRoute = AppRouteImport.update({
 const ClientRoute = ClientRouteImport.update({
   id: '/client',
   path: '/client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -175,6 +182,12 @@ const ClientAppScheduleRoute = ClientAppScheduleRouteImport.update({
   path: '/schedule',
   getParentRoute: () => ClientAppRoute,
 } as any)
+const ApiPublicCronDispatchNotificationsRoute =
+  ApiPublicCronDispatchNotificationsRouteImport.update({
+    id: '/api/public/cron/dispatch-notifications',
+    path: '/api/public/cron/dispatch-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ClientAppTicketsIndexRoute = ClientAppTicketsIndexRouteImport.update({
   id: '/tickets/',
   path: '/tickets/',
@@ -194,6 +207,7 @@ const ClientAppTicketsNewRoute = ClientAppTicketsNewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/client': typeof ClientRoute
+  '/invite': typeof InviteRoute
   '/login': typeof LoginRoute
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
@@ -218,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/client/app/schedule': typeof ClientAppScheduleRoute
   '/client-tickets/': typeof AppClientTicketsIndexRoute
   '/client/app/': typeof ClientAppIndexRoute
+  '/api/public/cron/dispatch-notifications': typeof ApiPublicCronDispatchNotificationsRoute
   '/client/app/tickets/$id': typeof ClientAppTicketsIdRoute
   '/client/app/tickets/new': typeof ClientAppTicketsNewRoute
   '/client/app/tickets/': typeof ClientAppTicketsIndexRoute
@@ -225,6 +240,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/client': typeof ClientRoute
+  '/invite': typeof InviteRoute
   '/login': typeof LoginRoute
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
@@ -248,6 +264,7 @@ export interface FileRoutesByTo {
   '/client/app/schedule': typeof ClientAppScheduleRoute
   '/client-tickets': typeof AppClientTicketsIndexRoute
   '/client/app': typeof ClientAppIndexRoute
+  '/api/public/cron/dispatch-notifications': typeof ApiPublicCronDispatchNotificationsRoute
   '/client/app/tickets/$id': typeof ClientAppTicketsIdRoute
   '/client/app/tickets/new': typeof ClientAppTicketsNewRoute
   '/client/app/tickets': typeof ClientAppTicketsIndexRoute
@@ -257,6 +274,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/client': typeof ClientRoute
+  '/invite': typeof InviteRoute
   '/login': typeof LoginRoute
   '/_app/activity': typeof AppActivityRoute
   '/_app/clients': typeof AppClientsRouteWithChildren
@@ -281,6 +299,7 @@ export interface FileRoutesById {
   '/client_/app/schedule': typeof ClientAppScheduleRoute
   '/_app/client-tickets/': typeof AppClientTicketsIndexRoute
   '/client_/app/': typeof ClientAppIndexRoute
+  '/api/public/cron/dispatch-notifications': typeof ApiPublicCronDispatchNotificationsRoute
   '/client_/app/tickets/$id': typeof ClientAppTicketsIdRoute
   '/client_/app/tickets/new': typeof ClientAppTicketsNewRoute
   '/client_/app/tickets/': typeof ClientAppTicketsIndexRoute
@@ -290,6 +309,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/client'
+    | '/invite'
     | '/login'
     | '/activity'
     | '/clients'
@@ -314,6 +334,7 @@ export interface FileRouteTypes {
     | '/client/app/schedule'
     | '/client-tickets/'
     | '/client/app/'
+    | '/api/public/cron/dispatch-notifications'
     | '/client/app/tickets/$id'
     | '/client/app/tickets/new'
     | '/client/app/tickets/'
@@ -321,6 +342,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/client'
+    | '/invite'
     | '/login'
     | '/activity'
     | '/clients'
@@ -344,6 +366,7 @@ export interface FileRouteTypes {
     | '/client/app/schedule'
     | '/client-tickets'
     | '/client/app'
+    | '/api/public/cron/dispatch-notifications'
     | '/client/app/tickets/$id'
     | '/client/app/tickets/new'
     | '/client/app/tickets'
@@ -352,6 +375,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/client'
+    | '/invite'
     | '/login'
     | '/_app/activity'
     | '/_app/clients'
@@ -376,6 +400,7 @@ export interface FileRouteTypes {
     | '/client_/app/schedule'
     | '/_app/client-tickets/'
     | '/client_/app/'
+    | '/api/public/cron/dispatch-notifications'
     | '/client_/app/tickets/$id'
     | '/client_/app/tickets/new'
     | '/client_/app/tickets/'
@@ -385,10 +410,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   ClientRoute: typeof ClientRoute
+  InviteRoute: typeof InviteRoute
   LoginRoute: typeof LoginRoute
   ClientAppRoute: typeof ClientAppRouteWithChildren
   JobcardIdRoute: typeof JobcardIdRoute
   ApiPublicProvisionLeadershipRoute: typeof ApiPublicProvisionLeadershipRoute
+  ApiPublicCronDispatchNotificationsRoute: typeof ApiPublicCronDispatchNotificationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -412,6 +439,13 @@ declare module '@tanstack/react-router' {
       path: '/client'
       fullPath: '/client'
       preLoaderRoute: typeof ClientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -582,6 +616,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientAppScheduleRouteImport
       parentRoute: typeof ClientAppRoute
     }
+    '/api/public/cron/dispatch-notifications': {
+      id: '/api/public/cron/dispatch-notifications'
+      path: '/api/public/cron/dispatch-notifications'
+      fullPath: '/api/public/cron/dispatch-notifications'
+      preLoaderRoute: typeof ApiPublicCronDispatchNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/client_/app/tickets/': {
       id: '/client_/app/tickets/'
       path: '/tickets'
@@ -703,10 +744,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   ClientRoute: ClientRoute,
+  InviteRoute: InviteRoute,
   LoginRoute: LoginRoute,
   ClientAppRoute: ClientAppRouteWithChildren,
   JobcardIdRoute: JobcardIdRoute,
   ApiPublicProvisionLeadershipRoute: ApiPublicProvisionLeadershipRoute,
+  ApiPublicCronDispatchNotificationsRoute:
+    ApiPublicCronDispatchNotificationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

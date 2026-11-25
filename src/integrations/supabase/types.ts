@@ -2664,38 +2664,47 @@ export type Database = {
       }
       notification_deliveries: {
         Row: {
+          attempts: number
           channel: string
           created_at: string
           email_recipients: string[]
           event_type: string
           id: string
+          last_error: string | null
           organization_id: string
           payload: Json
           processed_at: string | null
+          provider_message_id: string | null
           recipient_user_ids: string[]
           status: string
         }
         Insert: {
+          attempts?: number
           channel: string
           created_at?: string
           email_recipients?: string[]
           event_type: string
           id?: string
+          last_error?: string | null
           organization_id: string
           payload: Json
           processed_at?: string | null
+          provider_message_id?: string | null
           recipient_user_ids?: string[]
           status?: string
         }
         Update: {
+          attempts?: number
           channel?: string
           created_at?: string
           email_recipients?: string[]
           event_type?: string
           id?: string
+          last_error?: string | null
           organization_id?: string
           payload?: Json
           processed_at?: string | null
+          provider_message_id?: string | null
           recipient_user_ids?: string[]
           status?: string
         }

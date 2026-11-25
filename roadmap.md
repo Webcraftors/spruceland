@@ -47,3 +47,5 @@ Active: Master Backend Implementation Stages 1–5 — live status in `docs/back
 - [ ] Equipment/ZMA, breakdowns/jobs/job cards, stock/store screens on real data (plan steps 3–5)
 - [ ] Image uploads, bulk import, Coming-soon modules — next run
 - [ ] Job card company details — waiting on STGL address/phone/registration/tax numbers
+
+- See docs/build-status.md for current build state and remaining work.

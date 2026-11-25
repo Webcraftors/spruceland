@@ -11,12 +11,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "build:technician": "vite build --mode technician",
-    "build:yalelo": "vite build --mode yalelo",
-    "cap:technician": "bun run build:technician && CAP_FLAVOR=technician npx cap sync android && cp native/technician/google-services.json android-technician/app/",
-    "cap:yalelo": "bun run build:yalelo && CAP_FLAVOR=yalelo npx cap sync android && cp native/yalelo/google-services.json android-yalelo/app/"
+    "build:yalelo": "vite build --mode yalelo"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
     "@capacitor/core": "^8.6.2",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",

@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/lib/theme";
+import { NativeBridge } from "@/lib/push/native-bridge";
 
 function NotFoundComponent() {
   return (
@@ -93,6 +94,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Outlet />
+        <NativeBridge />
         <Toaster richColors position="top-right" />
       </ThemeProvider>
     </QueryClientProvider>

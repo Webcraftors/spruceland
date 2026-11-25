@@ -23,4 +23,4 @@
 - Choose notification recipients server-side by permission and location scope, and queue push/email as pending until a real provider confirms delivery.
 - Send email/push only from the server outbox dispatcher (`notification_deliveries`, cron route) or server functions; DB functions only queue, so providers can change without touching SQL.
 - Never let delivery code read or modify `breakdown_email_drafts`; drafts are staff-owned and preserved as written.
-- Build both Android apps from one codebase via `CAP_FLAVOR` + Vite mode; package names are permanent and must not change.
+- Build both Android apps from one codebase via `CAP_FLAVOR`; they load the published site (server.url) and the Android project is generated in CI, so package names live only in capacitor.config.ts and are permanent.

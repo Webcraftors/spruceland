@@ -11,6 +11,8 @@ jobs:
       fail-fast: false
       matrix:
         flavor: [technician, yalelo]
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -23,12 +25,15 @@ jobs:
         run: |
           npx cap add android
           cp native/${{ matrix.flavor }}/google-services.json android/app/google-services.json
+          npx --yes @capacitor/assets@3 generate --android --assetPath native/${{ matrix.flavor }}/assets \
+            --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#ffffff' \
+            --splashBackgroundColor '#eaf3ff' --splashBackgroundColorDark '#eaf3ff'
           npx cap sync android
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
       - name: Build signed release APK
-        if: ${{ env.KEYSTORE_B64 != '' }}
+        if: ${{ env.HAS_KEYSTORE == 'true' }}
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}

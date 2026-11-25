@@ -18,3 +18,7 @@
 Signed release APKs (Play Store): add GitHub repo secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Without them only debug APKs are built (fine for installing on test phones).
 
 The Android folder is generated fresh in each run (Capacitor's template applies the Google Services plugin automatically when `google-services.json` is present), so nothing native needs to be committed.
+
+## Icons and splash screens
+- Sources: `native/<flavor>/assets/icon.png` and `splash.png` (Technician: STGL logo; Yalelo: Yalelo + STGL co-brand over a weighing-scales background). CI turns them into Android sizes with `@capacitor/assets`.
+- On launch and after every sign-in the app shows a branded loading screen for at least 5 seconds with a 0–100% progress bar, then a welcome pop-up (`src/components/brand/SplashHost.tsx`).

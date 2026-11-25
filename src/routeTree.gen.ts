@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as ClientRouteImport } from './routes/client'
 import { Route as InviteRouteImport } from './routes/invite'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AppActivityRouteImport } from './routes/_app.activity'
 import { Route as AppClientsRouteImport } from './routes/_app.clients'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
@@ -64,6 +65,11 @@ const InviteRoute = InviteRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppActivityRoute = AppActivityRouteImport.update({
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/client': typeof ClientRoute
   '/invite': typeof InviteRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/client': typeof ClientRoute
   '/invite': typeof InviteRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/activity': typeof AppActivityRoute
   '/clients': typeof AppClientsRouteWithChildren
   '/dashboard': typeof AppDashboardRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/client': typeof ClientRoute
   '/invite': typeof InviteRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_app/activity': typeof AppActivityRoute
   '/_app/clients': typeof AppClientsRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/client'
     | '/invite'
     | '/login'
+    | '/reset-password'
     | '/activity'
     | '/clients'
     | '/dashboard'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/client'
     | '/invite'
     | '/login'
+    | '/reset-password'
     | '/activity'
     | '/clients'
     | '/dashboard'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '/client'
     | '/invite'
     | '/login'
+    | '/reset-password'
     | '/_app/activity'
     | '/_app/clients'
     | '/_app/dashboard'
@@ -412,6 +424,7 @@ export interface RootRouteChildren {
   ClientRoute: typeof ClientRoute
   InviteRoute: typeof InviteRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ClientAppRoute: typeof ClientAppRouteWithChildren
   JobcardIdRoute: typeof JobcardIdRoute
   ApiPublicProvisionLeadershipRoute: typeof ApiPublicProvisionLeadershipRoute
@@ -453,6 +466,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/activity': {
@@ -746,6 +766,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientRoute: ClientRoute,
   InviteRoute: InviteRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ClientAppRoute: ClientAppRouteWithChildren,
   JobcardIdRoute: JobcardIdRoute,
   ApiPublicProvisionLeadershipRoute: ApiPublicProvisionLeadershipRoute,

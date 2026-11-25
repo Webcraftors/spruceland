@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/lib/theme";
 import { NativeBridge } from "@/lib/push/native-bridge";
+import { SplashHost } from "@/components/brand/SplashHost";
 
 function NotFoundComponent() {
   return (
@@ -62,6 +63,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" },
@@ -95,6 +97,7 @@ function RootComponent() {
       <ThemeProvider>
         <Outlet />
         <NativeBridge />
+        <SplashHost />
         <Toaster richColors position="top-right" />
       </ThemeProvider>
     </QueryClientProvider>

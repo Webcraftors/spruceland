@@ -41,6 +41,9 @@ Active: Master Backend Implementation Stages 1–5 — live status in `docs/back
 - [x] OneSignal push sender (Technician + Yalelo apps) and 5-minute dispatcher
 - [x] Capacitor setup for com.sprucelandiq.technician / com.sprucelandiq.yalelo
 - [x] GitHub APK workflow for both apps (debug; release when signing key added)
-- [ ] Connect all staff/client screens to real sign-in and data (Stage 7) — next run
+- [x] Real staff sign-in (email/password, first-time account, password reset, approved leadership emails get access automatically); staff pages blocked without staff access
+- [x] App icons, splash screens (STGL; Yalelo × STGL), 5-second progress loader and welcome pop-up on app open and sign-in
+- [ ] Client portal sign-in on real accounts (needs client user accounts/invitations)
+- [ ] Equipment/ZMA, breakdowns/jobs/job cards, stock/store screens on real data (plan steps 3–5)
 - [ ] Image uploads, bulk import, Coming-soon modules — next run
 - [ ] Job card company details — waiting on STGL address/phone/registration/tax numbers

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PORTAL_CLIENTS, provincesFor, sitesFor, DEMO_EMPLOYEES, departmentsFor } from "@/data/portal";
+import { runSplash, brandForApp } from "@/components/brand/SplashHost";
 import { clientSessionRepo, ticketsRepo } from "@/repositories/portal-repo";
 
 export const Route = createFileRoute("/client")({
@@ -55,6 +56,7 @@ function ClientSignIn() {
     };
     clientSessionRepo.set(session);
     await ticketsRepo.ensureSiteSeed(session);
+    await runSplash({ name: session.employeeName, brand: client.name.toLowerCase().includes("yalelo") ? "yalelo" : brandForApp(), subtitle: `${session.site.name} · ${client.name}` });
     navigate({ to: "/client/app" });
   };
 

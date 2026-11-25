@@ -15,5 +15,7 @@ const config: CapacitorConfig = {
   webDir: "native/www",
   server: { url: SITE + apps[flavor].start, androidScheme: "https", errorPath: "index.html" },
   android: { allowMixedContent: false },
+  // Native splash covers start-up; the web splash then runs its 5-second progress bar.
+  plugins: { SplashScreen: { launchShowDuration: 3000, launchAutoHide: true, backgroundColor: "#eaf3ff", showSpinner: false } },
 };
 export default config;

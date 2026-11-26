@@ -4,7 +4,7 @@
 1. Lovable → Project settings → Git → connect GitHub (creates the repo; syncs the `main` branch).
 2. GitHub repo → **Actions** → "Android APKs" → **Run workflow** (also runs on every push to `main`).
 3. When both jobs finish (~10 min), open the run → **Artifacts**: `spruceland-technician-apk`, `spruceland-yalelo-apk`. Each zip holds `app-debug.apk` (install directly) and, when signing secrets exist, `app-release.apk`.
-4. Signed release needs GitHub repo secrets (Settings → Secrets → Actions): `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Lovable Cloud secrets are NOT visible to GitHub Actions.
+4. Signed release needs GitHub repo secrets (Settings → Secrets → Actions): eight per-app secrets — `STGL_KEYSTORE_BASE64`, `STGL_KEYSTORE_PASSWORD`, `STGL_KEY_ALIAS`, `STGL_KEY_PASSWORD` (Technician) and `YALELO_KEYSTORE_BASE64`, `YALELO_KEYSTORE_PASSWORD`, `YALELO_KEY_ALIAS`, `YALELO_KEY_PASSWORD` (Yalelo). Missing secrets fail the build with a clear error. Lovable Cloud secrets are NOT visible to GitHub Actions.
 5. Apps load the published site, so **publish in Lovable** before testing; later web publishes update the apps without a new APK.
 
 ## Verified in this build

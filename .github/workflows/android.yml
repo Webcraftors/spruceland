@@ -4,50 +4,129 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        flavor: [technician, yalelo]
+        include:
+          - flavor: technician
+            app_id: com.sprucelandiq.technician
+            secret_prefix: STGL
+          - flavor: yalelo
+            app_id: com.sprucelandiq.yalelo
+            secret_prefix: YALELO
     env:
-      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      CAP_FLAVOR: ${{ matrix.flavor }}
+      ANDROID_PLATFORM: android-36
+      BUILD_TOOLS: 36.0.0
     steps:
       - uses: actions/checkout@v4
+
+      # Capacitor 8 CLI requires Node 22+.
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "21" }
+
+      # Install only modern cmdline-tools; never the obsolete "tools" package.
       - uses: android-actions/setup-android@v3
-      - run: bun install --frozen-lockfile || bun install
-      - name: Generate Android project
-        env: { CAP_FLAVOR: "${{ matrix.flavor }}" }
+        with:
+          packages: ""
+      - name: Install Android SDK packages
         run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;${ANDROID_PLATFORM}" "build-tools;${BUILD_TOOLS}"
+
+      - name: Check signing secrets
+        env:
+          KS_B64: ${{ secrets[format('{0}_KEYSTORE_BASE64', matrix.secret_prefix)] }}
+          KS_PASS: ${{ secrets[format('{0}_KEYSTORE_PASSWORD', matrix.secret_prefix)] }}
+          KEY_ALIAS: ${{ secrets[format('{0}_KEY_ALIAS', matrix.secret_prefix)] }}
+          KEY_PASS: ${{ secrets[format('{0}_KEY_PASSWORD', matrix.secret_prefix)] }}
+        run: |
+          missing=""
+          [ -n "$KS_B64" ]    || missing="$missing ${{ matrix.secret_prefix }}_KEYSTORE_BASE64"
+          [ -n "$KS_PASS" ]   || missing="$missing ${{ matrix.secret_prefix }}_KEYSTORE_PASSWORD"
+          [ -n "$KEY_ALIAS" ] || missing="$missing ${{ matrix.secret_prefix }}_KEY_ALIAS"
+          [ -n "$KEY_PASS" ]  || missing="$missing ${{ matrix.secret_prefix }}_KEY_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing GitHub secrets for ${{ matrix.flavor }}:$missing"
+            exit 1
+          fi
+
+      - run: bun install --frozen-lockfile || bun install
+
+      - name: Generate Android project
+        run: |
+          echo "CAP_FLAVOR=$CAP_FLAVOR"
           npx cap add android
           cp native/${{ matrix.flavor }}/google-services.json android/app/google-services.json
           npx --yes @capacitor/assets@3 generate --android --assetPath native/${{ matrix.flavor }}/assets \
             --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#ffffff' \
             --splashBackgroundColor '#eaf3ff' --splashBackgroundColorDark '#eaf3ff'
           npx cap sync android
-      - name: Build debug APK
-        working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
-      - name: Build signed release APK
-        if: ${{ env.HAS_KEYSTORE == 'true' }}
+          grep -q 'applicationId "${{ matrix.app_id }}"' android/app/build.gradle \
+            || { echo "::error::applicationId is not ${{ matrix.app_id }}"; grep applicationId android/app/build.gradle; exit 1; }
+          chmod +x android/gradlew
+
+      - name: Decode keystore
         env:
-          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        working-directory: android
+          KS_B64: ${{ secrets[format('{0}_KEYSTORE_BASE64', matrix.secret_prefix)] }}
         run: |
-          echo "$KEYSTORE_B64" | base64 -d > release.jks
-          ./gradlew assembleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=$PWD/release.jks \
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      - name: Build debug APK, signed release APK and AAB
+        working-directory: android
+        env:
+          KS_PASS: ${{ secrets[format('{0}_KEYSTORE_PASSWORD', matrix.secret_prefix)] }}
+          KEY_ALIAS: ${{ secrets[format('{0}_KEY_ALIAS', matrix.secret_prefix)] }}
+          KEY_PASS: ${{ secrets[format('{0}_KEY_PASSWORD', matrix.secret_prefix)] }}
+        run: |
+          ./gradlew assembleDebug assembleRelease bundleRelease --no-daemon --stacktrace \
+            -Pandroid.injected.signing.store.file="$KEYSTORE_FILE" \
             -Pandroid.injected.signing.store.password="$KS_PASS" \
             -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$KEY_PASS"
+
+      - name: Verify signatures and application IDs
+        run: |
+          BT="$ANDROID_HOME/build-tools/$BUILD_TOOLS"
+          REL=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          DBG=$(ls android/app/build/outputs/apk/debug/*.apk | head -1)
+          AAB=$(ls android/app/build/outputs/bundle/release/*.aab | head -1)
+          "$BT/apksigner" verify --print-certs "$REL" | grep -v -i 'sha-1'
+          for f in "$REL" "$DBG"; do
+            pkg=$("$BT/aapt2" dump packagename "$f")
+            echo "$f -> $pkg"
+            [ "$pkg" = "${{ matrix.app_id }}" ] || { echo "::error::Wrong package $pkg in $f"; exit 1; }
+          done
+          jarsigner -verify "$AAB" > /dev/null && echo "AAB signature OK"
+          mkdir -p out
+          cp "$DBG" out/spruceland-${{ matrix.flavor }}-debug.apk
+          cp "$REL" out/spruceland-${{ matrix.flavor }}-release.apk
+          cp "$AAB" out/spruceland-${{ matrix.flavor }}-release.aab
+
+      - name: Remove keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"
+
       - uses: actions/upload-artifact@v4
         with:
-          name: spruceland-${{ matrix.flavor }}-apk
-          path: android/app/build/outputs/apk/**/*.apk
+          name: spruceland-${{ matrix.flavor }}-debug-apk
+          path: out/*-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spruceland-${{ matrix.flavor }}-release-apk
+          path: out/*-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spruceland-${{ matrix.flavor }}-release-aab
+          path: out/*-release.aab

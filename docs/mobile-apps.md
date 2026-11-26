@@ -15,7 +15,11 @@
 2. GitHub → Actions → **Android APKs** runs on every push to `main` (or click **Run workflow**).
 3. Download `spruceland-technician-apk` / `spruceland-yalelo-apk` from the run's Artifacts.
 
-Signed release APKs (Play Store): add GitHub repo secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Without them only debug APKs are built (fine for installing on test phones).
+Signing (required — the build fails with a clear message if any are missing). Add these eight GitHub repo secrets (Settings → Secrets → Actions):
+- STGL Technician: `STGL_KEYSTORE_BASE64`, `STGL_KEYSTORE_PASSWORD`, `STGL_KEY_ALIAS`, `STGL_KEY_PASSWORD`
+- Yalelo Store Manager: `YALELO_KEYSTORE_BASE64`, `YALELO_KEYSTORE_PASSWORD`, `YALELO_KEY_ALIAS`, `YALELO_KEY_PASSWORD`
+
+Toolchain: Node 22, Java 21, Android SDK platform 36 + build-tools 36.0.0 (no legacy `tools` package). Each run builds a debug APK, a signed release APK and a signed AAB per app, checks the signature and package ID, and uploads `spruceland-<app>-debug-apk`, `-release-apk` and `-release-aab` artifacts. The keystore is written to the runner temp folder and deleted after the build.
 
 The Android folder is generated fresh in each run (Capacitor's template applies the Google Services plugin automatically when `google-services.json` is present), so nothing native needs to be committed.
 

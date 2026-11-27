@@ -57,6 +57,13 @@
       "when": 1795579466767,
       "tag": "0007_stage6_delivery_tracking",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795749956985,
+      "tag": "0008_portal_access_and_invitation_context",
+      "breakpoints": true
     }
   ]
 }

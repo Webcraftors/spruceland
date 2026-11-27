@@ -1,4 +1,10 @@
 # Roadmap
+## Portal access completion — November 27
+- [ ] Replace client demo sign-in with verified email accounts and authorized company/store selection.
+- [ ] Repair leadership access for Super Admin, STGL Admin, Owner and Yalelo Admin.
+- [ ] Add shared permission-scoped invitations for staff and client administrators; fix invitation acceptance tokens.
+- [ ] Test signed-in portal and invitation flows, document remaining external blockers.
+
 Active: Master Backend Implementation Stages 1–5 — live status in `docs/backend-implementation/00-tracker.md`.
 - [x] Phase A audit
 - [x] Phase B Stage 1 close-out

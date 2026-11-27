@@ -3984,6 +3984,7 @@ export type Database = {
         Args: { p_actor_organization_id: string; p_equipment_id: string }
         Returns: Json
       }
+      get_invitation_context: { Args: never; Returns: Json }
       get_job: { Args: { p_job_id: string }; Returns: Json }
       get_job_card: { Args: { p_job_card_id: string }; Returns: Json }
       get_managed_configuration_suggestions: {
@@ -4187,6 +4188,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_portal_access: { Args: never; Returns: Json }
       get_store_order: { Args: { p_order_id: string }; Returns: Json }
       has_application_access: {
         Args: { p_application_code: string; p_organization_id: string }

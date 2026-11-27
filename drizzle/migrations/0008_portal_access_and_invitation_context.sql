@@ -1,0 +1,16 @@
+CREATE OR REPLACE FUNCTION public.get_portal_access() RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = '' AS $$
+DECLARE v_result jsonb;
+BEGIN
+ IF NOT public.is_active_user() THEN RAISE EXCEPTION 'Authentication required' USING ERRCODE='42501'; END IF;
+ SELECT jsonb_build_object('user_id',p.id,'full_name',p.full_name,'employee_ref',p.employee_ref,'platform_admin',public.is_platform_admin(),'staff_role',public.current_internal_role(),'organizations',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',o.id,'name',o.name,'slug',o.slug,'can_invite',public.can_manage_invitations(o.id),'applications',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',a.id,'code',a.application_code,'name',a.application_name)) FROM public.applications a JOIN public.organization_applications oa ON oa.application_id=a.id AND oa.organization_id=o.id WHERE oa.enabled AND a.status='active' AND public.has_application_access(o.id,a.application_code)),'[]'::jsonb),'locations',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',l.id,'name',l.name,'city',l.city,'province',l.province,'type',l.location_type)) FROM public.locations l WHERE l.organization_id=o.id AND l.status='active' AND public.has_location_access(o.id,l.id)),'[]'::jsonb))) FROM public.organizations o WHERE o.status='active' AND (public.is_platform_admin() OR EXISTS(SELECT 1 FROM public.get_my_applications() ma WHERE ma.organization_id=o.id))),'[]'::jsonb)) INTO v_result FROM public.profiles p WHERE p.id=auth.uid() AND p.status='active';
+ RETURN v_result;
+END $$;
+REVOKE ALL ON FUNCTION public.get_portal_access() FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.get_portal_access() TO authenticated,service_role;
+CREATE OR REPLACE FUNCTION public.get_invitation_context() RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = '' AS $$
+BEGIN
+ IF NOT public.is_active_user() THEN RAISE EXCEPTION 'Authentication required' USING ERRCODE='42501'; END IF;
+ RETURN COALESCE((SELECT jsonb_agg(jsonb_build_object('id',o.id,'name',o.name,'slug',o.slug,'roles',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',r.id,'name',r.name)) FROM public.roles r WHERE r.organization_id=o.id AND public.inviter_can_assign_role(auth.uid(),o.id,r.id)),'[]'::jsonb),'locations',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',l.id,'name',l.name)) FROM public.locations l WHERE l.organization_id=o.id AND l.status='active' AND public.has_location_access(o.id,l.id)),'[]'::jsonb),'applications',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',a.id,'name',a.application_name,'code',a.application_code)) FROM public.applications a JOIN public.organization_applications oa ON oa.application_id=a.id AND oa.organization_id=o.id WHERE oa.enabled AND a.status='active' AND (public.is_platform_admin() OR public.has_application_access(o.id,a.application_code))),'[]'::jsonb))) FROM public.organizations o WHERE o.status='active' AND public.can_manage_invitations(o.id)),'[]'::jsonb);
+END $$;
+REVOKE ALL ON FUNCTION public.get_invitation_context() FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.get_invitation_context() TO authenticated,service_role;

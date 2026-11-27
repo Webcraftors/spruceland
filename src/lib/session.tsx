@@ -16,6 +16,7 @@ export interface Session {
   role: Role;
   location: Location;
   subcontractor: boolean;
+  platformAdmin?: boolean;
 }
 
 export type Module =

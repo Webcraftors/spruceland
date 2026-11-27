@@ -21,6 +21,7 @@ import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppEquipmentRouteImport } from './routes/_app.equipment'
 import { Route as AppFinancialsRouteImport } from './routes/_app.financials'
 import { Route as AppInventoryRouteImport } from './routes/_app.inventory'
+import { Route as AppInvitationsRouteImport } from './routes/_app.invitations'
 import { Route as AppJobsRouteImport } from './routes/_app.jobs'
 import { Route as AppKnowledgeRouteImport } from './routes/_app.knowledge'
 import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
@@ -35,8 +36,10 @@ import { Route as AppClientTicketsIdRouteImport } from './routes/_app.client-tic
 import { Route as AppClientsIdRouteImport } from './routes/_app.clients.$id'
 import { Route as AppJobsIdRouteImport } from './routes/_app.jobs.$id'
 import { Route as AppKnowledgeSlugRouteImport } from './routes/_app.knowledge.$slug'
+import { Route as ApiPublicPortalInvitationsRouteImport } from './routes/api/public/portal-invitations'
 import { Route as ApiPublicProvisionLeadershipRouteImport } from './routes/api/public/provision-leadership'
 import { Route as ClientAppIndexRouteImport } from './routes/client_.app.index'
+import { Route as ClientAppPeopleRouteImport } from './routes/client_.app.people'
 import { Route as ClientAppProfileRouteImport } from './routes/client_.app.profile'
 import { Route as ClientAppScheduleRouteImport } from './routes/client_.app.schedule'
 import { Route as ApiPublicCronDispatchNotificationsRouteImport } from './routes/api/public/cron/dispatch-notifications'
@@ -101,6 +104,11 @@ const AppFinancialsRoute = AppFinancialsRouteImport.update({
 const AppInventoryRoute = AppInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInvitationsRoute = AppInvitationsRouteImport.update({
+  id: '/invitations',
+  path: '/invitations',
   getParentRoute: () => AppRoute,
 } as any)
 const AppJobsRoute = AppJobsRouteImport.update({
@@ -173,6 +181,12 @@ const AppKnowledgeSlugRoute = AppKnowledgeSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => AppKnowledgeRoute,
 } as any)
+const ApiPublicPortalInvitationsRoute =
+  ApiPublicPortalInvitationsRouteImport.update({
+    id: '/api/public/portal-invitations',
+    path: '/api/public/portal-invitations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicProvisionLeadershipRoute =
   ApiPublicProvisionLeadershipRouteImport.update({
     id: '/api/public/provision-leadership',
@@ -182,6 +196,11 @@ const ApiPublicProvisionLeadershipRoute =
 const ClientAppIndexRoute = ClientAppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => ClientAppRoute,
+} as any)
+const ClientAppPeopleRoute = ClientAppPeopleRouteImport.update({
+  id: '/people',
+  path: '/people',
   getParentRoute: () => ClientAppRoute,
 } as any)
 const ClientAppProfileRoute = ClientAppProfileRouteImport.update({
@@ -228,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/equipment': typeof AppEquipmentRoute
   '/financials': typeof AppFinancialsRoute
   '/inventory': typeof AppInventoryRoute
+  '/invitations': typeof AppInvitationsRoute
   '/jobs': typeof AppJobsRouteWithChildren
   '/knowledge': typeof AppKnowledgeRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
@@ -241,7 +261,9 @@ export interface FileRoutesByFullPath {
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/api/public/portal-invitations': typeof ApiPublicPortalInvitationsRoute
   '/api/public/provision-leadership': typeof ApiPublicProvisionLeadershipRoute
+  '/client/app/people': typeof ClientAppPeopleRoute
   '/client/app/profile': typeof ClientAppProfileRoute
   '/client/app/schedule': typeof ClientAppScheduleRoute
   '/client-tickets/': typeof AppClientTicketsIndexRoute
@@ -263,6 +285,7 @@ export interface FileRoutesByTo {
   '/equipment': typeof AppEquipmentRoute
   '/financials': typeof AppFinancialsRoute
   '/inventory': typeof AppInventoryRoute
+  '/invitations': typeof AppInvitationsRoute
   '/jobs': typeof AppJobsRouteWithChildren
   '/knowledge': typeof AppKnowledgeRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
@@ -275,7 +298,9 @@ export interface FileRoutesByTo {
   '/clients/$id': typeof AppClientsIdRoute
   '/jobs/$id': typeof AppJobsIdRoute
   '/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/api/public/portal-invitations': typeof ApiPublicPortalInvitationsRoute
   '/api/public/provision-leadership': typeof ApiPublicProvisionLeadershipRoute
+  '/client/app/people': typeof ClientAppPeopleRoute
   '/client/app/profile': typeof ClientAppProfileRoute
   '/client/app/schedule': typeof ClientAppScheduleRoute
   '/client-tickets': typeof AppClientTicketsIndexRoute
@@ -299,6 +324,7 @@ export interface FileRoutesById {
   '/_app/equipment': typeof AppEquipmentRoute
   '/_app/financials': typeof AppFinancialsRoute
   '/_app/inventory': typeof AppInventoryRoute
+  '/_app/invitations': typeof AppInvitationsRoute
   '/_app/jobs': typeof AppJobsRouteWithChildren
   '/_app/knowledge': typeof AppKnowledgeRouteWithChildren
   '/_app/notifications': typeof AppNotificationsRoute
@@ -312,7 +338,9 @@ export interface FileRoutesById {
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/jobs/$id': typeof AppJobsIdRoute
   '/_app/knowledge/$slug': typeof AppKnowledgeSlugRoute
+  '/api/public/portal-invitations': typeof ApiPublicPortalInvitationsRoute
   '/api/public/provision-leadership': typeof ApiPublicProvisionLeadershipRoute
+  '/client_/app/people': typeof ClientAppPeopleRoute
   '/client_/app/profile': typeof ClientAppProfileRoute
   '/client_/app/schedule': typeof ClientAppScheduleRoute
   '/_app/client-tickets/': typeof AppClientTicketsIndexRoute
@@ -336,6 +364,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/financials'
     | '/inventory'
+    | '/invitations'
     | '/jobs'
     | '/knowledge'
     | '/notifications'
@@ -349,7 +378,9 @@ export interface FileRouteTypes {
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/api/public/portal-invitations'
     | '/api/public/provision-leadership'
+    | '/client/app/people'
     | '/client/app/profile'
     | '/client/app/schedule'
     | '/client-tickets/'
@@ -371,6 +402,7 @@ export interface FileRouteTypes {
     | '/equipment'
     | '/financials'
     | '/inventory'
+    | '/invitations'
     | '/jobs'
     | '/knowledge'
     | '/notifications'
@@ -383,7 +415,9 @@ export interface FileRouteTypes {
     | '/clients/$id'
     | '/jobs/$id'
     | '/knowledge/$slug'
+    | '/api/public/portal-invitations'
     | '/api/public/provision-leadership'
+    | '/client/app/people'
     | '/client/app/profile'
     | '/client/app/schedule'
     | '/client-tickets'
@@ -406,6 +440,7 @@ export interface FileRouteTypes {
     | '/_app/equipment'
     | '/_app/financials'
     | '/_app/inventory'
+    | '/_app/invitations'
     | '/_app/jobs'
     | '/_app/knowledge'
     | '/_app/notifications'
@@ -419,7 +454,9 @@ export interface FileRouteTypes {
     | '/_app/clients/$id'
     | '/_app/jobs/$id'
     | '/_app/knowledge/$slug'
+    | '/api/public/portal-invitations'
     | '/api/public/provision-leadership'
+    | '/client_/app/people'
     | '/client_/app/profile'
     | '/client_/app/schedule'
     | '/_app/client-tickets/'
@@ -439,6 +476,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ClientAppRoute: typeof ClientAppRouteWithChildren
   JobcardIdRoute: typeof JobcardIdRoute
+  ApiPublicPortalInvitationsRoute: typeof ApiPublicPortalInvitationsRoute
   ApiPublicProvisionLeadershipRoute: typeof ApiPublicProvisionLeadershipRoute
   ApiPublicCronDispatchNotificationsRoute: typeof ApiPublicCronDispatchNotificationsRoute
 }
@@ -527,6 +565,13 @@ declare module '@tanstack/react-router' {
       path: '/inventory'
       fullPath: '/inventory'
       preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/invitations': {
+      id: '/_app/invitations'
+      path: '/invitations'
+      fullPath: '/invitations'
+      preLoaderRoute: typeof AppInvitationsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/jobs': {
@@ -627,6 +672,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppKnowledgeSlugRouteImport
       parentRoute: typeof AppKnowledgeRoute
     }
+    '/api/public/portal-invitations': {
+      id: '/api/public/portal-invitations'
+      path: '/api/public/portal-invitations'
+      fullPath: '/api/public/portal-invitations'
+      preLoaderRoute: typeof ApiPublicPortalInvitationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/provision-leadership': {
       id: '/api/public/provision-leadership'
       path: '/api/public/provision-leadership'
@@ -639,6 +691,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/client/app/'
       preLoaderRoute: typeof ClientAppIndexRouteImport
+      parentRoute: typeof ClientAppRoute
+    }
+    '/client_/app/people': {
+      id: '/client_/app/people'
+      path: '/people'
+      fullPath: '/client/app/people'
+      preLoaderRoute: typeof ClientAppPeopleRouteImport
       parentRoute: typeof ClientAppRoute
     }
     '/client_/app/profile': {
@@ -728,6 +787,7 @@ interface AppRouteChildren {
   AppEquipmentRoute: typeof AppEquipmentRoute
   AppFinancialsRoute: typeof AppFinancialsRoute
   AppInventoryRoute: typeof AppInventoryRoute
+  AppInvitationsRoute: typeof AppInvitationsRoute
   AppJobsRoute: typeof AppJobsRouteWithChildren
   AppKnowledgeRoute: typeof AppKnowledgeRouteWithChildren
   AppNotificationsRoute: typeof AppNotificationsRoute
@@ -746,6 +806,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppEquipmentRoute: AppEquipmentRoute,
   AppFinancialsRoute: AppFinancialsRoute,
   AppInventoryRoute: AppInventoryRoute,
+  AppInvitationsRoute: AppInvitationsRoute,
   AppJobsRoute: AppJobsRouteWithChildren,
   AppKnowledgeRoute: AppKnowledgeRouteWithChildren,
   AppNotificationsRoute: AppNotificationsRoute,
@@ -760,6 +821,7 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface ClientAppRouteChildren {
+  ClientAppPeopleRoute: typeof ClientAppPeopleRoute
   ClientAppProfileRoute: typeof ClientAppProfileRoute
   ClientAppScheduleRoute: typeof ClientAppScheduleRoute
   ClientAppIndexRoute: typeof ClientAppIndexRoute
@@ -769,6 +831,7 @@ interface ClientAppRouteChildren {
 }
 
 const ClientAppRouteChildren: ClientAppRouteChildren = {
+  ClientAppPeopleRoute: ClientAppPeopleRoute,
   ClientAppProfileRoute: ClientAppProfileRoute,
   ClientAppScheduleRoute: ClientAppScheduleRoute,
   ClientAppIndexRoute: ClientAppIndexRoute,
@@ -790,6 +853,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ClientAppRoute: ClientAppRouteWithChildren,
   JobcardIdRoute: JobcardIdRoute,
+  ApiPublicPortalInvitationsRoute: ApiPublicPortalInvitationsRoute,
   ApiPublicProvisionLeadershipRoute: ApiPublicProvisionLeadershipRoute,
   ApiPublicCronDispatchNotificationsRoute:
     ApiPublicCronDispatchNotificationsRoute,

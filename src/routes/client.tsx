@@ -1,130 +1,86 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ArrowLeft, Search, Check, MapPin, Store } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, LockKeyhole, MapPin } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PORTAL_CLIENTS, provincesFor, sitesFor, DEMO_EMPLOYEES, departmentsFor } from "@/data/portal";
-import { runSplash, brandForApp } from "@/components/brand/SplashHost";
-import { clientSessionRepo, ticketsRepo } from "@/repositories/portal-repo";
+import { runSplash } from "@/components/brand/SplashHost";
+import { clientAuth } from "@/lib/client-auth";
+import { clientOrganizations, readPortalAccess, type PortalOrganization } from "@/lib/portal-access";
+import { resolveClientSession } from "@/lib/client-session";
+import { clientSessionRepo } from "@/repositories/portal-repo";
+import { pageMeta } from "@/lib/meta";
+import yalelo from "@/assets/brand/yalelo_logo.png.asset.json";
 
 export const Route = createFileRoute("/client")({
-  head: () => ({
-    meta: [
-      { title: "Client sign-in — Spruceland Client Portal" },
-      { name: "description", content: "Find your company, enter your employee details and choose your store to access the Spruceland Client Portal." },
-      { property: "og:title", content: "Client sign-in — Spruceland Client Portal" },
-      { property: "og:description", content: "Raise scale breakdowns and sign off repairs for your store." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  head: () => pageMeta("Client & Yalelo sign-in — Spruceland IQ", "Secure account access for client administrators and assigned store teams."),
   component: ClientSignIn,
 });
-
 function ClientSignIn() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  const [q, setQ] = useState("");
-  const [clientId, setClientId] = useState("");
-  const [name, setName] = useState("");
-  const [ref, setRef] = useState("");
-  const [province, setProvince] = useState("");
-  const [siteName, setSiteName] = useState("");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
+  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false); const [notice, setNotice] = useState("");
+  const [organizations, setOrganizations] = useState<PortalOrganization[]>([]);
+  const [organizationId, setOrganizationId] = useState(""); const [locationId, setLocationId] = useState("");
+  const org = organizations.find(o => o.id === organizationId);
 
-  const client = PORTAL_CLIENTS.find(c => c.id === clientId);
-  const matches = useMemo(() => PORTAL_CLIENTS.filter(c => c.name.toLowerCase().includes(q.toLowerCase())), [q]);
-  const provinces = clientId ? provincesFor(clientId) : [];
-  const sites = clientId && province ? sitesFor(clientId).filter(s => s.province === province) : [];
-  const site = sites.length === 1 ? sites[0] : sites.find(s => s.name === siteName);
-  const canSubmit = !!client && name.trim().length > 1 && ref.trim().length > 2 && !!site;
-
-  const pickClient = (id: string) => {
-    setClientId(id); setProvince(""); setSiteName("");
-    const p = provincesFor(id); if (p.length === 1) setProvince(p[0]);
-    setStep(1);
-  };
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!canSubmit || !client || !site) return;
-    const known = DEMO_EMPLOYEES.find(d => d.clientId === client.id && d.employeeRef.toLowerCase() === ref.trim().toLowerCase());
-    const session = {
-      clientId: client.id, clientName: client.name, employeeName: name.trim(), employeeRef: ref.trim(),
-      department: known?.department ?? departmentsFor(client.id)[0], site, signedInAt: new Date().toISOString(),
-    };
+  async function openPortal(orgId: string, siteId?: string) {
+    const session = await resolveClientSession({ clientId: orgId, locationId: siteId });
+    if (!session) throw new Error("No client portal access. Accept an invitation or use your approved administrator email.");
     clientSessionRepo.set(session);
-    await ticketsRepo.ensureSiteSeed(session);
-    await runSplash({ name: session.employeeName, brand: client.name.toLowerCase().includes("yalelo") ? "yalelo" : brandForApp(), subtitle: `${session.site.name} · ${client.name}` });
-    navigate({ to: "/client/app" });
-  };
-
-  return (
-    <div className="min-h-dvh bg-background flex flex-col">
-      <header className="flex items-center gap-3 px-4 h-14 border-b border-border">
-        {step === 0
-          ? <Link to="/" aria-label="Back" className="p-2 -ml-2 rounded-lg hover:bg-muted"><ArrowLeft className="h-5 w-5" /></Link>
-          : <button aria-label="Back" onClick={() => setStep(0)} className="p-2 -ml-2 rounded-lg hover:bg-muted"><ArrowLeft className="h-5 w-5" /></button>}
-        <img src="/spruceland-logo.png" alt="Spruceland" className="h-7 w-auto" />
-        <span className="ml-auto text-xs text-muted-foreground">Step {step + 1} of 2</span>
-      </header>
-
-      <main className="flex-1 w-full max-w-md mx-auto px-5 py-6">
-        {step === 0 ? (
-          <>
-            <h1 className="text-xl font-extrabold">Find your company</h1>
-            <p className="text-sm text-muted-foreground mt-1">Search for the company you work for.</p>
-            <div className="relative mt-5">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="e.g. Yalelo, Pick n Pay, Kachema" className="pl-9 h-12" />
-            </div>
-            <ul className="mt-4 divide-y divide-border rounded-xl border border-border bg-card overflow-hidden">
-              {matches.map(c => (
-                <li key={c.id}>
-                  <button onClick={() => pickClient(c.id)} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/60 active:bg-muted">
-                    <div className="grid place-items-center h-10 w-10 rounded-lg bg-primary/10 text-primary font-bold text-sm">{c.name.slice(0, 2).toUpperCase()}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm truncate">{c.name}</div>
-                      <div className="text-xs text-muted-foreground">{c.industry} · {c.branches.length} site{c.branches.length > 1 ? "s" : ""}</div>
-                    </div>
-                    {clientId === c.id && <Check className="h-4 w-4 text-primary" />}
-                  </button>
-                </li>
-              ))}
-              {!matches.length && <li className="px-4 py-6 text-sm text-center text-muted-foreground">No company found. Contact Spruceland to be added.</li>}
-            </ul>
-          </>
-        ) : (
-          <form onSubmit={submit} className="space-y-5">
-            <div className="rounded-xl bg-primary/8 border border-primary/20 p-3 flex items-center gap-3">
-              <div className="grid place-items-center h-10 w-10 rounded-lg bg-primary text-primary-foreground font-bold text-sm">{client?.name.slice(0, 2).toUpperCase()}</div>
-              <div className="min-w-0"><div className="font-semibold text-sm truncate">{client?.name}</div><button type="button" onClick={() => setStep(0)} className="text-xs text-primary">Change company</button></div>
-            </div>
-            <h1 className="text-xl font-extrabold">Your details</h1>
-            <div className="space-y-2"><Label htmlFor="n">Full name</Label><Input id="n" className="h-12" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Mary Banda" autoComplete="name" /></div>
-            <div className="space-y-2"><Label htmlFor="r">NRC or Employee ID</Label><Input id="r" className="h-12" value={ref} onChange={e => setRef(e.target.value)} placeholder="e.g. 123456/10/1 or PNP-20417" /></div>
-            <div className="space-y-2">
-              <Label className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />Province</Label>
-              <Select value={province} onValueChange={v => { setProvince(v); setSiteName(""); }}>
-                <SelectTrigger className="h-12"><SelectValue placeholder="Select province" /></SelectTrigger>
-                <SelectContent>{provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            {sites.length > 1 && (
-              <div className="space-y-2">
-                <Label className="flex items-center gap-1.5"><Store className="h-3.5 w-3.5" />Store / site</Label>
-                <Select value={siteName} onValueChange={setSiteName}>
-                  <SelectTrigger className="h-12"><SelectValue placeholder={`Select from ${sites.length} sites`} /></SelectTrigger>
-                  <SelectContent>{sites.map(s => <SelectItem key={s.name} value={s.name}>{s.name} · {s.city}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-            )}
-            {sites.length === 1 && <p className="text-xs text-muted-foreground">Site: <span className="font-medium text-foreground">{sites[0].name}, {sites[0].city}</span></p>}
-            <Button type="submit" disabled={!canSubmit} className="w-full h-12 text-base font-semibold">Sign in</Button>
-          </form>
-        )}
-      </main>
-    </div>
-  );
+    await runSplash({ name: session.employeeName, brand: /yalelo/i.test(session.clientName) ? "yalelo" : "stgl", subtitle: `${session.clientName} · ${session.site.name}` });
+    await navigate({ to: "/client/app" });
+  }
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); setBusy(true); setNotice("");
+    try {
+      if (organizations.length) { await openPortal(organizationId, locationId); return; }
+      if (mode === "forgot") {
+        const { error } = await clientAuth.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/reset-password?portal=client` });
+        if (error) throw error;
+        setNotice("If your account exists, a password reset link is on its way."); return;
+      }
+      if (mode === "signup") {
+        const { error } = await clientAuth.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: `${window.location.origin}/client`, data: { full_name: name.trim() } } });
+        if (error) throw error;
+        setNotice("Check your email to confirm your account, then sign in. Store access requires an invitation; approved administrators receive access after confirmation."); setMode("signin"); return;
+      }
+      const { error } = await clientAuth.auth.signInWithPassword({ email: email.trim(), password });
+      if (error) throw error;
+      const access = await readPortalAccess(clientAuth);
+      const list = access ? clientOrganizations(access) : [];
+      if (!list.length) throw new Error("Your email has no client portal access yet. Accept your invitation, or ask an administrator to invite you.");
+      const first = list[0];
+      if (!first) return;
+      if (list.length === 1 && first.locations.length <= 1) { await openPortal(first.id, first.locations[0]?.id); return; }
+      setOrganizations(list); setOrganizationId(first.id); setLocationId(first.locations[0]?.id ?? "");
+    } catch (e) { toast.error(e instanceof Error ? e.message : "Sign-in failed"); }
+    finally { setBusy(false); }
+  }
+  return <div className="min-h-dvh bg-background flex flex-col">
+    <header className="flex items-center gap-3 px-4 h-14 border-b border-border"><Button asChild variant="ghost" size="icon"><Link to="/" aria-label="Back"><ArrowLeft className="h-4 w-4" /></Link></Button><img src="/spruceland-logo.png" alt="Spruceland" className="h-7 w-auto" /><span className="ml-auto text-xs text-muted-foreground">Client Portal</span></header>
+    <main className="w-full max-w-md mx-auto px-6 py-10 flex-1">
+      <div className="flex items-center gap-3 mb-7"><img src={yalelo.url} alt="Yalelo" className="h-16 w-16 rounded-lg" /><div><div className="text-lg font-bold">Yalelo × Spruceland</div><div className="text-xs text-muted-foreground">Client administrators & store teams</div></div></div>
+      <h1 className="text-2xl font-bold">{organizations.length ? "Your workspace" : mode === "signup" ? "Create an account" : mode === "forgot" ? "Reset password" : "Client sign-in"}</h1>
+      <form onSubmit={submit} className="mt-6 space-y-4">
+        {organizations.length ? <>
+          <div className="space-y-2"><Label>Company</Label><Select value={organizationId} onValueChange={id => { setOrganizationId(id); setLocationId(organizations.find(o => o.id === id)?.locations[0]?.id ?? ""); }}><SelectTrigger className="h-11"><SelectValue /></SelectTrigger><SelectContent>{organizations.map(o => <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>)}</SelectContent></Select></div>
+          {!!org?.locations.length && <div className="space-y-2"><Label className="flex gap-2 items-center"><MapPin className="h-4 w-4" />Assigned store / site</Label><Select value={locationId} onValueChange={setLocationId}><SelectTrigger className="h-11"><SelectValue /></SelectTrigger><SelectContent>{org.locations.map(l => <SelectItem key={l.id} value={l.id}>{l.name}{l.province ? ` · ${l.province}` : ""}</SelectItem>)}</SelectContent></Select></div>}
+        </> : <>
+          {mode === "signup" && <div className="space-y-2"><Label htmlFor="client-name">Full name</Label><Input id="client-name" autoComplete="name" required value={name} onChange={e => setName(e.target.value)} /></div>}
+          <div className="space-y-2"><Label htmlFor="client-email">Work email</Label><Input id="client-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} /></div>
+          {mode !== "forgot" && <div className="space-y-2"><Label htmlFor="client-password">Password</Label><Input id="client-password" type="password" minLength={8} autoComplete={mode === "signup" ? "new-password" : "current-password"} required value={password} onChange={e => setPassword(e.target.value)} /></div>}
+        </>}
+        {notice && <p role="status" className="text-sm border border-border bg-muted p-3 rounded-md">{notice}</p>}
+        <Button className="w-full h-11" disabled={busy || (!!organizations.length && !org)}><LockKeyhole className="h-4 w-4 mr-2" />{busy ? "Please wait…" : organizations.length ? "Open portal" : mode === "signup" ? "Create account" : mode === "forgot" ? "Send reset link" : "Sign in"}</Button>
+        {!organizations.length && <div className="flex flex-wrap justify-between gap-2"><Button type="button" variant="link" className="px-0 text-xs" onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setNotice(""); }}>{mode === "signup" ? "Already registered? Sign in" : "First time? Create account"}</Button><Button type="button" variant="link" className="px-0 text-xs" onClick={() => { setMode(mode === "forgot" ? "signin" : "forgot"); setNotice(""); }}>{mode === "forgot" ? "Back to sign in" : "Forgot password?"}</Button></div>}
+        {!!organizations.length && <Button type="button" variant="link" className="w-full" onClick={async () => { await clientAuth.auth.signOut(); setOrganizations([]); }}>Use another account</Button>}
+      </form>
+      <p className="mt-6 text-xs text-muted-foreground">Invited team members should open the invitation email first. Creating an account does not grant store or administrator access.</p>
+      <Button asChild variant="link" className="mt-3 px-0"><Link to="/login">Spruceland staff sign-in</Link></Button>
+    </main>
+  </div>;
 }

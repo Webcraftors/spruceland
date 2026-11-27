@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { invitationEmail } from "@/lib/notify/templates";
+import { invitationToken } from "@/lib/invitation-token";
 
 const Input = z.object({
   organizationId: z.string().uuid(),
@@ -17,7 +18,7 @@ export const inviteUser = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => Input.parse(d))
   .handler(async ({ data, context }) => {
     const { randomBytes, createHash } = await import("node:crypto");
-    const token = randomBytes(32).toString("base64url");
+    const token = invitationToken(randomBytes(32));
     const hash = createHash("sha256").update(token).digest("hex");
     const { data: id, error } = await (context.supabase as any).rpc("create_user_invitation", {
       p_organization_id: data.organizationId, p_email: data.email, p_token_hash: hash,

@@ -34,6 +34,9 @@ export interface Asset {
 }
 
 export interface ClientSession {
+  userId?: string;
+  locationId?: string;
+  canInvite?: boolean;
   clientId: string;
   clientName: string;
   employeeName: string;

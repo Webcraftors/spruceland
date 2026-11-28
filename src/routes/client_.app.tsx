@@ -1,10 +1,24 @@
-import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, Ticket, CalendarClock, User, Plus } from "lucide-react";
-import { useClientSession } from "@/repositories/portal-repo";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState, redirect } from "@tanstack/react-router";
+import { Home, Ticket, CalendarClock, User, Plus, UserPlus } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { clientSessionRepo } from "@/repositories/portal-repo";
+import { resolveClientSession } from "@/lib/client-session";
+import { clientAuth } from "@/lib/client-auth";
+import { pageMeta } from "@/lib/meta";
 import { ClientSessionCtx } from "@/components/portal/shared";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/client_/app")({
+  ssr: false,
+  head: () => pageMeta("Client workspace — Spruceland IQ", "Your authorized company and store workspace."),
+  beforeLoad: async () => {
+    const selection = clientSessionRepo.get();
+    const clientSession = await resolveClientSession(selection ? { clientId: selection.clientId, ...(selection.locationId ? { locationId: selection.locationId } : {}) } : undefined);
+    if (!clientSession) throw redirect({ to: "/client", replace: true });
+    clientSessionRepo.set(clientSession);
+    return { clientSession };
+  },
+  errorComponent: ({ error }) => <div className="min-h-dvh grid place-items-center p-6"><div className="space-y-4 max-w-sm"><p role="alert" className="text-sm text-destructive">{error.message}</p><Link to="/client" className="text-primary font-semibold">Return to client sign in</Link></div></div>,
   component: ClientLayout,
 });
 
@@ -16,18 +30,11 @@ const NAV = [
 ] as const;
 
 function ClientLayout() {
-  const [s, setS] = useClientSession();
+  const { clientSession: s } = Route.useRouteContext();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const path = useRouterState({ select: r => r.location.pathname });
-  if (s === undefined) return <div className="min-h-dvh grid place-items-center text-sm text-muted-foreground">Loading…</div>;
-  if (!s) {
-    return (
-      <div className="min-h-dvh grid place-items-center p-6 text-center">
-        <div><p className="text-sm text-muted-foreground">You're signed out.</p><Link to="/client" className="mt-3 inline-block font-semibold text-primary">Sign in to the Client Portal</Link></div>
-      </div>
-    );
-  }
-  const signOut = () => { setS(null); navigate({ to: "/" }); };
+  const signOut = async () => { await queryClient.cancelQueries(); queryClient.clear(); clientSessionRepo.set(null); await clientAuth.auth.signOut(); await navigate({ to: "/client", replace: true }); };
   const active = (to: string, exact?: boolean) => exact ? path === to || path === to + "/" : path.startsWith(to);
 
   return (
@@ -38,6 +45,7 @@ function ClientLayout() {
           <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">Client Portal</div>
           <Link to="/client/app/tickets/new" className="mt-6 flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground h-10 text-sm font-semibold"><Plus className="h-4 w-4" />Raise ticket</Link>
           <nav className="mt-4 space-y-1">
+            {s.canInvite && <Link to="/client/app/people" className={cn("flex items-center gap-3 rounded-lg px-3 h-10 text-sm", active("/client/app/people") ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted")}><UserPlus className="h-4 w-4" />People & invitations</Link>}
             {NAV.map(n => (
               <Link key={n.to} to={n.to} className={cn("flex items-center gap-3 rounded-lg px-3 h-10 text-sm", active(n.to, "exact" in n) ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-muted")}>
                 <n.icon className="h-4 w-4" />{n.label}

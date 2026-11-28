@@ -1,43 +1,30 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { createFileRoute, Outlet, redirect, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { SessionProvider, useSession } from "@/lib/session";
+import { SessionProvider } from "@/lib/session";
 import { StoreProvider } from "@/lib/store";
 import { LiveNotifications } from "@/lib/live-notifications";
-import { supabase } from "@/integrations/supabase/client";
 import { resolveStaffSession } from "@/lib/staff-auth";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app")({
-  component: () => (
-    <SessionProvider>
-      <StaffGuard>
+  ssr: false,
+  beforeLoad: async () => {
+    const staffSession = await resolveStaffSession();
+    if (!staffSession) throw redirect({ to: "/login", replace: true });
+    return { staffSession };
+  },
+  errorComponent: ({ error }) => <div className="min-h-screen grid place-items-center p-6"><div className="space-y-4 max-w-sm"><p role="alert" className="text-sm text-destructive">{error.message}</p><Button asChild><Link to="/login">Return to sign in</Link></Button></div></div>,
+  component: StaffLayout,
+});
+
+function StaffLayout() {
+  const { staffSession } = Route.useRouteContext();
+  return (
+    <SessionProvider key={JSON.stringify(staffSession)} initialSession={staffSession}>
         <StoreProvider>
           <LiveNotifications />
           <AppShell><Outlet /></AppShell>
         </StoreProvider>
-      </StaffGuard>
     </SessionProvider>
-  ),
-});
-
-/** Staff pages need a real signed-in account with an active STGL staff role (re-checked on every load). */
-function StaffGuard({ children }: { children: ReactNode }) {
-  const { setSession } = useSession();
-  const navigate = useNavigate();
-  const [ok, setOk] = useState(false);
-  useEffect(() => {
-    let live = true;
-    void resolveStaffSession().then(s => {
-      if (!live) return;
-      if (!s) { setSession(null); void supabase.auth.signOut(); navigate({ to: "/login", replace: true }); return; }
-      setSession(s); setOk(true);
-    });
-    const { data } = supabase.auth.onAuthStateChange(ev => {
-      if (ev === "SIGNED_OUT") { setSession(null); navigate({ to: "/login", replace: true }); }
-    });
-    return () => { live = false; data.subscription.unsubscribe(); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  if (!ok) return <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">Checking your access…</div>;
-  return <>{children}</>;
+  );
 }

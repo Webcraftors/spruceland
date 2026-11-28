@@ -1,5 +1,6 @@
 # Roadmap
-## Portal access completion — November 27
+## Portal access completion — November 28
+- [ ] Connect invitation navigation, replace cached client session access checks, and verify account/invitation flows.
 - [ ] Replace client demo sign-in with verified email accounts and authorized company/store selection.
 - [ ] Repair leadership access for Super Admin, STGL Admin, Owner and Yalelo Admin.
 - [ ] Add shared permission-scoped invitations for staff and client administrators; fix invitation acceptance tokens.

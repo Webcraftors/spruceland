@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type Role = "owner" | "head_tech" | "technician" | "administrator" | "crm";
 export type Location = "Lusaka" | "Ndola" | "Both";
@@ -17,6 +17,7 @@ export interface Session {
   location: Location;
   subcontractor: boolean;
   platformAdmin?: boolean;
+  canInvite?: boolean;
 }
 
 export type Module =
@@ -38,16 +39,8 @@ const Ctx = createContext<{ session: Session | null; setSession: (s: Session | n
   session: null, setSession: () => {},
 });
 
-export function SessionProvider({ children }: { children: ReactNode }) {
-  const [session, setSessionState] = useState<Session | null>(null);
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSessionState(JSON.parse(raw));
-    } catch {}
-    setHydrated(true);
-  }, []);
+export function SessionProvider({ children, initialSession = null }: { children: ReactNode; initialSession?: Session | null }) {
+  const [session, setSessionState] = useState<Session | null>(initialSession);
   const setSession = (s: Session | null) => {
     setSessionState(s);
     if (typeof window !== "undefined") {
@@ -55,7 +48,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       else localStorage.removeItem(KEY);
     }
   };
-  if (!hydrated) return null;
   return <Ctx.Provider value={{ session, setSession }}>{children}</Ctx.Provider>;
 }
 

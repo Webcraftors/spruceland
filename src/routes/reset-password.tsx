@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { clientAuth } from "@/lib/client-auth";
+import { z } from "zod";
 
 export const Route = createFileRoute("/reset-password")({
+  validateSearch: z.object({ portal: z.enum(["staff", "client"]).optional() }),
   head: () => ({ meta: [
     { title: "Set a new password — Spruceland IQ" },
     { name: "description", content: "Choose a new password for your Spruceland IQ account." },
@@ -20,17 +23,19 @@ export const Route = createFileRoute("/reset-password")({
 });
 
 function ResetPassword() {
+  const { portal } = Route.useSearch();
+  const client = portal === "client" ? clientAuth : supabase;
   const navigate = useNavigate();
   const [pw, setPw] = useState("");
   const [busy, setBusy] = useState(false);
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setBusy(true);
-    const { error } = await supabase.auth.updateUser({ password: pw });
+    const { error } = await client.auth.updateUser({ password: pw });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Password updated. Please sign in.");
-    await supabase.auth.signOut();
-    navigate({ to: "/login" });
+    await client.auth.signOut();
+    navigate({ to: portal === "client" ? "/client" : "/login" });
   };
   return (
     <div className="min-h-screen grid place-items-center bg-background p-6">

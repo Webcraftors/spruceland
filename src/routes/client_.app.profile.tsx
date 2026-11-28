@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { LogOut, Phone, Mail } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { LogOut, Phone, Mail, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePortalSession, Card, fmtDateTime } from "@/components/portal/shared";
 import { CLIENTS } from "@/data/clients";
@@ -41,6 +41,7 @@ function Profile() {
         <p className="text-xs text-muted-foreground">{c?.office ?? "Lusaka"} office · Mon–Sat, 07:30–17:30</p>
         <a className="mt-2 inline-flex items-center gap-2 text-sm text-primary font-semibold" href="tel:+260211000000"><Phone className="h-4 w-4" />+260 211 000 000</a>
       </Card>
+      {s.canInvite && <Button asChild className="w-full h-11"><Link to="/client/app/people"><UserPlus className="h-4 w-4 mr-2" />People & invitations</Link></Button>}
       <Button variant="outline" className="w-full h-11" onClick={signOut}><LogOut className="h-4 w-4 mr-2" />Sign out</Button>
     </div>
   );

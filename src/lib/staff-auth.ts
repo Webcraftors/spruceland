@@ -10,5 +10,5 @@ export async function resolveStaffSession(): Promise<Session | null> {
   if (!access) return null;
   const role = access.platform_admin ? "administrator" : ROLES.includes(access.staff_role as Role) ? access.staff_role as Role : null;
   if (!role) return null;
-  return { name: access.full_name || "Team member", role, location: "Both", subcontractor: false, platformAdmin: access.platform_admin };
+  return { name: access.full_name || "Team member", role, location: "Both", subcontractor: false, platformAdmin: access.platform_admin, canInvite: access.organizations.some(o => o.can_invite) };
 }

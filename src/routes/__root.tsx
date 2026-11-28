@@ -16,6 +16,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/lib/theme";
 import { NativeBridge } from "@/lib/push/native-bridge";
 import { SplashHost } from "@/components/brand/SplashHost";
+import { supabase } from "@/integrations/supabase/client";
+import { clientAuth } from "@/lib/client-auth";
 
 function NotFoundComponent() {
   return (
@@ -58,8 +60,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Spruceland — Field Service & Weighing Operations" },
       { name: "twitter:description", content: "Spruceland Technologies operations dashboard: jobs, clients, inventory and financials across Lusaka and Ndola." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/85b9ef51-9ed1-45bd-a0d0-53f9c173b887" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/85b9ef51-9ed1-45bd-a0d0-53f9c173b887" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -92,6 +92,15 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => {
+    const subscriptions = [supabase, clientAuth].map(client => client.auth.onAuthStateChange(event => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      void router.invalidate();
+      if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
+    }).data.subscription);
+    return () => subscriptions.forEach(subscription => subscription.unsubscribe());
+  }, [router, queryClient]);
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>

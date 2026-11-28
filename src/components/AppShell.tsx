@@ -1,10 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Ticket, LayoutDashboard, Briefcase, Users2, Package, ShoppingCart,
   DollarSign, HardHat, BookOpen, Bell, Settings, Shield, LogOut, Menu, Search, MapPin, Sun, Moon, MoreHorizontal,
   Activity, PanelLeftClose, PanelLeftOpen,
-  Scale,
+  Scale, UserPlus,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useSession, ROLE_LABELS, can, type Module, type Location } from "@/lib/session";
@@ -46,6 +47,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { session, setSession } = useSession();
   const { theme, toggle: toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const pathname = useRouterState({ select: s => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -77,7 +79,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
 
   const unread = notifications.filter(n => !n.read).length;
-  const items = NAV.filter(n => can(session.role, n.module));
+  const items = [...NAV.filter(n => can(session.role, n.module)), ...(session.canInvite ? [{ to: "/invitations", label: "People & invitations", icon: UserPlus, module: "team" as Module }] : [])];
   const bottom = BOTTOM_ORDER.map(to => items.find(i => i.to === to)).filter(Boolean) as typeof items;
   const moreItems = items.filter(i => !BOTTOM_ORDER.includes(i.to));
 
@@ -211,7 +213,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <div className="hidden md:flex flex-col items-start leading-tight">
                   <span className="text-xs font-semibold">{session.name}</span>
                   <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                    {ROLE_LABELS[session.role]}
+                    {session.platformAdmin ? "Super Admin" : ROLE_LABELS[session.role]}
                     {session.subcontractor && <Badge variant="outline" className="ml-1 h-3.5 px-1 text-[9px]">Sub</Badge>}
                   </span>
                 </div>
@@ -225,7 +227,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild><Link to="/settings"><Settings className="mr-2 h-3.5 w-3.5" />Settings</Link></DropdownMenuItem>
               <DropdownMenuItem asChild><Link to="/activity"><Activity className="mr-2 h-3.5 w-3.5" />Activity log</Link></DropdownMenuItem>
-              <DropdownMenuItem onClick={async () => { setSession(null); await supabase.auth.signOut(); navigate({ to: "/", replace: true }); }}>
+              <DropdownMenuItem onClick={async () => { await queryClient.cancelQueries(); queryClient.clear(); setSession(null); await supabase.auth.signOut(); navigate({ to: "/login", replace: true }); }}>
                 <LogOut className="mr-2 h-3.5 w-3.5" />Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
